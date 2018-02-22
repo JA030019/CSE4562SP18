@@ -99,11 +99,16 @@ public class Tuple {
     	if(tupleMap.keySet() == null) {
     		return;
     	}
+    	
 		Set<String> columnNames = tupleMap.keySet();		
 
 		for(String str: columnNames) {
-		PrimitiveValue value = tupleMap.get(str);					  		
-		  outTuple.add(value.toString());  
+		PrimitiveValue value = tupleMap.get(str);	
+		if(value != null ) {
+			outTuple.add(value.toString());  
+		}else {
+			return;
+		}
 	  }     
 	    			       	
 	for(int j=0; j < outTuple.size(); j++) {
