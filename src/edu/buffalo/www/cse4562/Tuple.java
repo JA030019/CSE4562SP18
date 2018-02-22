@@ -46,7 +46,7 @@ public class Tuple {
 		
 	}	
 
-    public void printTuple() throws InvalidPrimitive {
+  /*  public void printTuple() throws InvalidPrimitive {
     	   	
     	ArrayList<String> outTuple = new ArrayList<>();
 	    	if(tupleMap == null) {
@@ -65,7 +65,6 @@ public class Tuple {
 				case DOUBLE:
 					 value.toDouble();break;
 				case LONG :	
-					//System.out.println(value);
 					 value.toLong();break;
 				case STRING:
 					 value.toString();break;
@@ -87,8 +86,36 @@ public class Tuple {
 	    	  }
 			 
 	    }
-	}
+	}*/
 
+	  public void printTuple() throws InvalidPrimitive {
+   	
+	ArrayList<String> outTuple = new ArrayList<>();
+    	if(tupleMap == null) {
+    		return;
+
+    	}
+    	
+		Set<String> columnNames = tupleMap.keySet();		
+
+		for(String str: columnNames) {
+		PrimitiveValue value = tupleMap.get(str);					  		
+		  outTuple.add(value.toString());  
+	  }     
+	    			       	
+	for(int j=0; j < outTuple.size(); j++) {
+    	
+    	if(j != outTuple.size()-1) {
+    		System.out.print(outTuple.get(j) + "|");
+    	}else {	    					
+		System.out.print(outTuple.get(j));
+		System.out.println();
+    	  }
+		 
+    }
+}
+	
+	
 	public PrimitiveValue getTupleData(String str) {
 		PrimitiveValue temp = null;
 		temp = tupleMap.get(str);
