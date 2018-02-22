@@ -21,7 +21,7 @@ public class Tuple {
 	public Tuple(LinkedHashMap<String,PrimitiveValue> tupleMap ) {
 		this.tupleMap = tupleMap;
 	}
-	
+
 	//override
 	//set the value of data in the tuple
 	public void setValue( String columnName, StringValue value) {
@@ -91,11 +91,14 @@ public class Tuple {
 	  public void printTuple() throws InvalidPrimitive {
    	
 	ArrayList<String> outTuple = new ArrayList<>();
+	
     	if(tupleMap == null) {
     		return;
-
     	}
     	
+    	if(tupleMap.keySet() == null) {
+    		return;
+    	}
 		Set<String> columnNames = tupleMap.keySet();		
 
 		for(String str: columnNames) {

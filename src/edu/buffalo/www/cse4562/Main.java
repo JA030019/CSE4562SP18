@@ -51,7 +51,7 @@ public class Main {
 		        				if(tuple != null) {
 		        					tuple.printTuple();
 		        				}											
-							} catch (InvalidPrimitive e) {
+							} catch (Exception  e) {
 								e.printStackTrace();
 							}
 	        			}
