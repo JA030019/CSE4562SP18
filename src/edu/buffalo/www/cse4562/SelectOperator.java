@@ -44,7 +44,10 @@ public class SelectOperator implements TupleIterator<Tuple> {
 		if(to.hasNext()) {
 			tuple = to.getNext();
 			this.evaluate = new Evaluate(tuple);
-							
+			
+			if(tuple == null) {
+				return null;
+			}
 		    // test where condition
 		    try {
 		    	if(expression == null) {
