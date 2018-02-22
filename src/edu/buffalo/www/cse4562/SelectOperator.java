@@ -53,10 +53,9 @@ public class SelectOperator implements TupleIterator<Tuple> {
 		    	else if (((BooleanValue) (evaluate).eval(expression)).getValue()) {
 					   return tuple;
 				}else {
-					return this.getNext();
+					return to.getNext();
 				}
-		    
-			} catch (SQLException e) {
+			} catch (Exception e) {
 				e.printStackTrace();
 			}			
 		}		
