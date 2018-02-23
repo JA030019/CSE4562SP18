@@ -116,8 +116,9 @@ public class SelectOperator implements TupleIterator<Tuple> {
 		    try {
 		    	if(expression == null) {
 		    		return tuple;
-		    	}
-		    	else if (((BooleanValue) (evaluate).eval(expression)).getValue()) {
+		    	}else if(((PrimitiveValue) (evaluate).eval(expression))==null) {
+		    		return null;
+		    	}else if (((BooleanValue) (evaluate).eval(expression)).getValue()) {
 					   return tuple;
 				}else {
 					return this.getNext();
