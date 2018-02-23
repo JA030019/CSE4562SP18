@@ -12,68 +12,75 @@ import net.sf.jsqlparser.expression.PrimitiveValue;
 import net.sf.jsqlparser.expression.PrimitiveValue.InvalidPrimitive;
 import net.sf.jsqlparser.expression.StringValue;
 import net.sf.jsqlparser.schema.Column;
+import net.sf.jsqlparser.schema.Table;
 
 public class Tuple {
+    
+	//LinkedHashMap<String,PrimitiveValue> tupleMap;
 	
-	//key-> coloumn Name, Value-> data in PrimitiveValue
-	LinkedHashMap<String,PrimitiveValue> tupleMap;
+	//<Table name,<column name, value>>
+	 LinkedHashMap<Column,PrimitiveValue> fullTupleMap;
 	
-	public Tuple(LinkedHashMap<String,PrimitiveValue> tupleMap ) {
-		this.tupleMap = tupleMap;
+	public Tuple(LinkedHashMap<Column,PrimitiveValue> fullTupleMap) {
+		this.fullTupleMap = fullTupleMap;			
 	}
 
 	//override
 	//set the value of data in the tuple
-	public void setValue( String columnName, StringValue value) {
-		 tupleMap.put(columnName, value);
+	public void setValue( Table table, String columnName, PrimitiveValue value) {
+		Column c = new Column(table, columnName);
+		fullTupleMap.put(c, value);
+	}
+	
+	public void setValue(Table table, String columnName, StringValue value) {
+		Column c = new Column(table, columnName);
+		fullTupleMap.put(c, value);
 	}
 
-	public void setValue(String columnName, LongValue value) {		
+	public void setValue(Table table, String columnName, LongValue value) {		
+		Column c = new Column(table, columnName);
+		fullTupleMap.put(c, value);
+		//System.out.println("mapsize "+fullTupleMap.size());
+	}
+
+	public void setValue(Table table, String columnName, DoubleValue value) {		
+		Column c = new Column(table, columnName);
+		fullTupleMap.put(c, value);		
+	}
+
+	public void setValue(Table table, String columnName, DateValue value) {		
+		Column c = new Column(table, columnName);
+		fullTupleMap.put(c, value);	
+	}
+
+	public void setValue(Table table, String columnName, NullValue value) {
+		Column c = new Column(table, columnName);
+		fullTupleMap.put(c, value);
 		
-		tupleMap.put(columnName, value);
-	}
+	}		
 
-	public void setValue(String columnName, DoubleValue value) {		
-		tupleMap.put(columnName, value);		
-	}
-
-	public void setValue(String columnName, DateValue value) {		
-		tupleMap.put(columnName, value);		
-	}
-
-	public void setValue(String columnName, NullValue value) {
-		tupleMap.put(columnName, value);	
-		
-	}	
-
-  /*  public void printTuple() throws InvalidPrimitive {
-    	   	
-    	ArrayList<String> outTuple = new ArrayList<>();
-	    	if(tupleMap == null) {
+	  public void printTuple() throws InvalidPrimitive {
+   	
+		  ArrayList<String> outTuple = new ArrayList<>();
+		  		 
+		  
+	    	if(fullTupleMap == null) {
 	    		return;
-
 	    	}
 	    	
-			Set<String> columnNames = tupleMap.keySet();		
-
-			for(String str: columnNames) {
-				PrimitiveValue value = tupleMap.get(str);					  
-			
-			    switch(value.getType()){			 
-				case BOOL:
-				     value.toBool();break;
-				case DOUBLE:
-					 value.toDouble();break;
-				case LONG :	
-					 value.toLong();break;
-				case STRING:
-					 value.toString();break;
-				case DATE:               
-					 value.toString();break;
-				default:
-					break;
-				}
-			  outTuple.add(value.toString());  
+	    	if(fullTupleMap.keySet() == null) {
+	    		return;
+	    	}
+	    	
+			Set<Column> columns = fullTupleMap.keySet();		
+	
+			for(Column c: columns) {
+			PrimitiveValue value = fullTupleMap.get(c);	
+			if(value != null ) {
+				outTuple.add(value.toString());  
+			}else {
+				return;
+			}
 		  }     
 		    			       	
 		for(int j=0; j < outTuple.size(); j++) {
@@ -86,50 +93,40 @@ public class Tuple {
 	    	  }
 			 
 	    }
-	}*/
-
-	  public void printTuple() throws InvalidPrimitive {
-   	
-	ArrayList<String> outTuple = new ArrayList<>();
-	
-    	if(tupleMap == null) {
-    		return;
-    	}
-    	
-    	if(tupleMap.keySet() == null) {
-    		return;
-    	}
-    	
-		Set<String> columnNames = tupleMap.keySet();		
-
-		for(String str: columnNames) {
-		PrimitiveValue value = tupleMap.get(str);	
-		if(value != null ) {
-			outTuple.add(value.toString());  
-		}else {
-			return;
-		}
-	  }     
-	    			       	
-	for(int j=0; j < outTuple.size(); j++) {
-    	
-    	if(j != outTuple.size()-1) {
-    		System.out.print(outTuple.get(j) + "|");
-    	}else {	    					
-		System.out.print(outTuple.get(j));
-		System.out.println();
-    	  }
-		 
-    }
 }
-	
-	
-	public PrimitiveValue getTupleData(String str) {
+		
+	public PrimitiveValue getTupleData(Table table, String columnName) {
 		PrimitiveValue temp = null;
-		temp = tupleMap.get(str);
+		Column c = new Column(table, columnName);
+		temp = fullTupleMap.get(c);
 		return temp;
 	}
     
+	
+	public Table getTupleTable() {
+		
+		if(fullTupleMap == null) {
+    		return null;
+    	}
+    	
+    	if(fullTupleMap.keySet() == null) {
+    		return null;
+    	}
+    	
+    	ArrayList<Table> outTable = new ArrayList<>();
+		Set<Column> columns = fullTupleMap.keySet();
+		for(Column c: columns) {
+			Table table = c.getTable();	
+			if(table != null ) {
+				outTable.add(table);  
+			}else {
+				return null;
+			}
+		  }   
+		
+		return outTable.get(0);
+		
+	}
     /*// another try???
     @SuppressWarnings("unchecked")
 	public void printTuple(){

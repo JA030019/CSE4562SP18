@@ -10,19 +10,18 @@ import net.sf.jsqlparser.schema.Column;
 
 public class Evaluate extends Eval  {
 
-	//Expression expression;
 	Tuple tuple;
 	
-	public Evaluate (Tuple tuple) {
-		//this.expression = expression;
+	public Evaluate (Tuple tuple) {		
 		this.tuple = tuple;
-	}
-	
+	}	
 
 	@Override
 	public PrimitiveValue eval(Column c) throws SQLException {
-		 return tuple.getTupleData(c.getColumnName().toLowerCase());
+        
+		 return tuple.getTupleData(c.getTable(),c.getColumnName().toLowerCase());
 	}	
-	
 }
+
+
 

@@ -65,8 +65,9 @@ public class TableOperator implements TupleIterator<Tuple>{
 	@Override
 	public Tuple getNext() {
 		
-		LinkedHashMap<String,PrimitiveValue> tupleMap = new LinkedHashMap<String,PrimitiveValue>(); 
-		Tuple tuple = new Tuple(tupleMap);
+		//Column column = new Column();
+		LinkedHashMap<Column,PrimitiveValue> fullTupleMap = new LinkedHashMap<Column,PrimitiveValue>(); 		
+		Tuple tuple = new Tuple(fullTupleMap);
 				
 		if(reader == null) {
 			return null;
@@ -85,7 +86,8 @@ public class TableOperator implements TupleIterator<Tuple>{
 			return null;
 		}
 		
-		String[] columns = line.split("\\|"); 		
+		String[] columns = line.split("\\|");
+		//String tableName = table.getName().toLowerCase();
 		List<ColumnDefinition> columnDefinitions = ct.getColumnDefinitions();
 		
 		for(int i = 0; i< columns.length ;i++) {
@@ -96,15 +98,18 @@ public class TableOperator implements TupleIterator<Tuple>{
 			case "string" :
 			case "varchar": 
 			case "char":
-			    tuple.setValue(columnName, new StringValue(columns[i]));break;
+			    tuple.setValue(table, columnName, new StringValue(columns[i]));break;
 			case "int":
-				tuple.setValue(columnName, new LongValue(Long.parseLong(columns[i])));break;
+				// System.out.println("input tuple "+columnName + columns[i]);
+				tuple.setValue(table, columnName, new LongValue(Long.parseLong(columns[i])));
+				 //System.out.println("input tuple "+fullTupleMap.get(tableName).containsKey("a"));
+				break;
 			case "decimal":				 
-				tuple.setValue(columnName, new DoubleValue(Double.parseDouble(columns[i])));break;
+				tuple.setValue(table, columnName, new DoubleValue(Double.parseDouble(columns[i])));break;
 			case "date":
-				tuple.setValue(columnName, new DateValue(columns[i]));break;
+				tuple.setValue(table,columnName, new DateValue(columns[i]));break;
 			default:
-				tuple.setValue(columnName, new NullValue());break;
+				tuple.setValue(table, columnName, new NullValue());break;
 			}
 			      
 		}
