@@ -62,7 +62,7 @@ public class Main {
 				            System.out.println("can't handle it");
 				        	}
 			}          
-	         System.out.println();		
+	         //System.out.println();		
 		     // read for next query
              System.out.println(prompt);
              System.out.flush();
