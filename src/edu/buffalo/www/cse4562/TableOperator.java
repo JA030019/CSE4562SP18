@@ -30,10 +30,10 @@ public class TableOperator implements TupleIterator<Tuple>{
 	
 	public static BufferedReader reader = null;
 	
-	public TableOperator(Table table, File file, CreateTable ct) {
+	public TableOperator(Table table, File file) {
 		this.table = table;
 		this.file = file;
-		this.ct = ct;	
+		this.ct = Main.tableMap.get(table.getName().toLowerCase());
 		this.open();
 	}
 
@@ -87,7 +87,10 @@ public class TableOperator implements TupleIterator<Tuple>{
 		}
 		
 		String[] columns = line.split("\\|");
-		//String tableName = table.getName().toLowerCase();
+		
+		 
+		
+		
 		List<ColumnDefinition> columnDefinitions = ct.getColumnDefinitions();
 		
 		for(int i = 0; i< columns.length ;i++) {

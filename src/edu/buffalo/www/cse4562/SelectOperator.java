@@ -60,13 +60,13 @@ public class SelectOperator implements TupleIterator<Tuple> {
 			tuple = to.getNext();
 			//System.out.println("selection from table "+ tuple.fullTupleMap.size() +" "+ tuple.fullTupleMap.isEmpty());
 			//System.out.println("selection from table "+ tuple.fullTupleMap.get();
-			//this.evaluate = new Evaluate(tuple);
+			this.evaluate = new Evaluate(tuple);
 			
 			if(tuple == null) {
 				return null;
 			}	
 
-			LinkedHashMap<Column,PrimitiveValue> fullTupleMaptemp = new LinkedHashMap<Column,PrimitiveValue>(); 
+			/*LinkedHashMap<Column,PrimitiveValue> fullTupleMaptemp = new LinkedHashMap<Column,PrimitiveValue>(); 
 			Tuple tempTuple = new Tuple(fullTupleMaptemp);			
 			
 			for(SelectItem s: selectItemList) {
@@ -87,9 +87,9 @@ public class SelectOperator implements TupleIterator<Tuple> {
 					    	else {				    		
 					    		 if(alias != null) {
 					    			 
-					    			/* System.out.println(alias);
+					    			 System.out.println(alias);
 					    			 System.out.println(tuple.getTupleTable());
-					    			 System.out.println((PrimitiveValue)(evaluate).eval(expression));*/
+					    			 System.out.println((PrimitiveValue)(evaluate).eval(expression));
 					    			 tempTuple.setValue(tuple.getTupleTable(),alias,(PrimitiveValue)(evaluate).eval(expression));
 					    		 }else {
 					    			 tempTuple.setValue(tuple.getTupleTable(),((Column) (expression)).getColumnName().toLowerCase(),(PrimitiveValue)(evaluate).eval(expression));
@@ -109,16 +109,18 @@ public class SelectOperator implements TupleIterator<Tuple> {
 				 evaluate = new Evaluate(tuple);
 			}else {
 				 evaluate = new Evaluate(tempTuple);
-			}
+			}*/
 			
 					
 		    // test where condition
 		    try {
 		    	if(expression == null) {
 		    		return tuple;
-		    	}else if(((PrimitiveValue) (evaluate).eval(expression))==null) {
+		    	}
+		    	else if(((PrimitiveValue) (evaluate).eval(expression))==null) {
 		    		return null;
-		    	}else if (((BooleanValue) (evaluate).eval(expression)).getValue()) {
+		    	}
+		    	else if (((BooleanValue) (evaluate).eval(expression)).getValue()) {
 					   return tuple;
 				}else {
 					return this.getNext();
@@ -142,3 +144,4 @@ public class SelectOperator implements TupleIterator<Tuple> {
 	}
 
 }
+

@@ -23,8 +23,13 @@ import net.sf.jsqlparser.statement.select.*;
 public class Main {
    	
 	static String prompt = "$> "; // expected prompt
-	static File file = new File("data/R.dat");
+	static File file = new File("data/R.dat");	
+
+	public static HashMap<String,CreateTable> tableMap = new HashMap<>();
+	
 	public static void main(String[] argsArray) throws Exception{
+		
+		
 		
 		System.out.println(prompt);
 		System.out.flush();
@@ -35,15 +40,28 @@ public class Main {
          // project here
          while((statement = parser.Statement()) != null){       	 				         			        		            			    
 		     if(statement instanceof CreateTable) {				        		
-			      CreateTable ct = (CreateTable)statement;
-				  new createTable(ct);
-				  createTable.createTableMap();						        		
+			      CreateTable ct = new CreateTable();
+			    		  ct = (CreateTable)statement;
+			      
+			      tableMap.put(ct.getTable().toString().toLowerCase(), ct);
+			      
+			      /*HashMap<String,String> tableInfo = new HashMap<>();					
+				  //get columndefinition consisting of columnName
+				  List<ColumnDefinition> columnDefinitions = ct.getColumnDefinitions();
+
+					for (ColumnDefinition col :columnDefinitions) {
+					    tableInfo.put( col.getColumnName(),col.getColDataType().toString().toLowerCase());			
+					}
+					
+					fullTableMap.put(ct.getTable().getName().toString().toLowerCase(), tableInfo);	*/	
+			      
+			      
 			 }else if(statement instanceof Select) {
 				   SelectBody sb = ((Select) statement).getSelectBody();				        		
 				        		
 				   if(sb instanceof PlainSelect) {			        			
 	        		   PlainSelect plainSelect = (PlainSelect)sb;	        			
-	        		   PlainSelectParser plainSelectParser = new PlainSelectParser(plainSelect,file,createTable.ct);	        			
+	        		   PlainSelectParser plainSelectParser = new PlainSelectParser(plainSelect,file);	        			
 	        		   ProjectOperator po = plainSelectParser.find(plainSelect);
 	
 	        			while(po.hasNext()) {
@@ -73,6 +91,4 @@ public class Main {
 	}
     
 }
-
-
 
