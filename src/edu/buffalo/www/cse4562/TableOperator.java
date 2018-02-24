@@ -24,16 +24,18 @@ import net.sf.jsqlparser.statement.create.table.CreateTable;
 
 public class TableOperator implements TupleIterator<Tuple>{
 			
-	Table table;
-    File file;
+	Table table;	    
 	CreateTable ct;
+	File file;
 	
 	public static BufferedReader reader = null;
 	
-	public TableOperator(Table table, File file) {
+	public TableOperator(Table table) {
 		this.table = table;
-		this.file = file;
-		this.ct = Main.tableMap.get(table.getName().toLowerCase());
+		String filepath= "data/"+ table.getName()+ ".dat";
+		this.file = new File(filepath);
+		this.ct = Main.tableMap.get(table.getName().toLowerCase());	
+		//File file = new File("data/[table.getName()].dat");
 		this.open();
 	}
 

@@ -22,7 +22,7 @@ public class PlainSelectParser {
 	
 	String subSelectAlias;
 	PlainSelect plainselect;
-	File file;
+	//File file;
 	//CreateTable ct;
 	ProjectOperator po;	
 	
@@ -31,10 +31,10 @@ public class PlainSelectParser {
 	Expression whereEx;//condition R.A > 3
 	List<SelectItem> selectItemList; //A, B, C
 */
-	public PlainSelectParser(PlainSelect plainselect,File file) {
+	public PlainSelectParser(PlainSelect plainselect) {
 		
 		this.plainselect = plainselect;
-		this.file = file;
+		//this.file = file;
 		//this.ct = ct;
 		
 	}
@@ -56,7 +56,7 @@ public class PlainSelectParser {
 			
 			Table table = (Table)fromitem;										       	 
 				
-			TableOperator to = new TableOperator(table,file);//table from //return one tuple from the file and converts datatype to PrimitveValue				                                                 						
+			TableOperator to = new TableOperator(table);//table from //return one tuple from the file and converts datatype to PrimitveValue				                                                 						
 			SelectOperator so = new SelectOperator(to,plainSelect);//select where 				
 			               po = new ProjectOperator(so,plainSelect);//project select	
 		

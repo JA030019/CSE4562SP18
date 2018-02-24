@@ -23,13 +23,11 @@ import net.sf.jsqlparser.statement.select.*;
 public class Main {
    	
 	static String prompt = "$> "; // expected prompt
-	static File file = new File("data/R.dat");	
+	//static File file = new File("data/R.dat");	
 
 	public static HashMap<String,CreateTable> tableMap = new HashMap<>();
 	
-	public static void main(String[] argsArray) throws Exception{
-		
-		
+	public static void main(String[] argsArray) throws Exception{			
 		
 		System.out.println(prompt);
 		System.out.flush();
@@ -61,7 +59,7 @@ public class Main {
 				        		
 				   if(sb instanceof PlainSelect) {			        			
 	        		   PlainSelect plainSelect = (PlainSelect)sb;	        			
-	        		   PlainSelectParser plainSelectParser = new PlainSelectParser(plainSelect,file);	        			
+	        		   PlainSelectParser plainSelectParser = new PlainSelectParser(plainSelect);	        			
 	        		   ProjectOperator po = plainSelectParser.find(plainSelect);
 	
 	        			while(po.hasNext()) {
