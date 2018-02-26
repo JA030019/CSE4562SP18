@@ -23,7 +23,7 @@ import net.sf.jsqlparser.statement.select.*;
 public class Main {
    	
 	static String prompt = "$> "; // expected prompt
-	//static File file = new File("data/R.dat");	
+		
 
 	public static HashMap<String,CreateTable> tableMap = new HashMap<>();
 	
