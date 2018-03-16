@@ -42,18 +42,7 @@ public class Main {
 			    		  ct = (CreateTable)statement;
 			      
 			      tableMap.put(ct.getTable().toString().toLowerCase(), ct);
-			      
-			      /*HashMap<String,String> tableInfo = new HashMap<>();					
-				  //get columndefinition consisting of columnName
-				  List<ColumnDefinition> columnDefinitions = ct.getColumnDefinitions();
-
-					for (ColumnDefinition col :columnDefinitions) {
-					    tableInfo.put( col.getColumnName(),col.getColDataType().toString().toLowerCase());			
-					}
-					
-					fullTableMap.put(ct.getTable().getName().toString().toLowerCase(), tableInfo);	*/	
-			      
-			      
+			     
 			 }else if(statement instanceof Select) {
 				   SelectBody sb = ((Select) statement).getSelectBody();				        		
 				        		
@@ -78,8 +67,6 @@ public class Main {
 				            System.out.println("can't handle it");
 				        	}
 			}          
-	         //System.out.println();		
-		     // read for next query
              System.out.println(prompt);
              System.out.flush();
              
