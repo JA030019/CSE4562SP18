@@ -29,7 +29,3 @@ public class Evaluate extends Eval  {
 	}			
 	
 }
-
-
-
-

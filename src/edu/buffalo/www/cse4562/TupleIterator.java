@@ -8,4 +8,3 @@ public interface TupleIterator<Tuple> {
     boolean hasNext();	
 		
 }
-

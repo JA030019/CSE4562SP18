@@ -31,14 +31,19 @@ public class Main {
 	
 	public static void main(String[] argsArray) throws Exception{			
 		
+		
 		System.out.println(prompt);
 		System.out.flush();
 		
 		Reader in = new InputStreamReader(System.in);		
 		CCJSqlParser parser = new CCJSqlParser(in);
 		Statement statement;
-         // project here
-        while((statement = parser.Statement()) != null){       	 				         			        		            			    
+		
+		//long startTime=System.currentTimeMillis(); //long endTime=System.
+        while((statement = parser.Statement()) != null){     
+        	
+        	long startTime=System.currentTimeMillis(); //long endTime=System.
+        	
 		     if(statement instanceof CreateTable) {				        		
 			      CreateTable ct = new CreateTable();
 			      ct = (CreateTable)statement;			      
@@ -63,9 +68,9 @@ public class Main {
 		     // read for next query
              System.out.println(prompt);
              System.out.flush();
-         		
+             long endTime = System.currentTimeMillis(); 
+             System.out.println("Time = " + (endTime -startTime)); 	
         }
-		
 	}
 	
 	public static TupleIterator<Tuple> treeParser(SelectBody sb) {
@@ -119,7 +124,7 @@ public class Main {
                    }
 					  
 				  }    
-			      Boolean b = (!op.optelements.isEmpty()) && (op.optelements != null);
+			  //    Boolean b = (!op.optelements.isEmpty()) && (op.optelements != null);
 			   
 			   FromItem fromItem = plainSelect.getFromItem();			   
 			   if(fromItem instanceof SubSelect) {
@@ -221,28 +226,28 @@ public class Main {
 									if(count == 1){									
 										if(sub == null) {
 											
-											if(b) {//optimize
-												jo = new JoinOperator(tl, tr, op.adex); 
-											}else {// no optimize
+										//	if(b) {//optimize
+										//		jo = new JoinOperator(tl, tr, op.adex); 
+										//	}else {// no optimize
 												jo = new JoinOperator(tl, tr, expression);
-											}
+										//	}
 											
 										}else {
 											
-											if(b) {
-												jo = new JoinOperator(sub, tr, op.adex);
-											}else {
+										//	if(b) {
+										//		jo = new JoinOperator(sub, tr, op.adex);
+										//	}else {
 												jo = new JoinOperator(sub, tr, expression);
-											}
+										//	}
 											
 										}										
 									}else {
 										
-										if(b) {
-											 jo = new JoinOperator(jo, tr, op.adex);
-										}else {
+									//	if(b) {
+									//		 jo = new JoinOperator(jo, tr, op.adex);
+									//	}else {
 											 jo = new JoinOperator(jo, tr, expression);
-										}
+									//	}
 									   
 									}
 								}							
@@ -269,11 +274,11 @@ public class Main {
 			  
 			  //?????????
 			  if (joins != null) {
-				  if(b) {
-					  so =  new SelectOperator(jo, null);
-				  }else {
+				//  if(b) {
+				//	  so =  new SelectOperator(jo, null);
+				//  }else {
 					  so = new SelectOperator(jo, expWhere);
-				  }
+				//  }
 				  
 			  }
 			  //no join, but subselect
