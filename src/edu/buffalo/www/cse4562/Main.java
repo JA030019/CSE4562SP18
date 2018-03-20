@@ -12,9 +12,11 @@ import java.io.Reader;
 import java.io.InputStreamReader;
 import net.sf.jsqlparser.*;
 import net.sf.jsqlparser.JSQLParserException;
+import net.sf.jsqlparser.expression.BinaryExpression;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.PrimitiveValue;
 import net.sf.jsqlparser.expression.PrimitiveValue.InvalidPrimitive;
+import net.sf.jsqlparser.expression.operators.conditional.AndExpression;
 import net.sf.jsqlparser.parser.*;
 import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.schema.Table;
@@ -86,20 +88,38 @@ public class Main {
 			   
 			   //optimizing
 			   Expression exp = plainSelect.getWhere();
-				  List<Join> joins = plainSelect.getJoins();
-				  Optimizer op = new Optimizer();
-				  if(joins != null && exp != null) {				 
+			   List<Join> joins = plainSelect.getJoins();		   
+			   Optimizer op = new Optimizer(); // for sigle column expression			  
+			   
+			   if(joins != null && exp != null) {				 
 					  ArrayList<Expression> expList = op.exprssionAnalyzer(exp);
-					  ArrayList<String> tableList = null;
+					  ArrayList<Expression> expld = new ArrayList<>();
+					  ArrayList<String> tableList1 = null;					  
 					  for(Expression exptemp : expList) {
 						  if(op.binaryAnalyzer(exptemp).size() == 1) {
-							   tableList = op.binaryAnalyzer(exptemp);
-						  					 
-						      op.optelements.put(tableList.get(0), exptemp);
+							   tableList1 = op.binaryAnalyzer(exptemp);  					 
+						       op.optelements.put(tableList1.get(0), exptemp);
 						  } 
+						  else if(op.binaryAnalyzer(exptemp).size() == 2) {
+							   expld.add(exptemp);
+						  }
 					  }
-				  }  
-			   
+					  
+					  //Combine double expression
+					  if(!expld.isEmpty()) {
+						  
+						  //expld.get(0)
+						  Expression opex = null;
+						  for(Expression extemp : expld) {
+							  opex = new AndExpression(opex, extemp);   
+						  }
+						  						  
+						  opex = ((BinaryExpression) opex).getRightExpression();
+						  op.adex = opex;
+                   }
+					  
+				  }    
+			      Boolean b = (!op.optelements.isEmpty()) && (op.optelements != null);
 			   
 			   FromItem fromItem = plainSelect.getFromItem();			   
 			   if(fromItem instanceof SubSelect) {
@@ -120,7 +140,8 @@ public class Main {
 						  tl = new SelectOperator(tol, op.optelements.get(tablel.getAlias()));  
 				   }else {
 						  
-						  tl = new SelectOperator(tol,null);
+						 // tl = new SelectOperator(tol,null);
+					      tl = tol;
 				   }    
 				   
 				  // System.out.println("left table "+tablel.getName());
@@ -131,18 +152,6 @@ public class Main {
 			  //parser Join
 			  //SELECT * FROM R, S, T WHERE R.A = S.C, S.D = T.F;
 			  //List<Join> joins = plainSelect.getJoins();
-			  
-			  /* //optimizing
-			  Expression exp = plainSelect.getWhere();
-			  Optimizer op = new Optimizer();
-			  if(joins != null && exp != null) {				 
-				  ArrayList<Expression> expList = op.exprssionAnalyzer(exp);				  
-				  for(Expression exptemp : expList) {
-					  ArrayList<String> tableList = op.binaryAnalyzer(exptemp);
-					  op.optelements.put(tableList, exptemp); 
-				  }
-			  }*/
-
 			  
 			  if(joins != null) {
 				  boolean isNatural = false;
@@ -183,7 +192,8 @@ public class Main {
 							  tr = new SelectOperator(tor, op.optelements.get(tabler.getAlias()));  
 						  }else {
 							  
-							  tr = new SelectOperator(tor,null);
+							  //tr = new SelectOperator(tor,null);
+							  tr = tor;
 						  }
 						  
 
@@ -197,6 +207,7 @@ public class Main {
 								//	System.out.println("cross product");
 									
 									if(count == 1){
+										
 										jo = new JoinOperator(tol, tor, expression);
 									}else {
 									    jo = new JoinOperator(jo, tor, expression);
@@ -206,15 +217,33 @@ public class Main {
 								//case 1.2 cross product -> join
 								if(expression != null) {
 									//System.out.println("check if we can turn it into join");								
-
+									//Boolean b = (!op.optelements.isEmpty()) && (op.optelements != null);
 									if(count == 1){									
 										if(sub == null) {
-											jo = new JoinOperator(tl, tr, expression);
+											
+											if(b) {//optimize
+												jo = new JoinOperator(tl, tr, op.adex); 
+											}else {// no optimize
+												jo = new JoinOperator(tl, tr, expression);
+											}
+											
 										}else {
-											jo = new JoinOperator(sub, tr, expression);
+											
+											if(b) {
+												jo = new JoinOperator(sub, tr, op.adex);
+											}else {
+												jo = new JoinOperator(sub, tr, expression);
+											}
+											
 										}										
 									}else {
-									    jo = new JoinOperator(jo, tr, expression);
+										
+										if(b) {
+											 jo = new JoinOperator(jo, tr, op.adex);
+										}else {
+											 jo = new JoinOperator(jo, tr, expression);
+										}
+									   
 									}
 								}							
 							}
@@ -240,11 +269,18 @@ public class Main {
 			  
 			  //?????????
 			  if (joins != null) {
-				  so = new SelectOperator(jo, expWhere);
+				  if(b) {
+					  so =  new SelectOperator(jo, null);
+				  }else {
+					  so = new SelectOperator(jo, expWhere);
+				  }
+				  
 			  }
+			  //no join, but subselect
 			  else if(sub != null){
 				  so = new SelectOperator(sub, expWhere);
 			  }
+			  //no join no subselect
 			  else {
 				  so = new SelectOperator(tol, expWhere);
 			  }
@@ -283,6 +319,5 @@ public class Main {
 	
     
 }
-
 
 

@@ -12,7 +12,8 @@ public class Optimizer {
 	
 	//HashMap<Expression, ArrayList<Column>> optelements = new HashMap<>(); 
 	HashMap< String , Expression> optelements = new HashMap<>(); 
-
+    //HashMap<ArrayList<String>, Expression> optdoubles = new HashMap<>();
+	Expression adex = null;
     public ArrayList<Expression> exprssionAnalyzer(Expression expression){
 		
 	    ArrayList<Expression> expList = new ArrayList<>();

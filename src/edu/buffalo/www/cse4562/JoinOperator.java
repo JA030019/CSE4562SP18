@@ -31,11 +31,7 @@ public class JoinOperator implements TupleIterator<Tuple>{
 	boolean isSimple = false;		
     LinkedHashMap<Column,PrimitiveValue> tempFullTupleMap = new LinkedHashMap<Column,PrimitiveValue>(); 
 	Tuple tempTupleL = new Tuple(tempFullTupleMap);	
-    private LinkedHashMap<Column,PrimitiveValue> tempFullTupleMapf = new LinkedHashMap<Column,PrimitiveValue>(); 
-	private Tuple tempTuplef = new Tuple(tempFullTupleMap);	
-	
-	
-	
+
 	public JoinOperator(TupleIterator<Tuple> tl, TupleIterator<Tuple> tr, Expression expression) {
 	
 		this.tl = tl;
@@ -87,30 +83,15 @@ public class JoinOperator implements TupleIterator<Tuple>{
 			tempTupleL = tl.getNext();
 		}
 		
-		if(tempTuplef.fullTupleMap.isEmpty()) {
-			tempTuplef = tempTupleL;
-		}
-		
-		/*if(tempTuplef.getTupleTable().getName().equals(tempTupleL.getTupleTable().getName()) ) {
-		tempTupleL.setAlias(tempTupleL, tempTuplef.getTupleTable());
-	    }*/
 	
-		
 		
 		/*if(al.isEmpty()) {
 			tempTupleL = tl.getNext();
 			al.add(tempTupleL);
 		}else {
 			tempTupleL = al.get(0);			
-		}*/
-		
-		
-		/*if(tempTupleL.getTupleTable().getAlias() != null) {
-			tempTupleL.setAlias(tempTupleL, tempTupleL.getTupleTable());
-		}
-		*/
-		
-		
+		}*/		
+
 				
 		//1. right is null
 		if(tempTupleR == null) {
@@ -232,9 +213,6 @@ public class JoinOperator implements TupleIterator<Tuple>{
 		Tuple outTuple = new Tuple(outFullTupleMap);
 
 		outTuple.fullTupleMap.putAll(t1.fullTupleMap);
-		//System.out.println("combine1: ");
-		//outTuple.printTuple();
-		//System.out.println("combine2: ");
 		outTuple.fullTupleMap.putAll(t2.fullTupleMap);
 		/*System.out.println("combined tuple");
 		outTuple.printTuple();*/

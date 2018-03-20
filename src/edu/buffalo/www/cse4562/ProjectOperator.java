@@ -4,12 +4,14 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Set;
 
 import net.sf.jsqlparser.expression.BooleanValue;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.PrimitiveValue;
 import net.sf.jsqlparser.expression.PrimitiveValue.InvalidPrimitive;
 import net.sf.jsqlparser.schema.Column;
+import net.sf.jsqlparser.schema.Table;
 import net.sf.jsqlparser.statement.select.AllColumns;
 import net.sf.jsqlparser.statement.select.AllTableColumns;
 import net.sf.jsqlparser.statement.select.PlainSelect;
@@ -62,7 +64,17 @@ public class ProjectOperator implements TupleIterator<Tuple>{
 		
 		for(SelectItem s: selectItems) {
 			if(s instanceof AllTableColumns ) {
-				return tuple;
+				
+				Table table = ((AllTableColumns) s).getTable();
+				
+				Set<Column> columns = tuple.fullTupleMap.keySet();
+				for(Column c: columns) {
+					Table temp = c.getTable();
+					if(table.getName().equals(temp.getName())) {
+						tempTuple.fullTupleMap.put(c, tuple.fullTupleMap.get(c));
+					}
+				}
+				
 			}else if(s instanceof AllColumns) {				
 				return tuple;
 			}else if(s instanceof SelectExpressionItem) {
@@ -121,6 +133,7 @@ public class ProjectOperator implements TupleIterator<Tuple>{
 		close();
 		return false;
 	}
-	
+			
+
 }
 
