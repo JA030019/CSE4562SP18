@@ -1,24 +1,13 @@
 package edu.buffalo.www.cse4562;
 
-
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.List;
 
-import net.sf.jsqlparser.expression.BinaryExpression;
 import net.sf.jsqlparser.expression.BooleanValue;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.PrimitiveValue;
-import net.sf.jsqlparser.expression.PrimitiveValue.InvalidPrimitive;
-import net.sf.jsqlparser.expression.operators.conditional.AndExpression;
 import net.sf.jsqlparser.schema.Column;
-import net.sf.jsqlparser.schema.Table;
-import net.sf.jsqlparser.statement.create.table.ColumnDefinition;
-import net.sf.jsqlparser.statement.create.table.CreateTable;
-import net.sf.jsqlparser.statement.select.FromItem;
-import net.sf.jsqlparser.statement.select.Join;
-import net.sf.jsqlparser.statement.select.PlainSelect;
 
 public class JoinOperator implements TupleIterator<Tuple>{
 
@@ -28,10 +17,17 @@ public class JoinOperator implements TupleIterator<Tuple>{
 	boolean isOpen = true;
 	boolean isNatural = false;
 	boolean isInner = true;
-	boolean isSimple = false;		
-    LinkedHashMap<Column,PrimitiveValue> tempFullTupleMap = new LinkedHashMap<Column,PrimitiveValue>(); 
-	Tuple tempTupleL = new Tuple(tempFullTupleMap);	
+	boolean isSimple = false;	
+	
+	ArrayList<Tuple> tupleListR = new ArrayList<Tuple>();
+	int count = 0;
+    	
+	LinkedHashMap<Column,PrimitiveValue> tempFullTupleMap1 = new LinkedHashMap<Column,PrimitiveValue>(); 
+	Tuple tempTupleL = new Tuple(tempFullTupleMap1);
 
+	LinkedHashMap<Column,PrimitiveValue> tempFullTupleMap = new LinkedHashMap<Column,PrimitiveValue>(); 
+	Tuple tempTupleR = new Tuple(tempFullTupleMap);	
+	
 	public JoinOperator(TupleIterator<Tuple> tl, TupleIterator<Tuple> tr, Expression expression) {
 	
 		this.tl = tl;
@@ -40,7 +36,7 @@ public class JoinOperator implements TupleIterator<Tuple>{
         open();
 			
 	}
-
+	
 	@Override
 	public void open() {
 		if(!isOpen) {
@@ -55,7 +51,7 @@ public class JoinOperator implements TupleIterator<Tuple>{
 	public void close() {
 		 if(isOpen) {
 			tl.close();
-			tr.close();
+			//tr.close();
 			isOpen = false;
 		}	
 		
@@ -64,40 +60,45 @@ public class JoinOperator implements TupleIterator<Tuple>{
 	@Override
 	public Tuple getNext() {
 		
-		/*LinkedHashMap<Column,PrimitiveValue> tempFullTupleMap = new LinkedHashMap<Column,PrimitiveValue>(); 
-		Tuple tempTupleL = new Tuple(tempFullTupleMap);	*/		
-		
 		LinkedHashMap<Column,PrimitiveValue> tempFullTupleMap2 = new LinkedHashMap<Column,PrimitiveValue>(); 
 		Tuple tupleCombine = new Tuple(tempFullTupleMap2);
 		
-		LinkedHashMap<Column,PrimitiveValue> tempFullTupleMap1 = new LinkedHashMap<Column,PrimitiveValue>(); 
-		Tuple tempTupleR = new Tuple(tempFullTupleMap1);		
-        
-		if(tr.hasNext()) {
-        	tempTupleR = tr.getNext();
-        }else {
-        	tempTupleR = null;
-        }		
+				
 		
+		//write in right tuple into tuplelist
+		if(tupleListR.isEmpty()) {
+			while(tr.hasNext()) {
+				
+				Tuple temp = tr.getNext();
+				if(temp != null) {
+				    tupleListR.add(temp);
+				}
+			
+		    }
+		}
+		
+		if(tempTupleR.fullTupleMap.isEmpty()) {
+			tempTupleR = tupleListR.get(0);
+		}else {
+			
+			count ++;
+			if(count < tupleListR.size()) {
+				tempTupleR = tupleListR.get(count);
+			}else {
+				tempTupleR = null;
+			}
+		}
+		
+		//inialize left tuple
 		if(tempTupleL.fullTupleMap.isEmpty()) {
 			tempTupleL = tl.getNext();
 		}
 		
-	
 		
-		/*if(al.isEmpty()) {
-			tempTupleL = tl.getNext();
-			al.add(tempTupleL);
-		}else {
-			tempTupleL = al.get(0);			
-		}*/		
-
-				
-		//1. right is null
 		if(tempTupleR == null) {
-	         
+	      
+			//update left tuple 
 			tempTupleL = tl.getNext();
-			
 			
 			//1.1 left, right is null, done
 			if(tempTupleL == null) {	
@@ -105,83 +106,86 @@ public class JoinOperator implements TupleIterator<Tuple>{
 				return null;
 				
 			}
-			/*//left is not null
-			al.remove(0);
-			al.add(tempTupleL);*/
 			
 			//1.2 left has new tuple, right is null
 			//reset right tableOperator
-			tr.close();
-			tr.open();
+			count = 0;
 			// read from the first tuple of right table
-			tempTupleR = tr.getNext();		
+			tempTupleR = tupleListR.get(count);		
 		}
 		
+		
 		//2. right table has new tuple
-		if (tempTupleR != null) {
-			
-		    //2.1 right not null, left is null
-			if(tempTupleL == null) {
-				return null;
-			}
-			
-			//2.2 right and left is not null
-			if(tempTupleL != null) {
-				
-				try {
-					tupleCombine = joinTuple(tempTupleL, tempTupleR, expression);
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-				
-				while(tupleCombine == null) {
-					   tempTupleR = tr.getNext();
-					   
-					   //2.2.1 if tuple from table r is not null
-					   if(tempTupleR != null) {
-							try {
-								tupleCombine = joinTuple( tempTupleL, tempTupleR, expression);
-							} catch (SQLException e) {
-								e.printStackTrace();
-							}
-					   }
-						//2.2.2 if tuple from table r is null
-						//reach the end of the r table
-					   else	if(tempTupleR == null) {
-						    
-						    //reset right tableOperator
-							tr.close();
-							tr.open();
-							// read from the first tuple of right table
-							tempTupleR = tr.getNext();
-						    
-							// move to next in the left table
-							tempTupleL = tl.getNext();
+				if (tempTupleR != null) {
+					
+				    //2.1 right not null, left is null
+					if(tempTupleL == null) {
+						return null;
+					}
+					
+					//2.2 right and left is not null
+					if(tempTupleL != null) {
+						
+						try {
+							tupleCombine = joinTuple(tempTupleL, tempTupleR, expression);
+						} catch (SQLException e) {
+							e.printStackTrace();
+						}
+						
+						while(tupleCombine == null) {
 							
-							//2.2.2.1 left is null, done
-							if(tempTupleL == null) {
-								return null;
-							}
-							//2.2.2.2 left is not null, combine
-							else if(tempTupleL != null) {
-								try {
-									
-									/*//left is not null
-									al.remove(0);
-									al.add(tempTupleL);*/
-									
-									tupleCombine = joinTuple( tempTupleL, tempTupleR, expression);
-								} catch (SQLException e) {
-									e.printStackTrace();
-								} 
-							}
-					   
-					   }
+								count ++;
+								if(count < tupleListR.size()) {
+									tempTupleR = tupleListR.get(count);
+								}else {
+									tempTupleR = null;
+								}
+							   
+							   //2.2.1 if tuple from table r is not null
+							   if(tempTupleR != null) {
+									try {
+										tupleCombine = joinTuple(tempTupleL, tempTupleR, expression);
+									} catch (SQLException e) {
+										e.printStackTrace();
+									}
+							   }
+								//2.2.2 if tuple from table r is null
+								//reach the end of the r table
+							   else	if(tempTupleR == null) {
 
-				}//end while
-			    return tupleCombine;	
-			}
-		}	
+								    
+								   
+									// move to next in the left table
+									//update left tuple 
+									tempTupleL = tl.getNext();
+									
+									//2.2.2.1 left is null, done
+									if(tempTupleL == null) {
+										return null;
+									}
+									
+									//reset right tableOperator
+									count = 0;
+									// read from the first tuple of right table
+									tempTupleR = tupleListR.get(count);	
+									
+									
+									//2.2.2.2 left is not null, combine
+									 if(tempTupleL != null) {
+										try {											
+											tupleCombine = joinTuple( tempTupleL, tempTupleR, expression);
+										} catch (SQLException e) {
+											e.printStackTrace();
+										} 
+									}
+							   
+							   }
+
+						}//end while
+					    return tupleCombine;	
+					}
+			}		
+		
 		return null;
 	}
 
@@ -195,18 +199,16 @@ public class JoinOperator implements TupleIterator<Tuple>{
 		}
 		
 		//tl.hasNext() -> false
-		if(tr.hasNext()) {
+		if(count < tupleListR.size()) {
 			return true;
-		}else {
-			tr.close();
 		}
 
 		//this.close();
 		return false;
 	
 	}
-	
-	public Tuple joinTuple(Tuple t1, Tuple t2, Expression expression) throws SQLException {
+
+   public Tuple joinTuple(Tuple t1, Tuple t2, Expression expression) throws SQLException {
 		
 		//if expression true return tuple else null
 		LinkedHashMap<Column,PrimitiveValue> outFullTupleMap = new LinkedHashMap<Column,PrimitiveValue>(); 
@@ -230,7 +232,4 @@ public class JoinOperator implements TupleIterator<Tuple>{
 		
 	}
 	
-	
-		
 }
-
