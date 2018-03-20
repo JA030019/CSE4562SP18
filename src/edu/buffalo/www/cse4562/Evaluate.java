@@ -26,11 +26,10 @@ public class Evaluate extends Eval  {
         
 		 return tuple.getTupleData(c.getTable(),c.getColumnName().toLowerCase());
 		 
-	}		
-	
-		
+	}			
 	
 }
+
 
 
 

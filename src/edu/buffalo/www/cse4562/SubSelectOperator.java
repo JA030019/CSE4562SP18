@@ -4,6 +4,7 @@ import java.util.LinkedHashMap;
 import java.util.Set;
 
 import net.sf.jsqlparser.expression.PrimitiveValue;
+import net.sf.jsqlparser.expression.PrimitiveValue.InvalidPrimitive;
 import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.schema.Table;
 
@@ -57,12 +58,15 @@ public class SubSelectOperator implements TupleIterator<Tuple>{
 			LinkedHashMap<Column,PrimitiveValue> fullTupleMaptemp = new LinkedHashMap<Column,PrimitiveValue>(); 
 			Tuple tupletemp = new Tuple(fullTupleMaptemp);
 			
-			Set<Column> columns = tuple.fullTupleMap.keySet();			
-			for(Column c: columns) {				
-				c.getTable().setName(subSelectAlias);		
-				tupletemp.fullTupleMap.put(c, tuple.fullTupleMap.get(c));
+			//Set<Column> columns = tuple.fullTupleMap.keySet();			
+			for(Column c: tuple.fullTupleMap.keySet()) {
+				
+				Table t1 = new Table(subSelectAlias);
+				Column c1 = new Column(t1, c.getColumnName().toLowerCase());
+				//c.getTable().setName(subSelectAlias);		
+				tupletemp.fullTupleMap.put(c1, tuple.fullTupleMap.get(c));
 			}
-			
+					
 			return tupletemp;
 			
 		}

@@ -5,7 +5,7 @@ public interface TupleIterator<Tuple> {
 	public void open();
 	public void close();
 	public Tuple getNext();
-    boolean hasNext();
+    boolean hasNext();	
 		
 }
 

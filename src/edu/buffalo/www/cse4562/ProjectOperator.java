@@ -8,6 +8,7 @@ import java.util.List;
 import net.sf.jsqlparser.expression.BooleanValue;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.PrimitiveValue;
+import net.sf.jsqlparser.expression.PrimitiveValue.InvalidPrimitive;
 import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.statement.select.AllColumns;
 import net.sf.jsqlparser.statement.select.AllTableColumns;
@@ -18,13 +19,13 @@ import net.sf.jsqlparser.statement.select.SelectItem;
 public class ProjectOperator implements TupleIterator<Tuple>{
 	
 	SelectOperator so;
-	List<SelectItem> selectItemList = new ArrayList<SelectItem>(); //SELECT A, B, C
+	List<SelectItem> selectItems = new ArrayList<SelectItem>(); //SELECT A, B, C
 	Evaluate evaluate;
 	boolean isOpen = true;
 	
-	public ProjectOperator( SelectOperator so, PlainSelect plainSelect) {
+	public ProjectOperator( SelectOperator so, List<SelectItem> selectItems) {
 		this.so = so;
-		this.selectItemList = plainSelect.getSelectItems();		
+		this.selectItems = selectItems;		
 		this.open();
 	}
 
@@ -48,6 +49,7 @@ public class ProjectOperator implements TupleIterator<Tuple>{
         LinkedHashMap<Column,PrimitiveValue> fullTupleMap = new  LinkedHashMap<Column,PrimitiveValue>(); 
 		Tuple tuple = new Tuple(fullTupleMap);				
 		tuple = so.getNext();//get tuple from selectoperator
+		
 		//System.out.println("projection from selection "+ tuple.fullTupleMap.size() +" "+ tuple.fullTupleMap.isEmpty());
 		if(tuple == null) {		
 			this.close();
@@ -58,7 +60,7 @@ public class ProjectOperator implements TupleIterator<Tuple>{
 		LinkedHashMap<Column,PrimitiveValue> fullTupleMaptemp = new LinkedHashMap<Column,PrimitiveValue>(); 
 		Tuple tempTuple = new Tuple(fullTupleMaptemp);		
 		
-		for(SelectItem s: selectItemList) {
+		for(SelectItem s: selectItems) {
 			if(s instanceof AllTableColumns ) {
 				return tuple;
 			}else if(s instanceof AllColumns) {				
@@ -66,10 +68,11 @@ public class ProjectOperator implements TupleIterator<Tuple>{
 			}else if(s instanceof SelectExpressionItem) {
 				Expression expression = ((SelectExpressionItem) s).getExpression();
 				
+				//System.out.println("project table name "+((Column)expression).getTable().getName());
+				
 				String alias = null;
 				if(((SelectExpressionItem) s).getAlias() != null) {
 					 alias = ((SelectExpressionItem) s).getAlias().toLowerCase();//projection alias name	
-					//System.out.println("alias "+ alias);
 				}																
 				
 				evaluate = new Evaluate(tuple);				
@@ -80,21 +83,31 @@ public class ProjectOperator implements TupleIterator<Tuple>{
 				    	else {				    		
 				    		 if(alias != null) {
 				    			 
-				    			/* System.out.println(alias);
-				    			 System.out.println(tuple.getTupleTable());
-				    			 System.out.println((PrimitiveValue)(evaluate).eval(expression));*/
-				    			 tempTuple.setValue(tuple.getTupleTable(),alias,(PrimitiveValue)(evaluate).eval(expression));
+				    			 
+				    			 tempTuple.setValue(((Column) expression).getTable(),alias,(PrimitiveValue)(evaluate).eval(expression));
+				    			// tempTuple.setValue(tuple.getTupleTable(),alias,(PrimitiveValue)(evaluate).eval(expression));
 				    		 }else {
-				    			 tempTuple.setValue(tuple.getTupleTable(),((Column) (expression)).getColumnName().toLowerCase(),(PrimitiveValue)(evaluate).eval(expression));
+				    			 
+				    			 tempTuple.setValue(((Column) expression).getTable(),((Column) (expression)).getColumnName().toLowerCase(),(PrimitiveValue)(evaluate).eval(expression));
 				    		  }
-						     }
+						     } 
 					} catch (SQLException e) {
 						e.printStackTrace();
 						return null;
 					}		
 			}
 				
-		}		
+		}	
+		
+		
+		/*try {
+			System.out.println("project");
+			tempTuple.printTuple();
+		} catch (InvalidPrimitive e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		*/
 		return tempTuple;
 	}
 
@@ -108,7 +121,6 @@ public class ProjectOperator implements TupleIterator<Tuple>{
 		close();
 		return false;
 	}
-			
-
+	
 }
 

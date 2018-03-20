@@ -1,31 +1,33 @@
 package edu.buffalo.www.cse4562;
 
 import java.lang.reflect.Array;
+import java.sql.SQLException;
 import java.util.*;
 import java.util.Map.Entry;
 
 import net.sf.jsqlparser.expression.DateValue;
 import net.sf.jsqlparser.expression.DoubleValue;
+import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.LongValue;
 import net.sf.jsqlparser.expression.NullValue;
 import net.sf.jsqlparser.expression.PrimitiveValue;
 import net.sf.jsqlparser.expression.PrimitiveValue.InvalidPrimitive;
 import net.sf.jsqlparser.expression.StringValue;
 import net.sf.jsqlparser.schema.Column;
+import net.sf.jsqlparser.schema.PrimitiveType;
 import net.sf.jsqlparser.schema.Table;
 
-public class Tuple {
-    
-	//LinkedHashMap<String,PrimitiveValue> tupleMap;
+public class Tuple {     
 	
-	//<Table name,<column name, value>>
+	 //<Table name,<column name, value>>
 	 LinkedHashMap<Column,PrimitiveValue> fullTupleMap;
 	
 	public Tuple(LinkedHashMap<Column,PrimitiveValue> fullTupleMap) {
 		this.fullTupleMap = fullTupleMap;			
+		
 	}
-
-	//override
+		
+	//Overload
 	//set the value of data in the tuple
 	public void setValue( Table table, String columnName, PrimitiveValue value) {
 		Column c = new Column(table, columnName);
@@ -59,7 +61,7 @@ public class Tuple {
 		
 	}		
 
-	  public void printTuple() throws InvalidPrimitive {
+    public void printTuple() throws InvalidPrimitive {
    	
 		  ArrayList<String> outTuple = new ArrayList<>();
 		  		 
@@ -90,18 +92,16 @@ public class Tuple {
 	    	}else {	    					
 			System.out.print(outTuple.get(j));
 			System.out.println();
-	    	  }
-			 
+	    	  }			 
 	    }
-}
+    }
 		
 	public PrimitiveValue getTupleData(Table table, String columnName) {
 		PrimitiveValue temp = null;
 		Column c = new Column(table, columnName);
 		temp = fullTupleMap.get(c);
 		return temp;
-	}
-    
+	}    
 	
 	public Table getTupleTable() {
 		
@@ -126,40 +126,25 @@ public class Tuple {
 		
 		return outTable.get(0);
 		
-	}
-    /*// another try???
-    @SuppressWarnings("unchecked")
-	public void printTuple(){
-    	
-    	ArrayList<PrimitiveValue> outTuple = new ArrayList<>();
-    	
-    	if(tuple == null) {
-    		System.out.println("null");
-    	}
-    	
-    	System.out.println("output tuple size " + tuple.size());
-		for(int i = 0; i< tuple.size();i++) {
-			
-			//Hashtable<String,PrimitiveValue> temp = (Hashtable<String, PrimitiveValue>) tuple.get(i);			
-			//Set<String> columnNames = temp.keySet();
-		    PrimitiveValue value = tuple.get(columnNames.toArray()[0]);					    					       
-		    outTuple.add(value);			       
-		}
-    	
-    	Set<String> columnNames = tuple.keySet();
+	}   
+	
+	
+	public Tuple setAlias(Tuple tuple, Table table) {
 		
-		System.out.println(columnNames.size());
-	   
-		for(String str: columnNames) {
-			outTuple.add(tuple.get(str));
-		};
-    		
-		for(int j = 0; j < outTuple.size(); j++) {	    	
-	    	if(j != 0 || j != outTuple.size()-1) {
-	    		System.out.print("|");
-	    	}
-	    	System.out.print(outTuple.get(j)); 
-	    }
-	}*/
+		String tableAlias = null;
+		tableAlias = table.getAlias();
+		
+		LinkedHashMap<Column,PrimitiveValue> fullTupleMaptemp = new LinkedHashMap<Column,PrimitiveValue>(); 
+		Tuple tupletemp = new Tuple(fullTupleMaptemp);
+		
+		Set<Column> columns = tuple.fullTupleMap.keySet();			
+		for(Column c: columns) {						
+			c.getTable().setName(tableAlias);		
+			tupletemp.fullTupleMap.put(c, tuple.fullTupleMap.get(c));
+		}
+		
+		return tupletemp;
+		
+	}
 	
 }

@@ -26,16 +26,15 @@ public class TableOperator implements TupleIterator<Tuple>{
 			
 	Table table;	    
 	CreateTable ct;
-	File file;
-	
-	public static BufferedReader reader = null;
+	File file;	
+	BufferedReader reader = null;
 	
 	public TableOperator(Table table) {
 		this.table = table;
-		String filepath= "data/"+ table.getName()+ ".dat";
+		String filepath= "data/"+ table.getName()+ ".dat"; 
+		//System.out.println("read "+table.getName());
 		this.file = new File(filepath);
 		this.ct = Main.tableMap.get(table.getName().toLowerCase());	
-		//File file = new File("data/[table.getName()].dat");
 		this.open();
 	}
 
@@ -52,7 +51,7 @@ public class TableOperator implements TupleIterator<Tuple>{
 
 	@Override
 	public void close() {
-	    //if (reader != null) {	    	
+	    if (reader != null) {	    	
 	        try {
 	        	reader.close();
 	        	reader = null;
@@ -61,13 +60,12 @@ public class TableOperator implements TupleIterator<Tuple>{
 	          e.printStackTrace();
 	        }
 	        
-	    //}
+	    }
     }
 
 	@Override
 	public Tuple getNext() {
 		
-		//Column column = new Column();
 		LinkedHashMap<Column,PrimitiveValue> fullTupleMap = new LinkedHashMap<Column,PrimitiveValue>(); 		
 		Tuple tuple = new Tuple(fullTupleMap);
 				
@@ -89,10 +87,7 @@ public class TableOperator implements TupleIterator<Tuple>{
 		}
 		
 		String[] columns = line.split("\\|");
-		
-		 
-		
-		
+				
 		List<ColumnDefinition> columnDefinitions = ct.getColumnDefinitions();
 		
 		for(int i = 0; i< columns.length ;i++) {
@@ -105,9 +100,13 @@ public class TableOperator implements TupleIterator<Tuple>{
 			case "char":
 			    tuple.setValue(table, columnName, new StringValue(columns[i]));break;
 			case "int":
-				// System.out.println("input tuple "+columnName + columns[i]);
 				tuple.setValue(table, columnName, new LongValue(Long.parseLong(columns[i])));
-				 //System.out.println("input tuple "+fullTupleMap.get(tableName).containsKey("a"));
+				break;
+			case "integer":
+				tuple.setValue(table, columnName, new LongValue(Long.parseLong(columns[i])));
+				break;
+			case "double":
+				tuple.setValue(table, columnName, new DoubleValue(Double.parseDouble(columns[i])));				 
 				break;
 			case "decimal":				 
 				tuple.setValue(table, columnName, new DoubleValue(Double.parseDouble(columns[i])));break;
@@ -115,9 +114,12 @@ public class TableOperator implements TupleIterator<Tuple>{
 				tuple.setValue(table,columnName, new DateValue(columns[i]));break;
 			default:
 				tuple.setValue(table, columnName, new NullValue());break;
-			}
-			      
+			}			      
 		}
+		
+		if(table.getAlias() != null){
+			tuple.setAlias(tuple, table);
+		}	     
 		
 		return tuple;
 		
@@ -127,7 +129,8 @@ public class TableOperator implements TupleIterator<Tuple>{
 	public boolean hasNext() {
 		
 		 if (reader == null) { 
-			 return false;}
+			 return false;
+			 }
 		 
 		 try {
 				  if (reader.ready()) {
@@ -137,13 +140,17 @@ public class TableOperator implements TupleIterator<Tuple>{
 				        return false;
 				  }
 	         } 
-		     catch (IOException e) {
+		 catch (IOException e) {
 				      e.printStackTrace();
 				      return false;
 				   } 			 
 	}
 
-	
+	public void reset() {
+		this.close();
+		this.open();
+	}
+
 }
 	
 
