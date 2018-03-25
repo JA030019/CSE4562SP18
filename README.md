@@ -7,8 +7,8 @@ checkpoint 0 finished on 2018.02.09
 checkpoint 1 finished on 2018.02.23
 <br>main task:  CREATE TABLE, SELECT, SUB SELECT
 
-checkpoint 2 
-<br>mian task: Natural JOIN, ORDER BY, LIMIT
+checkpoint 2 finished on 2018.03.20
+<br>main task: Natural JOIN, ORDER BY, LIMIT
 
 checkpoint 3
 
