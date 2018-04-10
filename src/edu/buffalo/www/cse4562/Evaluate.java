@@ -23,9 +23,8 @@ public class Evaluate extends Eval  {
 
 	@Override
 	public PrimitiveValue eval(Column c) throws SQLException {
-        
+        //
 		 return tuple.getTupleData(c.getTable(),c.getColumnName().toLowerCase());
-		 
 	}			
 	
 }
