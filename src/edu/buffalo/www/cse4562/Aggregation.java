@@ -314,10 +314,10 @@ public class Aggregation {
 			temp = t.hashCode();
 			break;*/
 		case DOUBLE:
-			temp1 = "LongValue";
+			temp1 = "DoubleValue";
 			break;
 		case LONG:
-			temp1 = "DoubleValue";				 
+			temp1 = "LongValue";				 
 			break;
 		/*case STRING:
 			temp = t.hashCode();
