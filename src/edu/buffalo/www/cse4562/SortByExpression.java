@@ -66,7 +66,7 @@ public class SortByExpression implements Comparator<Tuple>{
 			} catch (SQLException e1) {
 				e1.printStackTrace();
 			}break;
-		case LONG :			
+		case LONG :			   
 			 try {
 				help = (int)((evaluate1).eval(expression).toLong()-((evaluate2).eval(expression).toLong()));
 			   // System.out.println("tuple1: " + (evaluate1).eval(expression).toLong());

@@ -19,8 +19,8 @@ import net.sf.jsqlparser.schema.Table;
 
 public class Tuple {     
 	
-	 //<Table name,<column name, value>>
-	 LinkedHashMap<Column,PrimitiveValue> fullTupleMap;
+	//<Table name,<column name, value>>
+	LinkedHashMap<Column,PrimitiveValue> fullTupleMap;
 	
 	public Tuple(LinkedHashMap<Column,PrimitiveValue> fullTupleMap) {
 		this.fullTupleMap = fullTupleMap;			
@@ -42,7 +42,6 @@ public class Tuple {
 	public void setValue(Table table, String columnName, LongValue value) {		
 		Column c = new Column(table, columnName);
 		fullTupleMap.put(c, value);
-		//System.out.println("mapsize "+fullTupleMap.size());
 	}
 
 	public void setValue(Table table, String columnName, DoubleValue value) {		
@@ -59,7 +58,94 @@ public class Tuple {
 		Column c = new Column(table, columnName);
 		fullTupleMap.put(c, value);
 		
-	}		
+	}
+	
+	public void setValue(String columnName, PrimitiveValue value) {
+		Table table = new Table();
+		
+		Column c = new Column(table, columnName);
+		fullTupleMap.put(c, value);
+	}
+	
+	public void setValue(String columnName, StringValue value) {
+		Table table = new Table();
+		
+		Column c = new Column(table, columnName);
+		fullTupleMap.put(c, value);
+	}
+
+	public void setValue(String columnName, LongValue value) {		
+		Table table = new Table();
+		
+		Column c = new Column(table, columnName);
+		fullTupleMap.put(c, value);
+	}
+
+	public void setValue( String columnName, DoubleValue value) {		
+		Table table = new Table();
+		
+		Column c = new Column(table, columnName);
+		fullTupleMap.put(c, value);		
+	}
+
+	public void setValue(String columnName, DateValue value) {		
+		Table table = new Table();
+		
+		Column c = new Column(table, columnName);
+		fullTupleMap.put(c, value);
+	}
+
+	public void setValue(String columnName, NullValue value) {
+		Table table = new Table();
+		
+		Column c = new Column(table, columnName);
+		fullTupleMap.put(c, value);
+		
+	}
+	
+	public void setValue(PrimitiveValue value) {
+		Table table = new Table();
+		String columnName = null;
+		Column c = new Column(table, columnName);
+		fullTupleMap.put(c, value);
+	}
+	
+	public void setValue(StringValue value) {
+		Table table = new Table();
+		String columnName = null;
+		Column c = new Column(table, columnName);
+		fullTupleMap.put(c, value);
+	}
+
+	public void setValue(LongValue value) {		
+		Table table = new Table();
+		String columnName = null;
+		Column c = new Column(table, columnName);
+		fullTupleMap.put(c, value);
+	}
+
+	public void setValue(DoubleValue value) {		
+		Table table = new Table();
+		String columnName = null;
+		Column c = new Column(table, columnName);
+		fullTupleMap.put(c, value);		
+	}
+
+	public void setValue(DateValue value) {		
+		Table table = new Table();
+		String columnName = null;
+		Column c = new Column(table, columnName);
+		fullTupleMap.put(c, value);
+	}
+
+	public void setValue(NullValue value) {
+		Table table = new Table();
+		String columnName = null;
+		Column c = new Column(table, columnName);
+		fullTupleMap.put(c, value);
+		
+	}
+
 
     public void printTuple() throws InvalidPrimitive {
    	

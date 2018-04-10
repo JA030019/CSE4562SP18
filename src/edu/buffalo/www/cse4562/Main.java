@@ -17,6 +17,7 @@ import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.PrimitiveValue;
 import net.sf.jsqlparser.expression.PrimitiveValue.InvalidPrimitive;
 import net.sf.jsqlparser.expression.operators.conditional.AndExpression;
+import net.sf.jsqlparser.expression.operators.conditional.OrExpression;
 import net.sf.jsqlparser.parser.*;
 import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.schema.Table;
@@ -29,8 +30,7 @@ public class Main {
 	static String prompt = "$> "; // expected prompt
 	public static HashMap<String,CreateTable> tableMap = new HashMap<>();
 	
-	public static void main(String[] argsArray) throws Exception{			
-		
+	public static void main(String[] argsArray) throws Exception{					
 		
 		System.out.println(prompt);
 		System.out.flush();
@@ -38,11 +38,10 @@ public class Main {
 		Reader in = new InputStreamReader(System.in);		
 		CCJSqlParser parser = new CCJSqlParser(in);
 		Statement statement;
-		
-		//long startTime=System.currentTimeMillis(); //long endTime=System.
+
         while((statement = parser.Statement()) != null){     
         	
-        	
+        	//long startTime=System.currentTimeMillis(); //long endTime=System.
         	
 		     if(statement instanceof CreateTable) {				        		
 			      CreateTable ct = new CreateTable();
@@ -68,8 +67,8 @@ public class Main {
 		     // read for next query
              System.out.println(prompt);
              System.out.flush();
-            
-             
+           //  long endTime = System.currentTimeMillis(); 
+           //  System.out.println("Time = " + (endTime -startTime)); 	
         }
 	}
 	
@@ -79,53 +78,151 @@ public class Main {
 		SelectOperator so = null;
 		SubSelectOperator sub = null;
 		
-		JoinOperator jo = null;
-		ProjectOperator po = null;
+		TupleIterator<Tuple> jo = null;
+		
 		OrderByOperator oo = null;
 		LimitOperator lo = null;
 		
-		TupleIterator<Tuple> tr = null;
-		TupleIterator<Tuple> tl = null;
+        TupleIterator<Tuple> ap = null;
+		
+		TupleIterator<Tuple> trsel = null;
+		TupleIterator<Tuple> tlsel = null;
+		
+		TupleIterator<Tuple> trpro = null;
+		TupleIterator<Tuple> tlpro = null;
+		
 		
 		if(sb instanceof PlainSelect) {			        			
 			   PlainSelect plainSelect = (PlainSelect)sb;
-			  
-			   
+
 			   //optimizing
-			   Expression exp = plainSelect.getWhere();
-			   List<Join> joins = plainSelect.getJoins();		   
-			   Optimizer op = new Optimizer(); // for sigle column expression			  
+			   /*
+			   --------------------collecting information for optimizing----------------                                                                        
+			                                                                           */
+			   //get expression of selection for pushing down
+			   Expression expsel = plainSelect.getWhere();
 			   
-			   if(joins != null && exp != null) {				 
-					  ArrayList<Expression> expList = op.exprssionAnalyzer(exp);
-					  ArrayList<Expression> expld = new ArrayList<>();
-					  ArrayList<String> tableList1 = null;					  
+			   //check or expression right now no projection push down for the case of or expression
+			   boolean t = true;
+			   
+			   List<Join> joins = plainSelect.getJoins();
+			   
+			   //get expression of projection for pushing down
+			   //consider selection projection group by
+			   List<SelectItem> expProList = plainSelect.getSelectItems();	
+			   
+			   //get columns of groupby
+			   List<Column> columnRefList = plainSelect.getGroupByColumnReferences();		
+		       
+			   //not implemented having
+			   Expression expHaving = plainSelect.getHaving();
+			   /*
+			   ----------------------optimization-------------------------------------                                                                     
+	                                                                                 */
+			   Optimizer op = new Optimizer(columnRefList, expProList);
+			   
+			   
+			 /*  //test
+			   op.allBinarySplit(expsel);*/
+			   
+			   
+			   /*
+               -------------------optimization for projection push down---------------
+                                                                                     */
+			   //optimize projection (projection push down)
+			   //To be modified, when shall we choose projection push down			   
+			   //Get projection selectItemList and set alias to null (R.A, C.*, S.C)
+			   ArrayList<SelectItem> proList = op.setSelectItemAlias(expProList);
+			   
+			   //ProList -> empty means SELECT * FROM ... No need to push down
+			   if(!proList.isEmpty() && t) {
+				   //Get selection expressionList (R.A < S.C, R.B>3)
+				   ArrayList<Expression> selList = op.andExpAnalyzer(expsel);
+				   ArrayList<Expression> orList = new ArrayList<>();
+				   ArrayList<Expression> deleteList = new ArrayList<>();
+				   for(Expression exp: selList) {
+					   if(exp instanceof OrExpression) {
+						   orList.addAll(op.orExpAnalyzer(exp));
+						   deleteList.add(exp);
+					   }
+				   }
+				   
+				   if(!orList.isEmpty()) {
+					   selList.addAll(orList);
+					   selList.removeAll(deleteList);
+				   }
+				   
+				   //Split selection expression and add them into optSelList (R.A, S.C, R.B)		
+				   ArrayList<Expression> optSelList = new ArrayList<>();
+				   if(!selList.contains(null)) {
+					   for(Expression exp: selList) {
+					   optSelList.addAll(op.binarySplit(exp));
+				       }
+				   }
+				   
+				   //Add the column needed in selection into optProList for pushing down (R.A, C.*, S.C, R.B)
+				   ArrayList<SelectItem> optProList = op.combine(proList, optSelList,columnRefList);
+				   
+				   //write data into HashMap<tableName, list<SelectItem>>(attribute of optimize)
+				   op.optPro(optProList);
+			   }
+			   /* 
+			   -----------------------optimization for selection push down----------------------
+			                                                                                   */
+			   //optimize join using selection push down
+			   if(joins != null && expsel != null) {
+				      // R.A> S.C AND R.A >3 AND R.B < 2 AND S.C =3;
+					  ArrayList<Expression> expList = op.andExpAnalyzer(expsel);// R.A>S.C, R.A>3, R.B<2, S.C=3
+					  //ArrayList<Expression> expld = new ArrayList<>();
+					  ArrayList<Expression> expLs = new ArrayList<>();
+					  ArrayList<String> tableList1 = new ArrayList<>();	
+					  
 					  for(Expression exptemp : expList) {
-						  if(op.binaryAnalyzer(exptemp).size() == 1) {
-							   tableList1 = op.binaryAnalyzer(exptemp);  					 
-						       op.optelements.put(tableList1.get(0), exptemp);
+						  ArrayList<String> array = op.binaryAnalyzer(exptemp);					  
+						  if(array.size() == 1) { //fliter R.A > S.C
+							  
+							  //create tableList (R, S)
+							  if(!tableList1.contains(array.get(0))) {
+								  tableList1.add(array.get(0));
+							  }
+							  // add all single expressions to list for clustering
+							  expLs.add(exptemp);
+						      // op.selectelements.put(tableList1.get(0), exptemp);//Problems R.A>3 AND R.B<2 AND S.C=3
+							   
 						  } 
-						  else if(op.binaryAnalyzer(exptemp).size() == 2) {
-							   expld.add(exptemp);
+						  //find "equal expression"
+						  else if(array.size() == 2) {							   
+							   if(op.containsEqual(exptemp)) {
+							        //String combstr = array.get(0) + array.get(1);
+							        Combo combo = new Combo(array.get(0),array.get(1));
+								   //expld.add(exptemp);
+							        if(combo != null) {
+							        	op.hashJoinMap.put(combo, exptemp);
+							        }
+							        
+							   }
 						  }
 					  }
 					  
-					  //Combine double expression
-					  if(!expld.isEmpty()) {
-						  
-						  //expld.get(0)
-						  Expression opex = null;
-						  for(Expression extemp : expld) {
-							  opex = new AndExpression(opex, extemp);   
+					  //cluster expressions according to table name 
+					  //combine expressions with same table name
+					  //put combined expression and table name into hashmap
+					  for(String temp : tableList1) {
+						  ArrayList<Expression> tempList = new ArrayList<>();
+						  for(Expression exp : expLs) {
+							  if(temp.equals(op.binaryAnalyzer(exp).get(0))) {
+								  tempList.add(exp);
+							  }
 						  }
-						  						  
-						  opex = ((BinaryExpression) opex).getRightExpression();
-						  op.adex = opex;
-                   }
-					  
-				  }    
-			  //    Boolean b = (!op.optelements.isEmpty()) && (op.optelements != null);
-			   
+						  Expression tempexp = op.combineExpression(tempList);
+						  op.selectelements.put(temp, tempexp);
+					  }
+
+			   }    
+			 
+			  /*
+			   -------------------------parser query-------------------------------------------
+			                                                                                  */
 			   FromItem fromItem = plainSelect.getFromItem();			   
 			   if(fromItem instanceof SubSelect) {
 				   SelectBody subBody = ((SubSelect) fromItem).getSelectBody();		
@@ -139,17 +236,36 @@ public class Main {
 				   Table tablel = ((Table) fromItem);
 				   tol = new TableOperator(tablel);
 				   
-				   //optimizing for left table
-				   if((op.optelements.containsKey(tablel.getAlias())) && op.optelements != null) {
-						  
-						  tl = new SelectOperator(tol, op.optelements.get(tablel.getAlias()));  
-				   }else {
-						  
-						 // tl = new SelectOperator(tol,null);
-					      tl = tol;
-				   }    
+				   //record for table information in optimizer
+				   if(tablel.getAlias()!= null) {
+					   op.tableList.add(tablel.getAlias());
+				   }else if(tablel.getName() != null) {
+					   op.tableList.add(tablel.getName());
+				   }
 				   
-				  // System.out.println("left table "+tablel.getName());
+				   //optimizing for left table				   
+				   //projection push down				   
+				   if(!proList.isEmpty() && op.optProMap.containsKey(tablel.getAlias())) {					   
+					   tlpro = new ProjectOperator(tol,op.optProMap.get(tablel.getAlias()));					   
+				   }
+				   else if(!proList.isEmpty() && op.optProMap.containsKey(tablel.getName())) {
+					   tlpro = new ProjectOperator(tol,op.optProMap.get(tablel.getName()));
+				   }
+				   else {					   
+					   tlpro = tol;
+				   }
+				   
+				   //selection push down
+				   if((op.selectelements.containsKey(tablel.getAlias())) && op.selectelements != null) {						  
+						  tlsel = new SelectOperator(tlpro, op.selectelements.get(tablel.getAlias()));  
+				   }
+				   else if((op.selectelements.containsKey(tablel.getName())) && op.selectelements != null) {
+					      tlsel = new SelectOperator(tlpro, op.selectelements.get(tablel.getName()));
+				   }
+				   else {						  						 
+					      tlsel = tlpro;
+				   }    
+
 			   }else if(fromItem instanceof SubJoin) {
 				    System.out.println("subjoin");
 			   }
@@ -166,7 +282,7 @@ public class Main {
 				  int count = 0;
 
 				  for(Join join : joins) {
-					  count ++;	
+					  count ++;	//count for join first time join with table
 					  isSimple = join.isSimple();
 					  isNatural = join.isInner();
 					  isInner = join.isInner();
@@ -186,22 +302,38 @@ public class Main {
 					  }else if(fiJoin instanceof Table) {					  
 						  
 						  Table tabler = ((Table) fiJoin);
-
-						  
-						  //System.out.println("right table" + tabler.getName());
 						  TableOperator tor = new TableOperator(tabler);
 						  
+						  //record for table information in optimizer
+						  if(tabler.getAlias()!= null) {
+							   op.tableList.add(tabler.getAlias());
+						   }else if(tabler.getName() != null) {
+							   op.tableList.add(tabler.getName());
+						   }
+						  
 						  //optimizing for right table
-						  if((op.optelements.containsKey(tabler.getAlias()))&& op.optelements != null) {
-							  
-							  tr = new SelectOperator(tor, op.optelements.get(tabler.getAlias()));  
-						  }else {
-							  
-							  //tr = new SelectOperator(tor,null);
-							  tr = tor;
+						  //projection push down
+						  if(!proList.isEmpty() && op.optProMap.containsKey(tabler.getAlias())) {							   
+							   trpro = new ProjectOperator(tor,op.optProMap.get(tabler.getAlias()));						   
+						   }
+						  else if(!proList.isEmpty() && op.optProMap.containsKey(tabler.getName())) {
+							   trpro = new ProjectOperator(tor,op.optProMap.get(tabler.getName()));
+						  }
+						  else {							   
+							   trpro = tor;
+						   }						  
+						  
+						  //selection push down
+						  if((op.selectelements.containsKey(tabler.getAlias()))&& op.selectelements != null) {							  
+							  trsel = new SelectOperator(trpro, op.selectelements.get(tabler.getAlias()));  
+						  }
+						  else if((op.selectelements.containsKey(tabler.getName()))&& op.selectelements != null) {
+							  trsel = new SelectOperator(trpro, op.selectelements.get(tabler.getName())); 
+						  }
+						  else {							  
+							  trsel = trpro;
 						  }
 						  
-
 						    //Case 1 cross product
 							if(isSimple) {
 								Expression expression = plainSelect.getWhere();
@@ -212,7 +344,6 @@ public class Main {
 								//	System.out.println("cross product");
 									
 									if(count == 1){
-										
 										jo = new JoinOperator(tol, tor, expression);
 									}else {
 									    jo = new JoinOperator(jo, tor, expression);
@@ -221,34 +352,55 @@ public class Main {
 															
 								//case 1.2 cross product -> join
 								if(expression != null) {
-									//System.out.println("check if we can turn it into join");								
-									//Boolean b = (!op.optelements.isEmpty()) && (op.optelements != null);
 									if(count == 1){									
-										if(sub == null) {
-											
-										//	if(b) {//optimize
-										//		jo = new JoinOperator(tl, tr, op.adex); 
-										//	}else {// no optimize
-												jo = new JoinOperator(tl, tr, expression);
-										//	}
-											
-										}else {
-											
-										//	if(b) {
-										//		jo = new JoinOperator(sub, tr, op.adex);
-										//	}else {
-												jo = new JoinOperator(sub, tr, expression);
-										//	}
-											
+										if(sub == null) {											
+
+											    //optimization join --> hash join
+											    if(!op.hashJoinMap.isEmpty()) {
+											    	Set<Combo> comboSet = op.hashJoinMap.keySet();
+											    	for(Combo c: comboSet) {
+											    		if(c.comboList.contains(tol.table.getAlias()) && c.comboList.contains(tor.table.getAlias())) {
+											    			jo = new HashJoinOperator(tlsel,trsel,op.hashJoinMap.get(c));
+											    			break;
+											    		}
+											    		
+											    		if(c.comboList.contains(tol.table.getName()) && c.comboList.contains(tor.table.getName())) {
+											    			jo = new HashJoinOperator(tlsel,trsel,op.hashJoinMap.get(c));
+											    			break;
+											    		}
+											    	}
+											    }
+											    //no optimization for join 
+											    else {
+											    	jo = new JoinOperator(tlsel, trsel, expression);
+											    }
+					
+										}else {	
+												jo = new JoinOperator(sub, trsel, expression);											
 										}										
-									}else {
-										
-									//	if(b) {
-									//		 jo = new JoinOperator(jo, tr, op.adex);
-									//	}else {
-											 jo = new JoinOperator(jo, tr, expression);
-									//	}
-									   
+									}else {	
+										   
+										//optimization join --> hash join
+									    if(!op.hashJoinMap.isEmpty()) {
+									    	Set<Combo> comboSet = op.hashJoinMap.keySet();
+									    	for(Combo c: comboSet) {
+									    		for(String str: op.tableList) {				    			
+									    			if(c.comboList.contains(str) && c.comboList.contains(tor.table.getAlias())) {
+										    			jo = new HashJoinOperator(jo,trsel,op.hashJoinMap.get(c));
+										    			break;
+										    		}
+									    			
+									    			if(c.comboList.contains(str) && c.comboList.contains(tor.table.getName())) {
+									    				jo = new HashJoinOperator(jo,trsel,op.hashJoinMap.get(c));
+									    				break;
+									    			}
+									    		}
+									    	}
+									    }
+										//no optimizaiton for join
+									    else {
+									    	jo = new JoinOperator(jo, trsel, expression);
+									    }	 									   
 									}
 								}							
 							}
@@ -269,7 +421,7 @@ public class Main {
               }
   
               //To be modified cuz of pushing down selection 
-			  //paser selection(WHERE R.B = 0) SELECT R.A FROM R WHERE R.B = 0;
+			  //parser selection(WHERE R.B = 0) SELECT R.A FROM R WHERE R.B = 0;
 			  Expression expWhere = plainSelect.getWhere();
 			  
 			  //?????????
@@ -290,25 +442,40 @@ public class Main {
 				  so = new SelectOperator(tol, expWhere);
 			  }
 			  
-              
-			  //To be modified cuz of pushing down projection in future
-			  //paser projection(SELECT R.A, R.B, R.C) SELECT R.A, R.B, R.C FROM R WHERE R.B = 0;
-			  List<SelectItem> selectItems = plainSelect.getSelectItems();
-			  po = new ProjectOperator(so, selectItems);
 			  
-			  //paser OrderBy(ORDERBY R.C, R.A DESC, R.B) SELECT R.A FROM R WHERE R.B = 0 ORDERBY R.C, R.A DESC, R.B;
+			  /*
+			   ------------------------------------Aggregatiion and Projection------------------------------------ 
+			  */
+			  
+			  //case1 no grouby + no function --> projection
+			  
+			  if(!op.hasFunc && !op.hasGroupby) {
+				  //parser projection(SELECT R.A, R.B, R.C) SELECT R.A, R.B, R.C FROM R WHERE R.B = 0;
+				  ap = new ProjectOperator(so, expProList);
+			  }
+			  
+			  //case2 no groupby + function
+			  //case3  groupby + no function
+			  //case4 groupby function
+			  else{
+				  
+				  ap = new AggregationOperator(so,expHaving, columnRefList, expProList, op); 
+			  } 
+  
+			  /*
+			   ------------------------------------Orderby and limit ----------------------------------------------- 
+			  */
+			  
+			  //parser OrderBy(ORDERBY R.C, R.A DESC, R.B) SELECT R.A FROM R WHERE R.B = 0 ORDERBY R.C, R.A DESC, R.B;
 			  List<OrderByElement> orderbyElements = plainSelect.getOrderByElements();
-			  oo = new OrderByOperator(po, orderbyElements);
+			  oo = new OrderByOperator(ap, orderbyElements);
 			  
-			  //paser Limit(LIMIT 3) SELECT R.A FROM R WHERE R.B = 0 ORDERBY R.C, R.A DESC, R.B LIMIT 3;
+			  //parser Limit(LIMIT 3) SELECT R.A FROM R WHERE R.B = 0 ORDERBY R.C, R.A DESC, R.B LIMIT 3;
 			  Limit limit = plainSelect.getLimit();
 			  lo = new LimitOperator(oo, limit);
-			  
-             /* //For checkpoint 3
-			  Expression expHaving = plainSelect.getHaving();
-			  List<Column> columnRef = plainSelect.getGroupByColumnReferences();
-			  
-			  Distinct distinct = plainSelect.getDistinct();*/
+
+
+			 // Distinct distinct = plainSelect.getDistinct();
 			  			  	
 		   }else if(sb instanceof Union) {
 		            System.out.println("Union");					            		            
@@ -320,9 +487,7 @@ public class Main {
 		return lo;
 		
 	}   
-	
-	
-    
+  
 }
 
 

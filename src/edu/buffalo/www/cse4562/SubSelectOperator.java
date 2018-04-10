@@ -62,7 +62,8 @@ public class SubSelectOperator implements TupleIterator<Tuple>{
 			for(Column c: tuple.fullTupleMap.keySet()) {
 				
 				Table t1 = new Table(subSelectAlias);
-				Column c1 = new Column(t1, c.getColumnName().toLowerCase());
+				//Column c1 = new Column(t1, c.getColumnName().toLowerCase());
+				Column c1 = new Column(t1, c.getColumnName());
 				//c.getTable().setName(subSelectAlias);		
 				tupletemp.fullTupleMap.put(c1, tuple.fullTupleMap.get(c));
 			}

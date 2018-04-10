@@ -92,7 +92,7 @@ public class TableOperator implements TupleIterator<Tuple>{
 		
 		for(int i = 0; i< columns.length ;i++) {
 			String dataType = columnDefinitions.get(i).getColDataType().getDataType().toLowerCase();
-			String columnName = columnDefinitions.get(i).getColumnName().toLowerCase();
+			String columnName = columnDefinitions.get(i).getColumnName();
 			
 			switch(dataType){
 			case "string" :
@@ -133,12 +133,12 @@ public class TableOperator implements TupleIterator<Tuple>{
 			 }
 		 
 		 try {
-				  if (reader.ready()) {
-				        return true;
-				  } else {
-					  reader.close();
-				        return false;
-				  }
+			 if (reader.ready()) {
+			        return true;
+			  } else {
+				  reader.close();
+			        return false;
+			  }  
 	         } 
 		 catch (IOException e) {
 				      e.printStackTrace();

@@ -63,8 +63,7 @@ public class JoinOperator implements TupleIterator<Tuple>{
 		LinkedHashMap<Column,PrimitiveValue> tempFullTupleMap2 = new LinkedHashMap<Column,PrimitiveValue>(); 
 		Tuple tupleCombine = new Tuple(tempFullTupleMap2);
 		
-				
-		
+	
 		//write in right tuple into tuplelist
 		if(tupleListR.isEmpty()) {
 			while(tr.hasNext()) {
@@ -77,10 +76,10 @@ public class JoinOperator implements TupleIterator<Tuple>{
 		    }
 		}
 		
+		//inialize right tuple
 		if(tempTupleR.fullTupleMap.isEmpty()) {
 			tempTupleR = tupleListR.get(0);
-		}else {
-			
+		}else {			
 			count ++;
 			if(count < tupleListR.size()) {
 				tempTupleR = tupleListR.get(count);
@@ -94,7 +93,7 @@ public class JoinOperator implements TupleIterator<Tuple>{
 			tempTupleL = tl.getNext();
 		}
 		
-		
+		//Case 1
 		if(tempTupleR == null) {
 	      
 			//update left tuple 
@@ -116,75 +115,75 @@ public class JoinOperator implements TupleIterator<Tuple>{
 		
 		
 		//2. right table has new tuple
-				if (tempTupleR != null) {
+		if (tempTupleR != null) {
+			
+		    //2.1 right not null, left is null
+			if(tempTupleL == null) {
+				return null;
+			}
+			
+			//2.2 right and left is not null
+			if(tempTupleL != null) {
+				
+				try {
+					tupleCombine = joinTuple(tempTupleL, tempTupleR, expression);
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+				
+				while(tupleCombine == null) {
 					
-				    //2.1 right not null, left is null
-					if(tempTupleL == null) {
-						return null;
-					}
-					
-					//2.2 right and left is not null
-					if(tempTupleL != null) {
-						
-						try {
-							tupleCombine = joinTuple(tempTupleL, tempTupleR, expression);
-						} catch (SQLException e) {
-							e.printStackTrace();
+						count ++;
+						if(count < tupleListR.size()) {
+							tempTupleR = tupleListR.get(count);
+						}else {
+							tempTupleR = null;
 						}
-						
-						while(tupleCombine == null) {
+					   
+					   //2.2.1 if tuple from table r is not null
+					   if(tempTupleR != null) {
+							try {
+								tupleCombine = joinTuple(tempTupleL, tempTupleR, expression);
+							} catch (SQLException e) {
+								e.printStackTrace();
+							}
+					   }
+						//2.2.2 if tuple from table r is null
+						//reach the end of the r table
+					   else	if(tempTupleR == null) {
+
+						    
+						   
+							// move to next in the left table
+							//update left tuple 
+							tempTupleL = tl.getNext();
 							
-								count ++;
-								if(count < tupleListR.size()) {
-									tempTupleR = tupleListR.get(count);
-								}else {
-									tempTupleR = null;
-								}
-							   
-							   //2.2.1 if tuple from table r is not null
-							   if(tempTupleR != null) {
-									try {
-										tupleCombine = joinTuple(tempTupleL, tempTupleR, expression);
-									} catch (SQLException e) {
-										e.printStackTrace();
-									}
-							   }
-								//2.2.2 if tuple from table r is null
-								//reach the end of the r table
-							   else	if(tempTupleR == null) {
+							//2.2.2.1 left is null, done
+							if(tempTupleL == null) {
+								return null;
+							}
+							
+							//reset right tableOperator
+							count = 0;
+							// read from the first tuple of right table
+							tempTupleR = tupleListR.get(count);	
+							
+							
+							//2.2.2.2 left is not null, combine
+							 if(tempTupleL != null) {
+								try {											
+									tupleCombine = joinTuple( tempTupleL, tempTupleR, expression);
+								} catch (SQLException e) {
+									e.printStackTrace();
+								} 
+							}
+					   
+					   }
 
-								    
-								   
-									// move to next in the left table
-									//update left tuple 
-									tempTupleL = tl.getNext();
-									
-									//2.2.2.1 left is null, done
-									if(tempTupleL == null) {
-										return null;
-									}
-									
-									//reset right tableOperator
-									count = 0;
-									// read from the first tuple of right table
-									tempTupleR = tupleListR.get(count);	
-									
-									
-									//2.2.2.2 left is not null, combine
-									 if(tempTupleL != null) {
-										try {											
-											tupleCombine = joinTuple( tempTupleL, tempTupleR, expression);
-										} catch (SQLException e) {
-											e.printStackTrace();
-										} 
-									}
-							   
-							   }
-
-						}//end while
-					    return tupleCombine;	
-					}
-			}		
+				}//end while
+			    return tupleCombine;	
+			}
+	}				
 		
 		return null;
 	}

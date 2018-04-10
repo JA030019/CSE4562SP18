@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Hashtable;
 
 import net.sf.jsqlparser.eval.Eval;
+import net.sf.jsqlparser.expression.BooleanValue;
 import net.sf.jsqlparser.expression.DateValue;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.Function;
@@ -23,8 +24,10 @@ public class Evaluate extends Eval  {
 
 	@Override
 	public PrimitiveValue eval(Column c) throws SQLException {
-        //
-		 return tuple.getTupleData(c.getTable(),c.getColumnName().toLowerCase());
-	}			
+        
+		 return tuple.getTupleData(c.getTable(),c.getColumnName());
+		 
+	}
+	
 	
 }
