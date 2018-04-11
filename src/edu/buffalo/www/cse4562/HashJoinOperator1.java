@@ -16,9 +16,8 @@ import net.sf.jsqlparser.expression.PrimitiveValue;
 import net.sf.jsqlparser.expression.StringValue;
 import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.schema.PrimitiveType;
-import net.sf.jsqlparser.schema.Table;
 
-public class HashJoinOperator2 implements TupleIterator<Tuple>{
+public class HashJoinOperator1 implements TupleIterator<Tuple>{
 
 	TupleIterator<Tuple> tl;
 	TupleIterator<Tuple> tr;
@@ -26,17 +25,15 @@ public class HashJoinOperator2 implements TupleIterator<Tuple>{
 	boolean isOpen = true;
 	
 	ArrayList<Tuple> tupleListR = new ArrayList<Tuple>();// store all tuples of right table
-	
-	ArrayList<Tuple> tupleListL = new ArrayList<Tuple>();// store all tuples of left table
-	int countL = 0;
-	
-	//LinkedHashMap<Column,PrimitiveValue> tempFullTupleMap5 = new LinkedHashMap<Column,PrimitiveValue>(); 
-	//Tuple tempTupleL = new Tuple(tempFullTupleMap5);	
-
+    
 	ArrayList<Tuple> tupleHashList = new ArrayList<Tuple>();
 	int count = 0;// flag the position of tuple in the tupleHashList
 	
 	HashMap<Integer, ArrayList<Tuple>> hashcodeMap = new HashMap<>();
+	
+	//left table read in 
+	ArrayList<Tuple> tupleListL = new ArrayList<Tuple>();// store all the tuple of the left table
+	int counterl = 0;// flag the position of tuple from the left table
 	
 	LinkedHashMap<Column,PrimitiveValue> tempFullTupleMap1 = new LinkedHashMap<Column,PrimitiveValue>(); 
 	Tuple tempTupleL = new Tuple(tempFullTupleMap1);
@@ -47,18 +44,23 @@ public class HashJoinOperator2 implements TupleIterator<Tuple>{
 	LinkedHashMap<Column,PrimitiveValue> tempFullTupleMap = new LinkedHashMap<Column,PrimitiveValue>(); 
 	Tuple tempTupleR = new Tuple(tempFullTupleMap);	
 	
+	
 	LinkedHashMap<Column,PrimitiveValue> tempFullTupleMap3 = new LinkedHashMap<Column,PrimitiveValue>(); 
-	Tuple temp = new Tuple(tempFullTupleMap3);	
+	Tuple temp = new Tuple(tempFullTupleMap3);
 	
-	Column targetColumn = null;
+	/*//temp to get from left table
+	LinkedHashMap<Column,PrimitiveValue> tempFullTupleMap4 = new LinkedHashMap<Column,PrimitiveValue>(); 
+	Tuple temp1 = new Tuple(tempFullTupleMap4);*/
 	
-	public HashJoinOperator2 (TupleIterator<Tuple> tl, TupleIterator<Tuple> tr, Expression expression) {
+	public HashJoinOperator1(TupleIterator<Tuple> tl, TupleIterator<Tuple> tr, Expression expression) {
 	
 		this.tl = tl;
         this.tr = tr;
         this.expression = expression;
-        open();			
-	}	
+        open();
+			
+	}
+	
 	
 	@Override
 	public void open() {
@@ -73,99 +75,106 @@ public class HashJoinOperator2 implements TupleIterator<Tuple>{
 	@Override
 	public void close() {
 		 if(isOpen) {
-			//tl.close();
+			tl.close();
 			//tr.close();
 			isOpen = false;
-		}			
+		}	
+		
 	}
 
 	@Override
 	public Tuple getNext() {
 
 		LinkedHashMap<Column,PrimitiveValue> tempFullTupleMap2 = new LinkedHashMap<Column,PrimitiveValue>(); 
-		Tuple tupleCombine = new Tuple(tempFullTupleMap2);			
+		Tuple tupleCombine = new Tuple(tempFullTupleMap2);		
+		
+		ArrayList<Integer> hashList = new ArrayList<>();		
 		
 		//get columns
 		ArrayList<Column> columnList =  expressionAnalyzer(expression);
 			
 		//write in right tuple into tuplelist
 		//calculate hashcode for targeted column and build hashcodemap<hashcode, list<tuple>>
-		if(hashcodeMap.isEmpty()) {
-			long startTime=System.currentTimeMillis(); //long endTime=System.
-			while(tr.hasNext()) {
-				Tuple tuple = tr.getNext();
-				if(tuple != null) {
-					
-					//get targetColumn for join (R.A)
-					if(targetColumn == null) {
-						for(Column c: columnList) {
-							if(tuple.fullTupleMap.containsKey(c)) {
-								targetColumn = c;
-								break;
-							}
-					    }
-					}
-					
-					//get hashcode and build hashcodeMap
-					int hashCode = hashCodeCalculator(tuple.fullTupleMap.get(targetColumn));
-					if(!hashcodeMap.containsKey(hashCode)) {
-						ArrayList<Tuple> atmp = new ArrayList<Tuple>();
-						atmp.add(tuple);
-						hashcodeMap.put(hashCode, atmp);
-						
-					}else {						
-						ArrayList<Tuple> atmp = hashcodeMap.get(hashCode);
-						atmp.add(tuple);
-						hashcodeMap.put(hashCode, atmp);						
-					}
-				}
-			}
-			
-			 long endTime = System.currentTimeMillis(); 
-             System.out.println("Time = " + (endTime -startTime)); 
-		}
-
-		//write in left tuple into tuplelist
-		if(tupleListL.isEmpty()) {
-			while(tl.hasNext()) {				
-				Tuple temp = tl.getNext();
+		if(tupleListR.isEmpty()) {
+			while(tr.hasNext()) {				
+				Tuple temp = tr.getNext();
 				if(temp != null) {
-				    tupleListL.add(temp);
+					for(Column c: columnList) {
+						if(temp.fullTupleMap.containsKey(c)) {
+							int hashCode = hashCodeCalculator(temp.fullTupleMap.get(c));
+							if(!hashList.contains(hashCode)) {
+								hashList.add(hashCode);
+							}
+						}
+					}
+		
+				    tupleListR.add(temp);
 				}			
 		    }
-		}										
+			
+			for(int t: hashList) {
+				ArrayList<Tuple> tupleList = new ArrayList<>();// store tuple according to hashcode
+				for(Column c: columnList) {
+					for(Tuple tu: tupleListR) {
+						if(tu.fullTupleMap.containsKey(c)) {
+							if(t == hashCodeCalculator(tu.fullTupleMap.get(c))) {
+								tupleList.add(tu);
+							}
+						}
+					}
+				}
+				hashcodeMap.put(t, tupleList);
+			}			
+			//tupleListR.removeAll(columnList);//how to save memory and delete tupleListR
+		}	
 		
-		columnList.remove(targetColumn);
-		
-		//inialize left tuple and get corresponding hashcode (first time)		
-		if(tempTupleL.fullTupleMap.isEmpty()) {
-			tempTupleL = tupleListL.get(0);
-			if(tempTupleL != null) {				
-				 hashcodeL = hashCodeCalculator(tempTupleL.fullTupleMap.get(columnList.get(0)));							
+		//read in the whole table from left table
+		if(tupleListL.isEmpty()) {
+			while(tl.hasNext()) {
+				Tuple temp = tl.getNext();
+				if(temp != null) {
+					tupleListL.add(temp);
+				}
 			}
 		}
+		
+		//inialize left tuple and get corresponding hashcode (first time)
+		if(tempTupleL.fullTupleMap.isEmpty()) {
+			tempTupleL = tupleListL.get(counterl);
+			counterl ++;
+			if(tempTupleL != null) {
+				for(Column c: columnList) {
+					if(tempTupleL.fullTupleMap.containsKey(c)) {
+						 hashcodeL = hashCodeCalculator(tempTupleL.fullTupleMap.get(c));		
+					}
+			    }
+			}
+		}		
 		
 		//HashJoin
 		while(!hashcodeMap.containsKey(hashcodeL)) {
-            
-			//update left tuple 
-			countL ++;
-			if(countL < tupleListL.size()) {
-				tempTupleL = tupleListL.get(countL);
+			//update tuple from left table
+			if(counterl < tupleListL.size()) {
+				 tempTupleL = tupleListL.get(counterl);
+                 counterl ++;
 			}else {
-				tempTupleL = null;
+				return null;
 			}
-			
-            if(tempTupleL == null) {
+ 
+            /*if(tempTupleL == null) {
             	return null;
-            }           
-
-		     hashcodeL = hashCodeCalculator(tempTupleL.fullTupleMap.get(columnList.get(0)));		
+            } */          
+			for(Column c: columnList) {
+				if(tempTupleL.fullTupleMap.containsKey(c)) {
+					 hashcodeL = hashCodeCalculator(tempTupleL.fullTupleMap.get(c));		
+				}
+			}
 		}
 		
 		if(hashcodeMap.containsKey(hashcodeL)) {
 			tupleHashList = hashcodeMap.get(hashcodeL);
 			if(!tupleHashList.isEmpty() && tupleHashList != null) {	
+				
 				//update tuple to be joined from the hashtuplelist
 				if(count < tupleHashList.size()) {
 					 temp = tupleHashList.get(count);					
@@ -182,21 +191,26 @@ public class HashJoinOperator2 implements TupleIterator<Tuple>{
 
 				if(temp == null) {
 					
-					//update left tuple 
-					countL ++;
-					if(countL < tupleListL.size()) {
-						tempTupleL = tupleListL.get(countL);
+					//update tuple from left table
+					if(counterl < tupleListL.size()) {
+						 tempTupleL = tupleListL.get(counterl);
+		                 counterl ++;
 					}else {
-						tempTupleL = null;
+						return null;
 					}
 					
+					/*tempTupleL = tl.getNext();
 					if(tempTupleL == null) {
 		            	return null;
-		            }
+		            }*/
 					
 					count = 0;
 					
-				    hashcodeL = hashCodeCalculator(tempTupleL.fullTupleMap.get(columnList.get(0)));		
+					for(Column c: columnList) {
+						if(tempTupleL.fullTupleMap.containsKey(c)) {
+							 hashcodeL = hashCodeCalculator(tempTupleL.fullTupleMap.get(c));		
+						}
+					}
 					
 					return this.getNext();
 				}
@@ -208,16 +222,22 @@ public class HashJoinOperator2 implements TupleIterator<Tuple>{
 	@Override
 	public boolean hasNext() {
 		
-		if(countL == 0 || countL < tupleListL.size()) {
+		/*if(tl.hasNext()) {
 			return true;
-		}		
+		}else {
+			tl.close();
+		}*/
+		
+		if(counterl == 0 || counterl < tupleListL.size()) {
+			return true;
+		}
 		
 		if(tempTupleL == null) {
 			return false;
 		}
 		
 		//tl.hasNext() -> false
-		if(countL == tupleListL.size() && count < tupleHashList.size()) {
+		if( counterl == tupleListL.size() && count < tupleHashList.size()) {
 			return true;
 		}
 
@@ -235,7 +255,7 @@ public class HashJoinOperator2 implements TupleIterator<Tuple>{
 		return outTuple;		
 	}
 
-   public ArrayList<Column> expressionAnalyzer(Expression expression){
+    public ArrayList<Column> expressionAnalyzer(Expression expression){
 		
 		ArrayList<Column> columnList = new ArrayList<Column>();
 		if(expression instanceof BinaryExpression) {

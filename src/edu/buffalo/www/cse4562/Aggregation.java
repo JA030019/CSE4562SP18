@@ -206,7 +206,7 @@ public class Aggregation {
 		//tempvalue
 		DoubleValue p = new DoubleValue(0);
 		
-        Double d = (double) 0;
+        Double d = (double) 0.0;
 		
 			for(Tuple tp: tupleList) {
 				Evaluate ev = new Evaluate(tp);

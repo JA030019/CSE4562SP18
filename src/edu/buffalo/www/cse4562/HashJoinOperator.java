@@ -118,16 +118,16 @@ public class HashJoinOperator implements TupleIterator<Tuple>{
 			}
 		}		
 		
-		
+		columnList.remove(targetColumn);
 		//inialize left tuple and get corresponding hashcode (first time)		
 		if(tempTupleL.fullTupleMap.isEmpty()) {
 			tempTupleL = tl.getNext();
 			if(tempTupleL != null) {
-				for(Column c: columnList) {
-					if(tempTupleL.fullTupleMap.containsKey(c)) {
-						 hashcodeL = hashCodeCalculator(tempTupleL.fullTupleMap.get(c));		
-					}
-			    }
+				//for(Column c: columnList) {
+					//if(tempTupleL.fullTupleMap.containsKey(c)) {
+						 hashcodeL = hashCodeCalculator(tempTupleL.fullTupleMap.get(columnList.get(0)));		
+					//}
+			   // }
 			}
 		}
 		
@@ -137,11 +137,11 @@ public class HashJoinOperator implements TupleIterator<Tuple>{
             if(tempTupleL == null) {
             	return null;
             }           
-			for(Column c: columnList) {
-				if(tempTupleL.fullTupleMap.containsKey(c)) {
-					 hashcodeL = hashCodeCalculator(tempTupleL.fullTupleMap.get(c));		
-				}
-			}
+			//for(Column c: columnList) {
+			//	if(tempTupleL.fullTupleMap.containsKey(c)) {
+					 hashcodeL = hashCodeCalculator(tempTupleL.fullTupleMap.get(columnList.get(0)));		
+			//	}
+			//}
 		}
 		
 		if(hashcodeMap.containsKey(hashcodeL)) {
@@ -171,11 +171,11 @@ public class HashJoinOperator implements TupleIterator<Tuple>{
 					
 					count = 0;
 					
-					for(Column c: columnList) {
-						if(tempTupleL.fullTupleMap.containsKey(c)) {
-							 hashcodeL = hashCodeCalculator(tempTupleL.fullTupleMap.get(c));		
-						}
-					}
+					//for(Column c: columnList) {
+					//	if(tempTupleL.fullTupleMap.containsKey(c)) {
+							 hashcodeL = hashCodeCalculator(tempTupleL.fullTupleMap.get(columnList.get(0)));		
+					//	}
+					//}
 					
 					return this.getNext();
 				}

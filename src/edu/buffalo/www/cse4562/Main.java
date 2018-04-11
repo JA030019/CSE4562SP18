@@ -41,7 +41,7 @@ public class Main {
 
         while((statement = parser.Statement()) != null){     
         	
-        	//long startTime=System.currentTimeMillis(); //long endTime=System.
+        	long startTime=System.currentTimeMillis(); //long endTime=System.
         	
 		     if(statement instanceof CreateTable) {				        		
 			      CreateTable ct = new CreateTable();
@@ -67,21 +67,21 @@ public class Main {
 		     // read for next query
              System.out.println(prompt);
              System.out.flush();
-             //long endTime = System.currentTimeMillis(); 
-            // System.out.println("Time = " + (endTime -startTime)); 	
+             long endTime = System.currentTimeMillis(); 
+             System.out.println("Time = " + (endTime -startTime)); 	
         }
 	}
 	
 	public static TupleIterator<Tuple> treeParser(SelectBody sb) {
 		
 		TableOperator tol = null;
-		SelectOperator so = null;
+		TupleIterator<Tuple> so = null;
 		SubSelectOperator sub = null;
 		
 		TupleIterator<Tuple> jo = null;
 		
-		OrderByOperator oo = null;
-		LimitOperator lo = null;
+		TupleIterator<Tuple> oo = null;
+		TupleIterator<Tuple> lo = null;
 		
         TupleIterator<Tuple> ap = null;
 		
@@ -90,6 +90,8 @@ public class Main {
 		
 		TupleIterator<Tuple> trpro = null;
 		TupleIterator<Tuple> tlpro = null;
+		
+		TupleIterator<Tuple> output = null;
 		
 		
 		if(sb instanceof PlainSelect) {			        			
@@ -173,7 +175,6 @@ public class Main {
 			   if(joins != null && expsel != null) {
 				      // R.A> S.C AND R.A >3 AND R.B < 2 AND S.C =3;
 					  ArrayList<Expression> expList = op.andExpAnalyzer(expsel);// R.A>S.C, R.A>3, R.B<2, S.C=3
-					  //ArrayList<Expression> expld = new ArrayList<>();
 					  ArrayList<Expression> expLs = new ArrayList<>();
 					  ArrayList<String> tableList1 = new ArrayList<>();	
 					  
@@ -344,9 +345,11 @@ public class Main {
 								//	System.out.println("cross product");
 									
 									if(count == 1){
-										jo = new JoinOperator1(tol, tor, expression);
+										jo = new CrossProductOperator(tol, tor, expression);
+										//jo = new JoinOperator1(tol, tor, expression);
 									}else {
-									    jo = new JoinOperator1(jo, tor, expression);
+									    jo = new CrossProductOperator(jo, tor, expression);
+										//jo = new JoinOperator1(jo, tor, expression);
 									}
 								}
 															
@@ -354,7 +357,6 @@ public class Main {
 								if(expression != null) {
 									if(count == 1){									
 										if(sub == null) {											
-
 											    //optimization join --> hash join
 											    if(!op.hashJoinMap.isEmpty()) {
 											    	Set<Combo> comboSet = op.hashJoinMap.keySet();
@@ -426,20 +428,31 @@ public class Main {
 			  
 			  //?????????
 			  if (joins != null) {
-				//  if(b) {
-				//	  so =  new SelectOperator(jo, null);
+
+				//  if(expWhere == null) {
+				//	  so = jo;
 				//  }else {
 					  so = new SelectOperator(jo, expWhere);
-				//  }
-				  
+				 // }
+
 			  }
 			  //no join, but subselect
 			  else if(sub != null){
-				  so = new SelectOperator(sub, expWhere);
+				  
+				 // if(expWhere == null) {
+				//	  so = jo;
+				 // }else {
+				      so = new SelectOperator(sub, expWhere);
+				 // }
 			  }
 			  //no join no subselect
 			  else {
-				  so = new SelectOperator(tol, expWhere);
+				  
+				//  if(expWhere == null) {
+				//	  so = jo;
+				//  }else {
+				      so = new SelectOperator(tol, expWhere);
+				//  }
 			  }
 			  
 			  
@@ -468,12 +481,23 @@ public class Main {
 			  
 			  //parser OrderBy(ORDERBY R.C, R.A DESC, R.B) SELECT R.A FROM R WHERE R.B = 0 ORDERBY R.C, R.A DESC, R.B;
 			  List<OrderByElement> orderbyElements = plainSelect.getOrderByElements();
-			  oo = new OrderByOperator(ap, orderbyElements);
+			  
+			  if(orderbyElements == null ||orderbyElements.isEmpty()) {
+				  oo = ap;
+			  }else {
+				  oo = new OrderByOperator(ap, orderbyElements);
+			  }
+			  
 			  
 			  //parser Limit(LIMIT 3) SELECT R.A FROM R WHERE R.B = 0 ORDERBY R.C, R.A DESC, R.B LIMIT 3;
 			  Limit limit = plainSelect.getLimit();
-			  lo = new LimitOperator(oo, limit);
-
+			  
+			  
+			  if(limit == null) {
+				  lo = oo;
+			  }else {
+				  lo = new LimitOperator(oo, limit);
+			  }
 
 			 // Distinct distinct = plainSelect.getDistinct();
 			  			  	

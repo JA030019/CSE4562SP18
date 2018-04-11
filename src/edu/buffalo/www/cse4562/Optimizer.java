@@ -91,10 +91,7 @@ public class Optimizer {
 	    
 		return expList;		
 	}
-    
-    
-	
-	
+
 	public ArrayList<Column> binarySplit(Expression expression){
 		
 		ArrayList<Column> columnList = new ArrayList<Column>();
@@ -176,11 +173,20 @@ public class Optimizer {
 	}
 	
     public ArrayList<String> binaryAnalyzer(Expression expression){
-		
+		ArrayList<String> newtableList = new ArrayList<>();
 		ArrayList<String> tableList = new ArrayList<>();
 		if(expression instanceof BinaryExpression) {
 			Expression l = ((BinaryExpression) expression).getLeftExpression();
 			Expression r = ((BinaryExpression) expression).getRightExpression();
+			
+			if(l instanceof BinaryExpression) {
+				tableList.addAll(binaryAnalyzer(l));
+			}
+			
+			if(r instanceof BinaryExpression) {
+				tableList.addAll(binaryAnalyzer(r));
+			}
+			
 			
 			if(l instanceof Column) {
 				Column columnl = (Column)l;
@@ -190,8 +196,19 @@ public class Optimizer {
 			if(r instanceof Column) {
 				Column columnr = (Column)r;
 				tableList.add(columnr.getTable().getName());
-			}		    
-			return tableList;
+			}		    						
+			
+			
+	    	Iterator<String> it = tableList.iterator();
+	    	while(it.hasNext()){          
+	    	        String s = it.next();       
+	    	        if(!newtableList.contains(s)){      
+	    	        	newtableList.add(s);       
+	    	        }
+	    	}
+			
+			
+			return newtableList;
 		}				
 		return null;
 		
