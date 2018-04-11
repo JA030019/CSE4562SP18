@@ -41,7 +41,7 @@ public class Main {
 
         while((statement = parser.Statement()) != null){     
         	
-        	//long startTime=System.currentTimeMillis(); //long endTime=System.
+        	long startTime=System.currentTimeMillis(); //long endTime=System.
         	
 		     if(statement instanceof CreateTable) {				        		
 			      CreateTable ct = new CreateTable();
@@ -67,8 +67,8 @@ public class Main {
 		     // read for next query
              System.out.println(prompt);
              System.out.flush();
-            // long endTime = System.currentTimeMillis(); 
-             //System.out.println("Time = " + (endTime -startTime)); 	
+             long endTime = System.currentTimeMillis(); 
+             System.out.println("Time = " + (endTime -startTime)); 	
         }
 	}
 	
@@ -360,12 +360,12 @@ public class Main {
 											    	Set<Combo> comboSet = op.hashJoinMap.keySet();
 											    	for(Combo c: comboSet) {
 											    		if(c.comboList.contains(tol.table.getAlias()) && c.comboList.contains(tor.table.getAlias())) {
-											    			jo = new HashJoinOperator(tlsel,trsel,op.hashJoinMap.get(c));
+											    			jo = new HashJoinOperator2(tlsel,trsel,op.hashJoinMap.get(c));
 											    			break;
 											    		}
 											    		
 											    		if(c.comboList.contains(tol.table.getName()) && c.comboList.contains(tor.table.getName())) {
-											    			jo = new HashJoinOperator(tlsel,trsel,op.hashJoinMap.get(c));
+											    			jo = new HashJoinOperator2(tlsel,trsel,op.hashJoinMap.get(c));
 											    			break;
 											    		}
 											    	}
@@ -386,12 +386,12 @@ public class Main {
 									    	for(Combo c: comboSet) {
 									    		for(String str: op.tableList) {				    			
 									    			if(c.comboList.contains(str) && c.comboList.contains(tor.table.getAlias())) {
-										    			jo = new HashJoinOperator(jo,trsel,op.hashJoinMap.get(c));
+										    			jo = new HashJoinOperator2(jo,trsel,op.hashJoinMap.get(c));
 										    			break;
 										    		}
 									    			
 									    			if(c.comboList.contains(str) && c.comboList.contains(tor.table.getName())) {
-									    				jo = new HashJoinOperator(jo,trsel,op.hashJoinMap.get(c));
+									    				jo = new HashJoinOperator2(jo,trsel,op.hashJoinMap.get(c));
 									    				break;
 									    			}
 									    		}

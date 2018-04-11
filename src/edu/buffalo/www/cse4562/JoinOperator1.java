@@ -73,8 +73,7 @@ public class JoinOperator1 implements TupleIterator<Tuple>{
 				Tuple temp = tr.getNext();
 				if(temp != null) {
 				    tupleListR.add(temp);
-				}
-			
+				}			
 		    }
 		}
 		
@@ -102,25 +101,11 @@ public class JoinOperator1 implements TupleIterator<Tuple>{
 		}
 		
 		//inialize left tuple
-		if(tempTupleL != null) {
+		//if(tempTupleL != null) {
 			if(tempTupleL.fullTupleMap.isEmpty()) {
 				tempTupleL = tupleListL.get(0);
-			}else {			
-				countL ++;
-				if(countL < tupleListL.size()) {
-					tempTupleL = tupleListL.get(countL);
-				}else {
-					tempTupleL = null;
-				}
 			}
-		}
-								
-		
-		/*//inialize left tuple
-		if(tempTupleL.fullTupleMap.isEmpty()) {
-			tempTupleL = tl.getNext();
-		}*/
-		
+				
 		//Case 1
 		if(tempTupleR == null) {
 	      
