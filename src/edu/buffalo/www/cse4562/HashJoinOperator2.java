@@ -91,7 +91,7 @@ public class HashJoinOperator2 implements TupleIterator<Tuple>{
 		//write in right tuple into tuplelist
 		//calculate hashcode for targeted column and build hashcodemap<hashcode, list<tuple>>
 		if(hashcodeMap.isEmpty()) {
-			long startTime=System.currentTimeMillis(); //long endTime=System.
+			//long startTime=System.currentTimeMillis(); //long endTime=System.
 			while(tr.hasNext()) {
 				Tuple tuple = tr.getNext();
 				if(tuple != null) {
@@ -121,8 +121,8 @@ public class HashJoinOperator2 implements TupleIterator<Tuple>{
 				}
 			}
 			
-			 long endTime = System.currentTimeMillis(); 
-             System.out.println("Time = " + (endTime -startTime)); 
+			 //long endTime = System.currentTimeMillis(); 
+             //System.out.println("Time = " + (endTime -startTime)); 
 		}
 
 		//write in left tuple into tuplelist

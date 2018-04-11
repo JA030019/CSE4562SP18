@@ -268,7 +268,7 @@ public class Main {
 				   }    
 
 			   }else if(fromItem instanceof SubJoin) {
-				    System.out.println("subjoin");
+				    //System.out.println("subjoin");
 			   }
 			  
 			  //parser Join
@@ -408,12 +408,12 @@ public class Main {
 							}
 							//case 2 natural join
 							else if(isNatural) {
-							   System.out.println("isNatural " + isNatural);						   
+							  // System.out.println("isNatural " + isNatural);						   
 							}
 							
 							//case 3 inner join
 							else{
-								System.out.println("inner ");
+								//System.out.println("inner ");
 							}
 	  
 					  }
@@ -502,10 +502,10 @@ public class Main {
 			 // Distinct distinct = plainSelect.getDistinct();
 			  			  	
 		   }else if(sb instanceof Union) {
-		            System.out.println("Union");					            		            
+		            //System.out.println("Union");					            		            
 		   }
 		   else {
-		        System.out.println("can't handle it");
+		        //System.out.println("can't handle it");
 		   }
 			
 		return lo;

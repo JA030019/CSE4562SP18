@@ -35,13 +35,13 @@ public class Aggregation {
 		if(funcName.equals("*")) {
 		    return null;
 		}else if(funcName.equals("MAX")) {
-		    System.out.println("MAX");
+		    //System.out.println("MAX");
 		    return max();
 		}else if(funcName.equals("MIN")) {
-			System.out.println("MIN");
+			//System.out.println("MIN");
 			return min();
 		}else if(funcName.equals("COUNT")) {
-			System.out.println(funcName);
+			//System.out.println(funcName);
 			return count();
 		}else if(funcName.equals("SUM")) {
 			return sum();
@@ -78,7 +78,7 @@ public class Aggregation {
 			e.printStackTrace();
 		    }
 		}else {
-			System.out.println("expression null");
+			//System.out.println("expression null");
 		}
 		
 		dataType = getDataType(temp);
@@ -93,7 +93,7 @@ public class Aggregation {
 				try {
 					d = ev.eval(exp).toDouble();
 				} catch (Exception e) {
-					System.out.print("aggregation no eval");
+					//System.out.print("aggregation no eval");
 					e.printStackTrace();
 				}
 				
@@ -138,7 +138,7 @@ public class Aggregation {
 			e.printStackTrace();
 		    }
 		}else {
-			System.out.println("expression null");
+			//System.out.println("expression null");
 		}
 		
 		dataType = getDataType(temp);
@@ -153,7 +153,7 @@ public class Aggregation {
 				try {
 					d = ev.eval(exp).toDouble();
 				} catch (Exception e) {
-					System.out.print("aggregation no eval");
+					//System.out.print("aggregation no eval");
 					e.printStackTrace();
 				}
 				
