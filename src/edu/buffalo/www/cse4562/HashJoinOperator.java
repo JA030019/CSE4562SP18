@@ -42,7 +42,7 @@ public class HashJoinOperator implements TupleIterator<Tuple>{
 	LinkedHashMap<Column,PrimitiveValue> tempFullTupleMap3 = new LinkedHashMap<Column,PrimitiveValue>(); 
 	Tuple temp = new Tuple(tempFullTupleMap3);
 	
-	
+	Column targetColumn = null;
 	public HashJoinOperator(TupleIterator<Tuple> tl, TupleIterator<Tuple> tr, Expression expression) {
 	
 		this.tl = tl;
@@ -79,7 +79,7 @@ public class HashJoinOperator implements TupleIterator<Tuple>{
 		LinkedHashMap<Column,PrimitiveValue> tempFullTupleMap2 = new LinkedHashMap<Column,PrimitiveValue>(); 
 		Tuple tupleCombine = new Tuple(tempFullTupleMap2);		
 		
-		ArrayList<Integer> hashList = new ArrayList<>();		
+		//ArrayList<Integer> hashList = new ArrayList<>();		
 		
 		//get columns
 		ArrayList<Column> columnList =  expressionAnalyzer(expression);
@@ -87,38 +87,36 @@ public class HashJoinOperator implements TupleIterator<Tuple>{
 		//write in right tuple into tuplelist
 		//calculate hashcode for targeted column and build hashcodemap<hashcode, list<tuple>>
 		if(tupleListR.isEmpty()) {
-			while(tr.hasNext()) {				
-				Tuple temp = tr.getNext();
-				if(temp != null) {
-					for(Column c: columnList) {
-						if(temp.fullTupleMap.containsKey(c)) {
-							int hashCode = hashCodeCalculator(temp.fullTupleMap.get(c));
-							if(!hashList.contains(hashCode)) {
-								hashList.add(hashCode);
+			while(tr.hasNext()) {
+				Tuple tuple = tr.getNext();
+				if(tuple != null) {
+					
+					//get targetColumn for join (R.A)
+					if(targetColumn == null) {
+						for(Column c: columnList) {
+							if(tuple.fullTupleMap.containsKey(c)) {
+								targetColumn = c;
+								break;
 							}
-						}
+					    }
 					}
-				
-				
-				    tupleListR.add(temp);
-				}			
-		    }
-			
-			for(int t: hashList) {
-				ArrayList<Tuple> tupleList = new ArrayList<>();// store tuple according to hashcode
-				for(Column c: columnList) {
-					for(Tuple tu: tupleListR) {
-						if(tu.fullTupleMap.containsKey(c)) {
-							if(t == hashCodeCalculator(tu.fullTupleMap.get(c))) {
-								tupleList.add(tu);
-							}
-						}
+					
+					//get hashcode and build hashcodeMap
+					int hashCode = hashCodeCalculator(tuple.fullTupleMap.get(targetColumn));
+					if(!hashcodeMap.containsKey(hashCode)) {
+						ArrayList<Tuple> atmp = new ArrayList<Tuple>();
+						atmp.add(tuple);
+						hashcodeMap.put(hashCode, atmp);
+						
+					}else {
+						//ArrayList<Tuple> atmp = new ArrayList<Tuple>();
+						ArrayList<Tuple> atmp = hashcodeMap.get(hashCode);
+						atmp.add(tuple);
+						hashcodeMap.put(hashCode, atmp);						
 					}
 				}
-				hashcodeMap.put(t, tupleList);
-			}			
-			//tupleListR.removeAll(columnList);//how to save memory and delete tupleListR
-		}	
+			}
+		}		
 		
 		
 		//inialize left tuple and get corresponding hashcode (first time)		

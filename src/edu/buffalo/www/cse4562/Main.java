@@ -41,7 +41,7 @@ public class Main {
 
         while((statement = parser.Statement()) != null){     
         	
-        	//long startTime=System.currentTimeMillis(); //long endTime=System.
+        	long startTime=System.currentTimeMillis(); //long endTime=System.
         	
 		     if(statement instanceof CreateTable) {				        		
 			      CreateTable ct = new CreateTable();
@@ -67,8 +67,8 @@ public class Main {
 		     // read for next query
              System.out.println(prompt);
              System.out.flush();
-           //  long endTime = System.currentTimeMillis(); 
-           //  System.out.println("Time = " + (endTime -startTime)); 	
+             long endTime = System.currentTimeMillis(); 
+             System.out.println("Time = " + (endTime -startTime)); 	
         }
 	}
 	
@@ -344,9 +344,9 @@ public class Main {
 								//	System.out.println("cross product");
 									
 									if(count == 1){
-										jo = new JoinOperator(tol, tor, expression);
+										jo = new JoinOperator1(tol, tor, expression);
 									}else {
-									    jo = new JoinOperator(jo, tor, expression);
+									    jo = new JoinOperator1(jo, tor, expression);
 									}
 								}
 															
@@ -372,11 +372,11 @@ public class Main {
 											    }
 											    //no optimization for join 
 											    else {
-											    	jo = new JoinOperator(tlsel, trsel, expression);
+											    	jo = new JoinOperator1(tlsel, trsel, expression);
 											    }
 					
 										}else {	
-												jo = new JoinOperator(sub, trsel, expression);											
+												jo = new JoinOperator1(sub, trsel, expression);											
 										}										
 									}else {	
 										   
@@ -399,7 +399,7 @@ public class Main {
 									    }
 										//no optimizaiton for join
 									    else {
-									    	jo = new JoinOperator(jo, trsel, expression);
+									    	jo = new JoinOperator1(jo, trsel, expression);
 									    }	 									   
 									}
 								}							
