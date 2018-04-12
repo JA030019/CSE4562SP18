@@ -21,6 +21,7 @@ public class Aggregation1 {
 	double tempmin = 0;
 	double tempsum = 0;
 	double tempavg = 0;
+	int countersum = 0;
 	int counter = 0;
 	String dataType = null;
 	
@@ -197,6 +198,8 @@ public class Aggregation1 {
 	
 	public void sum(Tuple tuple) {
 		
+		countersum ++;
+		
 		//only consider SINGLE expression sum(R.A + R.B*R.C)
 		Expression exp = func.getParameters().getExpressions().get(0);
 
@@ -245,9 +248,9 @@ public class Aggregation1 {
 	public void avg(Tuple tuple) {		      
 		
 		sum(tuple);
-		count(tuple);
+		//count(tuple);
 		
-		tempavg = tempsum/(count.toLong());
+		tempavg = tempsum/(countersum);
 		
         if(dataType.equals("LongValue")) {
 			
