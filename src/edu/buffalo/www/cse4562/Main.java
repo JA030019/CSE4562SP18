@@ -475,7 +475,7 @@ public class Main {
 			  //case4 groupby function		  
 			  else{
 				  
-				  ap = new AggregationOperator3(so,expHaving, columnRefList, expProList, op); 
+				  ap = new AggregationOperator(so,expHaving, columnRefList, expProList, op); 
 			  } 
   
 			  /*
