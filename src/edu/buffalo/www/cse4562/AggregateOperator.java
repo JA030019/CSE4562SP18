@@ -2,7 +2,11 @@ package edu.buffalo.www.cse4562;
 
 public class AggregateOperator implements TupleIterator<Tuple>{
 
-
+	
+	
+	
+	
+	
 	@Override
 	public void open() {
 		// TODO Auto-generated method stub

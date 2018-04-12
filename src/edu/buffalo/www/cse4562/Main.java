@@ -41,7 +41,7 @@ public class Main {
 
         while((statement = parser.Statement()) != null){     
         	
-        	//long startTime=System.currentTimeMillis(); //long endTime=System.
+        	long startTime=System.currentTimeMillis(); //long endTime=System.
         	
 		     if(statement instanceof CreateTable) {				        		
 			      CreateTable ct = new CreateTable();
@@ -67,8 +67,8 @@ public class Main {
 		     // read for next query
              System.out.println(prompt);
              System.out.flush();
-             //long endTime = System.currentTimeMillis(); 
-            // System.out.println("Time = " + (endTime -startTime)); 	
+             long endTime = System.currentTimeMillis(); 
+             System.out.println("Time = " + (endTime -startTime)); 	
         }
 	}
 	
@@ -268,7 +268,7 @@ public class Main {
 				   }    
 
 			   }else if(fromItem instanceof SubJoin) {
-				    //System.out.println("subjoin");
+				    System.out.println("subjoin");
 			   }
 			  
 			  //parser Join
@@ -408,12 +408,12 @@ public class Main {
 							}
 							//case 2 natural join
 							else if(isNatural) {
-							  // System.out.println("isNatural " + isNatural);						   
+							   System.out.println("isNatural " + isNatural);						   
 							}
 							
 							//case 3 inner join
 							else{
-								//System.out.println("inner ");
+								System.out.println("inner ");
 							}
 	  
 					  }
@@ -467,12 +467,15 @@ public class Main {
 				  ap = new ProjectOperator(so, expProList);
 			  }
 			  
-			  //case2 no groupby + function
+			  //case2 no groupby + function			  
+			  else if(op.hasFunc && !op.hasGroupby) {
+				  ap = new AggregationOperator1(so,expHaving, columnRefList, expProList, op);
+			  }
 			  //case3  groupby + no function
-			  //case4 groupby function
+			  //case4 groupby function		  
 			  else{
 				  
-				  ap = new AggregationOperator(so,expHaving, columnRefList, expProList, op); 
+				  ap = new AggregationOperator2(so,expHaving, columnRefList, expProList, op); 
 			  } 
   
 			  /*
@@ -502,10 +505,10 @@ public class Main {
 			 // Distinct distinct = plainSelect.getDistinct();
 			  			  	
 		   }else if(sb instanceof Union) {
-		            //System.out.println("Union");					            		            
+		            System.out.println("Union");					            		            
 		   }
 		   else {
-		        //System.out.println("can't handle it");
+		        System.out.println("can't handle it");
 		   }
 			
 		return lo;
