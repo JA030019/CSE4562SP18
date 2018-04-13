@@ -41,7 +41,7 @@ public class Main {
 
         while((statement = parser.Statement()) != null){     
         	
-        	long startTime=System.currentTimeMillis(); //long endTime=System.
+        	//long startTime=System.currentTimeMillis(); //long endTime=System.
         	
 		     if(statement instanceof CreateTable) {				        		
 			      CreateTable ct = new CreateTable();
@@ -67,8 +67,8 @@ public class Main {
 		     // read for next query
              System.out.println(prompt);
              System.out.flush();
-             long endTime = System.currentTimeMillis(); 
-             System.err.println("Time = " + (endTime -startTime)); 	
+             //long endTime = System.currentTimeMillis(); 
+             //System.err.println("Time = " + (endTime -startTime)); 	
         }
 	}
 	
