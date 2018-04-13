@@ -213,7 +213,6 @@ public class AggregationOperator2 implements TupleIterator<Tuple>{
 			}
 		}
 		
-		
 		return outputTuple;
 		
 	}
