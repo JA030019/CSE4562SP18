@@ -36,7 +36,7 @@ public class TableOperator implements TupleIterator<Tuple>{
 		this.file = new File(filepath);
 		this.ct = Main.tableMap.get(table.getName().toLowerCase());	
 		this.open();
-		this.print();
+		//this.print();
 		
 	}
 	

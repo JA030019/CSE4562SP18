@@ -22,7 +22,7 @@ public class LimitOperator implements TupleIterator<Tuple> {
 		this.ti = ti;		
 		this.limit = limit;
 		open();
-		this.print();
+		//this.print();
 	}
 		
 	@Override

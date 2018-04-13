@@ -20,7 +20,7 @@ public class SubSelectOperator implements TupleIterator<Tuple>{
 		this.to = to;
 		this.subSelectAlias = subSelectAlias;		
 		open();
-		this.print();
+		//this.print();
 	}
 	
 

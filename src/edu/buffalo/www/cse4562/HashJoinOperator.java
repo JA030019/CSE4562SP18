@@ -49,7 +49,7 @@ public class HashJoinOperator implements TupleIterator<Tuple>{
         this.tr = tr;
         this.expression = expression;
         open();
-        this.print();
+       // this.print();
 			
 	}
 	
