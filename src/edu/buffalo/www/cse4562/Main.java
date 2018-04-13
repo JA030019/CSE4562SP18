@@ -236,6 +236,8 @@ public class Main {
 				   
 				   Table tablel = ((Table) fromItem);
 				   tol = new TableOperator(tablel);
+				  // tol.print();
+				   
 				   
 				   //record for table information in optimizer
 				   if(tablel.getAlias()!= null) {
@@ -247,24 +249,31 @@ public class Main {
 				   //optimizing for left table				   
 				   //projection push down				   
 				   if(!proList.isEmpty() && op.optProMap.containsKey(tablel.getAlias())) {					   
-					   tlpro = new ProjectOperator(tol,op.optProMap.get(tablel.getAlias()));					   
+					   tlpro = new ProjectOperator(tol,op.optProMap.get(tablel.getAlias()));
+					  // tlpro.print();
 				   }
 				   else if(!proList.isEmpty() && op.optProMap.containsKey(tablel.getName())) {
 					   tlpro = new ProjectOperator(tol,op.optProMap.get(tablel.getName()));
+					   //tlpro.print();
 				   }
 				   else {					   
 					   tlpro = tol;
+					  // tlpro.print();
+					   
 				   }
 				   
 				   //selection push down
 				   if((op.selectelements.containsKey(tablel.getAlias())) && op.selectelements != null) {						  
 						  tlsel = new SelectOperator(tlpro, op.selectelements.get(tablel.getAlias()));  
+						 // tlsel.print();
 				   }
 				   else if((op.selectelements.containsKey(tablel.getName())) && op.selectelements != null) {
 					      tlsel = new SelectOperator(tlpro, op.selectelements.get(tablel.getName()));
+					    //  tlsel.print();
 				   }
 				   else {						  						 
 					      tlsel = tlpro;
+					    //  tlsel.print();
 				   }    
 
 			   }else if(fromItem instanceof SubJoin) {
@@ -304,6 +313,7 @@ public class Main {
 						  
 						  Table tabler = ((Table) fiJoin);
 						  TableOperator tor = new TableOperator(tabler);
+						  //tor.print();
 						  
 						  //record for table information in optimizer
 						  if(tabler.getAlias()!= null) {
@@ -315,24 +325,31 @@ public class Main {
 						  //optimizing for right table
 						  //projection push down
 						  if(!proList.isEmpty() && op.optProMap.containsKey(tabler.getAlias())) {							   
-							   trpro = new ProjectOperator(tor,op.optProMap.get(tabler.getAlias()));						   
+							   trpro = new ProjectOperator(tor,op.optProMap.get(tabler.getAlias()));
+							   //trpro.print();
 						   }
 						  else if(!proList.isEmpty() && op.optProMap.containsKey(tabler.getName())) {
 							   trpro = new ProjectOperator(tor,op.optProMap.get(tabler.getName()));
+							   //trpro.print();
 						  }
 						  else {							   
 							   trpro = tor;
+							   //trpro.print();
 						   }						  
 						  
 						  //selection push down
 						  if((op.selectelements.containsKey(tabler.getAlias()))&& op.selectelements != null) {							  
-							  trsel = new SelectOperator(trpro, op.selectelements.get(tabler.getAlias()));  
+							  trsel = new SelectOperator(trpro, op.selectelements.get(tabler.getAlias())); 
+							  //trsel.print();
+							  
 						  }
 						  else if((op.selectelements.containsKey(tabler.getName()))&& op.selectelements != null) {
 							  trsel = new SelectOperator(trpro, op.selectelements.get(tabler.getName())); 
+							  //trsel.print();
 						  }
 						  else {							  
 							  trsel = trpro;
+							  //trsel.print();
 						  }
 						  
 						    //Case 1 cross product
@@ -346,9 +363,11 @@ public class Main {
 									
 									if(count == 1){
 										jo = new CrossProductOperator(tol, tor, expression);
+										//jo.print();
 										//jo = new JoinOperator1(tol, tor, expression);
 									}else {
 									    jo = new CrossProductOperator(jo, tor, expression);
+									    //jo.print();
 										//jo = new JoinOperator1(jo, tor, expression);
 									}
 								}
@@ -363,12 +382,14 @@ public class Main {
 											    	for(Combo c: comboSet) {
 											    		if(c.comboList.contains(tol.table.getAlias()) && c.comboList.contains(tor.table.getAlias())) {
 											    			jo = new HashJoinOperator(tlsel,trsel,op.hashJoinMap.get(c));
+											    			//jo.print();
 											    			//System.out.println("natural join");
 											    			break;
 											    		}
 											    		
 											    		if(c.comboList.contains(tol.table.getName()) && c.comboList.contains(tor.table.getName())) {
 											    			jo = new HashJoinOperator(tlsel,trsel,op.hashJoinMap.get(c));
+											    			//jo.print();
 											    			//System.out.println("natural join");
 											    			break;
 											    		}
@@ -377,10 +398,12 @@ public class Main {
 											    //no optimization for join 
 											    else {
 											    	jo = new JoinOperator1(tlsel, trsel, expression);
+											    	//jo.print();
 											    }
 					
 										}else {	
-												jo = new JoinOperator1(sub, trsel, expression);											
+												jo = new JoinOperator1(sub, trsel, expression);	
+												//jo.print();
 										}										
 									}else {	
 										   
@@ -391,12 +414,14 @@ public class Main {
 									    		for(String str: op.tableList) {				    			
 									    			if(c.comboList.contains(str) && c.comboList.contains(tor.table.getAlias())) {
 										    			jo = new HashJoinOperator(jo,trsel,op.hashJoinMap.get(c));
+										    			//jo.print();
 										    			//System.out.println("natural join");
 										    			break;
 										    		}
 									    			
 									    			if(c.comboList.contains(str) && c.comboList.contains(tor.table.getName())) {
 									    				jo = new HashJoinOperator(jo,trsel,op.hashJoinMap.get(c));
+									    				//jo.print();
 									    				//System.out.println("natural join");
 									    				break;
 									    			}
@@ -406,6 +431,7 @@ public class Main {
 										//no optimizaiton for join
 									    else {
 									    	jo = new JoinOperator1(jo, trsel, expression);
+									        //jo.print();
 									    }	 									   
 									}
 								}							
@@ -433,21 +459,21 @@ public class Main {
 			  //?????????
 			  if (joins != null) {
 
-				//  if(expWhere == null) {
-				//	  so = jo;
-				//  }else {
+				  if(expWhere == null) {
+					  so = jo;
+				  }else {
 					  so = new SelectOperator(jo, expWhere);
-				 // }
+				  }
 
 			  }
 			  //no join, but subselect
 			  else if(sub != null){
 				  
-				 // if(expWhere == null) {
-				//	  so = jo;
-				 // }else {
+				  if(expWhere == null) {
+					  so = sub;
+				  }else {
 				      so = new SelectOperator(sub, expWhere);
-				 // }
+				  }
 			  }
 			  //no join no subselect
 			  else {
@@ -459,6 +485,7 @@ public class Main {
 				//  }
 			  }
 			  
+			  //so = jo;
 			  
 			  /*
 			   ------------------------------------Aggregatiion and Projection------------------------------------ 
