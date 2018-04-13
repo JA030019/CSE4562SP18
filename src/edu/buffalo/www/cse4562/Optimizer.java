@@ -15,6 +15,11 @@ import net.sf.jsqlparser.expression.operators.conditional.AndExpression;
 import net.sf.jsqlparser.expression.operators.conditional.OrExpression;
 import net.sf.jsqlparser.expression.operators.relational.EqualsTo;
 import net.sf.jsqlparser.expression.operators.relational.ExpressionList;
+import net.sf.jsqlparser.expression.operators.relational.GreaterThan;
+import net.sf.jsqlparser.expression.operators.relational.GreaterThanEquals;
+import net.sf.jsqlparser.expression.operators.relational.MinorThan;
+import net.sf.jsqlparser.expression.operators.relational.MinorThanEquals;
+import net.sf.jsqlparser.expression.operators.relational.NotEqualsTo;
 import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.schema.Table;
 import net.sf.jsqlparser.statement.select.AllColumns;
@@ -26,7 +31,7 @@ public class Optimizer {
 	
 	HashMap<String , Expression> selectelements = new HashMap<>();    
 	
-	Expression adex = null;
+	Expression selRest = null;
 	
 	//attribute for projection pushing down
 	//Key -> table name, Value-> List of selectItem for specific table projection
@@ -221,6 +226,32 @@ public class Optimizer {
     		return true;
     	}    	
 		return false;    	
+    }
+    
+    public boolean containsNonEquals(Expression exp) {
+    	if(exp instanceof GreaterThan) {
+    		return true;
+    	}    	
+    	if(exp instanceof GreaterThanEquals) {
+    		return true;
+    	}
+    	if(exp instanceof MinorThan) {
+    		return true;
+    	}
+    	
+    	if(exp instanceof MinorThan) {
+    		return true;
+    	}
+    	
+    	if(exp instanceof MinorThanEquals) {
+    		return true;
+    	}
+    	
+    	if(exp instanceof NotEqualsTo) {
+    		return true;
+    	}
+		return false;
+		
     }
     
     public Expression combineExpression(ArrayList<Expression> expressionList) {		

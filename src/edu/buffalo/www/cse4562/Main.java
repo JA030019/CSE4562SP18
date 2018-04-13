@@ -177,7 +177,7 @@ public class Main {
 					  ArrayList<Expression> expList = op.andExpAnalyzer(expsel);// R.A>S.C, R.A>3, R.B<2, S.C=3
 					  ArrayList<Expression> expLs = new ArrayList<>();
 					  ArrayList<String> tableList1 = new ArrayList<>();	
-					  
+					  ArrayList<Expression> expRest = new ArrayList<>();
 					  for(Expression exptemp : expList) {
 						  ArrayList<String> array = op.binaryAnalyzer(exptemp);					  
 						  if(array.size() == 1) { //fliter R.A > S.C
@@ -202,6 +202,9 @@ public class Main {
 							        }
 							        
 							   }
+							   if(op.containsNonEquals(exptemp)) {
+								   expRest.add(exptemp);
+							   }
 						  }
 					  }
 					  
@@ -218,6 +221,8 @@ public class Main {
 						  Expression tempexp = op.combineExpression(tempList);
 						  op.selectelements.put(temp, tempexp);
 					  }
+					  
+					  op.selRest = op.combineExpression(expRest);
 
 			   }    
 			 
@@ -454,38 +459,38 @@ public class Main {
   
               //To be modified cuz of pushing down selection 
 			  //parser selection(WHERE R.B = 0) SELECT R.A FROM R WHERE R.B = 0;
-			  Expression expWhere = plainSelect.getWhere();
+			  Expression expWhere = op.selRest;
 			  
 			  //?????????
 			  if (joins != null) {
 
-				  //if(expWhere == null) {
+				  if(expWhere == null) {
 					  so = jo;
-				 // }else {
-				//	  so = new SelectOperator(jo, expWhere);
-				 // }
+				  }else {
+					  so = new SelectOperator(jo, expWhere);
+				  }
 
 			  }
 			  //no join, but subselect
 			  else if(sub != null){
 				  
-				 // if(expWhere == null) {
+				  if(expWhere == null) {
 					  so = sub;
-				 // }else {
-				  //    so = new SelectOperator(sub, expWhere);
-				  //}
+				  }else {
+				      so = new SelectOperator(sub, expWhere);
+				  }
 			  }
 			  //no join no subselect
 			  else {
 				  
-				//  if(expWhere == null) {
-				//	  so = jo;
-				//  }else {
+				  if(expWhere == null) {
+					  so = tol;
+				  }else {
 				      so = new SelectOperator(tol, expWhere);
-				//  }
+				  }
 			  }
 			  
-			  //so = jo;
+			  
 			  
 			  /*
 			   ------------------------------------Aggregatiion and Projection------------------------------------ 
