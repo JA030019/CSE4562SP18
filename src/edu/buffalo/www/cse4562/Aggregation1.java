@@ -207,7 +207,7 @@ public class Aggregation1 {
 		//get data type
 		Evaluate evaluate = new Evaluate(tuple);
 		
-		/*//get data type & new a variable
+		//get data type & new a variable
 		if(dataType == null) {
 			PrimitiveValue temp1 = null;
 			if(exp != null) {
@@ -242,8 +242,8 @@ public class Aggregation1 {
 			
 		}else {
 			sum = new DoubleValue(tempsum);
-		}*/
-		if(countersum == 1) {
+		}
+		/*if(countersum == 1) {
 			try {
 				sum = evaluate.eval(exp);
 			} catch (SQLException e) {
@@ -258,7 +258,7 @@ public class Aggregation1 {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		}
+		}*/
 		 
 		
 		
@@ -269,7 +269,7 @@ public class Aggregation1 {
 		sum(tuple);
 		//count(tuple);
 		
-		/*tempavg = tempsum/(countersum);
+		tempavg = tempsum/(countersum);
 		
         if(dataType.equals("LongValue")) {
 			
@@ -277,7 +277,7 @@ public class Aggregation1 {
 			
 		}else {
 			avg = new DoubleValue(tempavg);
-		}*/
+		}
 		
 		
 		/*try {
@@ -285,7 +285,7 @@ public class Aggregation1 {
 		} catch (InvalidPrimitive e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}*/
+		}
         
         Evaluate evaluate = new Evaluate(tuple);
         
@@ -294,7 +294,7 @@ public class Aggregation1 {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}*/
         
 		
 	}

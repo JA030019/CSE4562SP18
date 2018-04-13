@@ -31,12 +31,12 @@ public class AggregationOperator2 implements TupleIterator<Tuple>{
 	ArrayList<Tuple> tupleList = new ArrayList<Tuple>();// store all tuples of table
 	
 	//key -> hashcode, value -> ArrayList<Tuple>
-	HashMap<ArrayList<PrimitiveValue>, ArrayList<Object>> hashCodeMap = new HashMap<>();
+	HashMap<String, ArrayList<Object>> hashCodeMap = new HashMap<>();
 	
 	boolean hasFunc = false;
 	boolean hasGroupby = false;
 	
-	ArrayList<ArrayList<PrimitiveValue>> hashList = new ArrayList<>();// sotre key ---> hash code
+	ArrayList<String> hashList = new ArrayList<>();// sotre key ---> hash code
 	int keySize = 0;
 	int mapCounter = 0;	
 	
@@ -84,16 +84,16 @@ public class AggregationOperator2 implements TupleIterator<Tuple>{
 			Tuple tuple = ti.getNext();
 				if(tuple != null) {
 					Evaluate evaluate = new Evaluate(tuple);					
-					ArrayList<PrimitiveValue> code = new ArrayList<>();
+					//ArrayList<PrimitiveValue> code = new ArrayList<>();
 					
-					//StringBuilder code1 = new StringBuilder();
+					StringBuilder code1 = new StringBuilder();
 					//String code = null;
 					
 					for(Column c : columnRefList) {											
 						try {
-							// code1.append(evaluate.eval(c)).append(" ");
+							 code1.append(evaluate.eval(c)).append("|");
 							//code = (evaluate.eval(c)).toString() + "|";
-							code.add(evaluate.eval(c));
+							//code.add(evaluate.eval(c));
 						} catch (SQLException e) {
 	                        //System.out.println("group by eval can't find");
 							e.printStackTrace();
@@ -101,7 +101,7 @@ public class AggregationOperator2 implements TupleIterator<Tuple>{
 					}
 					
 					 
-					//String code = code1.toString();
+					String code = code1.toString();
 					//int code = tempValueList.hashCode();
 					//case1 new one: create new innertuplelist to store tuple add it to HashMap
 					if(!hashCodeMap.containsKey(code)) {					
@@ -175,7 +175,7 @@ public class AggregationOperator2 implements TupleIterator<Tuple>{
 		
 		//load hashList
 		if(hashList.isEmpty()) {
-			Set<ArrayList<PrimitiveValue>> hashSet = hashCodeMap.keySet();
+			Set<String> hashSet = hashCodeMap.keySet();
 			hashList.addAll(hashSet);
 			keySize = hashList.size();
 		}
@@ -212,6 +212,7 @@ public class AggregationOperator2 implements TupleIterator<Tuple>{
 				
 			}
 		}
+		
 		
 		return outputTuple;
 		
