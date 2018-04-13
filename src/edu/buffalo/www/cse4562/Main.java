@@ -68,7 +68,7 @@ public class Main {
              System.out.println(prompt);
              System.out.flush();
              long endTime = System.currentTimeMillis(); 
-            // System.err.println("Time = " + (endTime -startTime)); 	
+            System.err.println("Time = " + (endTime -startTime)); 	
         }
 	}
 	
