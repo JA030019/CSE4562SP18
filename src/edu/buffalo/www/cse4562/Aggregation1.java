@@ -11,6 +11,7 @@ import net.sf.jsqlparser.expression.LongValue;
 import net.sf.jsqlparser.expression.PrimitiveValue;
 import net.sf.jsqlparser.expression.PrimitiveValue.InvalidPrimitive;
 import net.sf.jsqlparser.expression.operators.arithmetic.Addition;
+import net.sf.jsqlparser.expression.operators.arithmetic.Division;
 import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.schema.PrimitiveType;
 
@@ -206,7 +207,7 @@ public class Aggregation1 {
 		//get data type
 		Evaluate evaluate = new Evaluate(tuple);
 		
-		//get data type & new a variable
+		/*//get data type & new a variable
 		if(dataType == null) {
 			PrimitiveValue temp1 = null;
 			if(exp != null) {
@@ -241,8 +242,8 @@ public class Aggregation1 {
 			
 		}else {
 			sum = new DoubleValue(tempsum);
-		}
-		/*if(countersum == 1) {
+		}*/
+		if(countersum == 1) {
 			try {
 				sum = evaluate.eval(exp);
 			} catch (SQLException e) {
@@ -257,7 +258,7 @@ public class Aggregation1 {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		}*/
+		}
 		 
 		
 		
@@ -268,7 +269,7 @@ public class Aggregation1 {
 		sum(tuple);
 		//count(tuple);
 		
-		tempavg = tempsum/(countersum);
+		/*tempavg = tempsum/(countersum);
 		
         if(dataType.equals("LongValue")) {
 			
@@ -276,7 +277,7 @@ public class Aggregation1 {
 			
 		}else {
 			avg = new DoubleValue(tempavg);
-		}
+		}*/
 		
 		
 		/*try {
@@ -285,6 +286,16 @@ public class Aggregation1 {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}*/
+        
+        Evaluate evaluate = new Evaluate(tuple);
+        
+        try {
+			avg = evaluate.eval(new Division(sum,new LongValue(countersum)));
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        
 		
 	}
 	
