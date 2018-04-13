@@ -32,7 +32,7 @@ public class AggregationOperator1 implements TupleIterator<Tuple>{
 		this.hasFunc = op.hasFunc;
 		this.hasGroupby = op.hasGroupby;
 		this.open();
-		//this.print();
+		this.print();
 	}
 	
 	
@@ -130,7 +130,7 @@ public class AggregationOperator1 implements TupleIterator<Tuple>{
 
 	@Override
 	public void print() {
-		System.out.println("AggregationOperator no groupby");
+		System.err.println("AggregationOperator no groupby");
 		
 	}
 

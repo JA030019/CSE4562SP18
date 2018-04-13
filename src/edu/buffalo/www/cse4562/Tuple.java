@@ -175,12 +175,12 @@ public class Tuple {
 		  System.out.println(outTuple.toString());
     }
 		
-	public PrimitiveValue getTupleData(Table table, String columnName) {
+	/*public PrimitiveValue getTupleData(Table table, String columnName) {
 		PrimitiveValue temp = null;
 		Column c = new Column(table, columnName);
 		temp = fullTupleMap.get(c);
 		return temp;
-	}    
+	} */   
 	
 	public Table getTupleTable() {
 		

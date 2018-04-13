@@ -24,7 +24,7 @@ public class OrderByOperator implements TupleIterator<Tuple> {
 		this.orderByElements = orderByElements;
 		//System.out.println(orderByElements == null);
 		open();
-		//this.print();
+		this.print();
 	}		
 	
 	@Override
@@ -169,7 +169,7 @@ public class OrderByOperator implements TupleIterator<Tuple> {
 
 	@Override
 	public void print() {
-		System.out.println("orderby");
+		System.err.println("orderby");
 		
 	}
 

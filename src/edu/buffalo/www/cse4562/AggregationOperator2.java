@@ -51,7 +51,7 @@ public class AggregationOperator2 implements TupleIterator<Tuple>{
 		this.hasFunc = op.hasFunc;
 		this.hasGroupby = op.hasGroupby;
 		this.open();
-		//this.print();
+		this.print();
 	}
 
 	@Override
@@ -84,7 +84,7 @@ public class AggregationOperator2 implements TupleIterator<Tuple>{
 				
 			Tuple tuple = ti.getNext();
 				if(tuple != null) {
-					Evaluate evaluate = new Evaluate(tuple);					
+					//Evaluate evaluate = new Evaluate(tuple);					
 					ArrayList<PrimitiveValue> code = new ArrayList<>();
 					
 					//StringBuilder code1 = new StringBuilder();
@@ -129,12 +129,8 @@ public class AggregationOperator2 implements TupleIterator<Tuple>{
 								else if(expression instanceof Column){
 										Column column = (Column) expression;
 										ColMix colmix = null;
-										try {
-											colmix = new ColMix(alias,evaluate.eval(column),column);
-										} catch (SQLException e) {
-											// TODO Auto-generated catch block
-											e.printStackTrace();
-										}
+										//colmix = new ColMix(alias,evaluate.eval(column),column);
+										colmix = new ColMix(alias,tuple.fullTupleMap.get(column),column);
 										tempList.add(colmix);
 								} 
 									
@@ -227,7 +223,7 @@ public class AggregationOperator2 implements TupleIterator<Tuple>{
 
 	@Override
 	public void print() {
-		System.out.println("AggregationOperator2");
+		System.err.println("AggregationOperator2");
 		
 	}
 	

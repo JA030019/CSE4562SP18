@@ -29,7 +29,7 @@ public class SelectOperator implements TupleIterator<Tuple> {
 		this.ti = ti;
 		this.expWhere = expWhere;
 		this.open();
-		//this.print();
+		this.print();
 	}
 	
 	
@@ -104,7 +104,7 @@ public class SelectOperator implements TupleIterator<Tuple> {
 
 	@Override
 	public void print() {
-		System.out.println("select" );
+		System.err.println("select" );
 		
 	}
 

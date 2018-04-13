@@ -6,6 +6,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import net.sf.jsqlparser.expression.Expression;
+import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.schema.PrimitiveType;
 import net.sf.jsqlparser.statement.select.OrderByElement;
 
@@ -41,7 +42,7 @@ public class SortByExpression implements Comparator<Tuple>{
 	
 	public int compareHelp(Tuple t1, Tuple t2, OrderByElement orderByElement) {
 		
-		int help = 0;
+		/*int help = 0;
 		Evaluate evaluate1 = new Evaluate(t1);
 		Evaluate evaluate2 = new Evaluate(t2);
 		Expression expression = orderByElement.getExpression();
@@ -80,17 +81,59 @@ public class SortByExpression implements Comparator<Tuple>{
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}break;
-		/*case TIME :
-		    ;break;*/
+		case TIME :
+		    ;break;
 		default:
 		    break;
 		}
 			
 		if(!asc) {
 			help = Math.negateExact(help);
+		}*/
+		
+		int help = 0;
+		Evaluate evaluate1 = new Evaluate(t1);
+		Evaluate evaluate2 = new Evaluate(t2);
+		Expression expression = orderByElement.getExpression();
+		Column c = (Column)expression;
+		
+		boolean asc = orderByElement.isAsc();		
+
+		PrimitiveType dataType = null;
+		try {
+			dataType = (evaluate1).eval(expression).getType();
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
 		
-		//System.out.println("help: "+help);
+		switch(dataType){
+		case BOOL :
+			 break;
+		case DATE :
+			 break;
+		case DOUBLE :
+			  try {
+				  help = (int) t1.fullTupleMap.get(c).toDouble() - (int)t2.fullTupleMap.get(c).toDouble();
+				  //help = (int)((evaluate1).eval(expression).toDouble()-(evaluate2).eval(expression).toDouble());
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}break;
+		case LONG :			   
+			 try {
+				//help = (int)((evaluate1).eval(expression).toLong()-((evaluate2).eval(expression).toLong()));
+			    help = (int) t1.fullTupleMap.get(c).toLong() - (int)t2.fullTupleMap.get(c).toLong();
+			 } catch (SQLException e) {
+				e.printStackTrace();
+			}break;
+		case STRING :				 
+			 help = t1.fullTupleMap.get(c).toString().compareTo(t2.fullTupleMap.get(c).toString());
+			//help = (evaluate1).eval(expression).toString().compareTo((evaluate2).eval(expression).toString());break;
+		/*case TIME :
+		    ;break;*/
+		default:
+		    break;
+		}
+				
 		return help;
 	
 		

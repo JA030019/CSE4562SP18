@@ -58,7 +58,7 @@ public class HashJoinOperator2 implements TupleIterator<Tuple>{
         this.tr = tr;
         this.expression = expression;
         open();		
-       // this.print();
+        this.print();
 	}	
 	
 	@Override
@@ -291,7 +291,7 @@ public class HashJoinOperator2 implements TupleIterator<Tuple>{
 
 	@Override
 	public void print() {
-		System.out.println("hashjoin 2table");
+		System.err.println("hashjoin 2table");
 		
 	}
 

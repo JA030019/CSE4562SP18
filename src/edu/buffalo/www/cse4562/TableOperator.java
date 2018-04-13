@@ -41,7 +41,7 @@ public class TableOperator implements TupleIterator<Tuple>{
 	}
 	
 	public void print() {
-		System.out.println(table.getName());
+		System.err.println(table.getName());
 	}
 	
 

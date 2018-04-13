@@ -37,7 +37,7 @@ public class JoinOperator1 implements TupleIterator<Tuple>{
         this.tr = tr;
         this.expression = expression;
         open();
-       // this.print();
+        this.print();
 			
 	}
 	
@@ -262,7 +262,7 @@ public class JoinOperator1 implements TupleIterator<Tuple>{
 
 	@Override
 	public void print() {
-		System.out.println("join two table read");
+		System.err.println("join two table read");
 		
 	}
 	

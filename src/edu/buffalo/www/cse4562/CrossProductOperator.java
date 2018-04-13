@@ -37,7 +37,7 @@ public class CrossProductOperator implements TupleIterator<Tuple>{
         this.tr = tr;
         this.expression = expression;
         open();
-        //this.print();
+        this.print();
 			
 	}
 	
@@ -181,7 +181,7 @@ public class CrossProductOperator implements TupleIterator<Tuple>{
 
 	@Override
 	public void print() {
-		System.out.println("cross product");
+		System.err.println("cross product");
 		
 	}
 
