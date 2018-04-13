@@ -459,21 +459,21 @@ public class Main {
 			  //?????????
 			  if (joins != null) {
 
-				  if(expWhere == null) {
+				  //if(expWhere == null) {
 					  so = jo;
-				  }else {
-					  so = new SelectOperator(jo, expWhere);
-				  }
+				 // }else {
+				//	  so = new SelectOperator(jo, expWhere);
+				 // }
 
 			  }
 			  //no join, but subselect
 			  else if(sub != null){
 				  
-				  if(expWhere == null) {
+				 // if(expWhere == null) {
 					  so = sub;
-				  }else {
-				      so = new SelectOperator(sub, expWhere);
-				  }
+				 // }else {
+				  //    so = new SelectOperator(sub, expWhere);
+				  //}
 			  }
 			  //no join no subselect
 			  else {
