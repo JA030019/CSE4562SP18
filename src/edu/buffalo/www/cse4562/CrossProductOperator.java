@@ -25,11 +25,11 @@ public class CrossProductOperator implements TupleIterator<Tuple>{
 	ArrayList<Tuple> tupleListL = new ArrayList<Tuple>();
 	int countL = 0;
     	
-	HashMap<Column,PrimitiveValue> tempFullTupleMap1 = new HashMap<Column,PrimitiveValue>(); 
-	Tuple tempTupleL = new Tuple(tempFullTupleMap1);
+	//HashMap<Column,PrimitiveValue> tempFullTupleMap1 = new HashMap<Column,PrimitiveValue>(); 
+	Tuple tempTupleL = new Tuple();
 
-	HashMap<Column,PrimitiveValue> tempFullTupleMap = new HashMap<Column,PrimitiveValue>(); 
-	Tuple tempTupleR = new Tuple(tempFullTupleMap);	
+	//HashMap<Column,PrimitiveValue> tempFullTupleMap = new HashMap<Column,PrimitiveValue>(); 
+	Tuple tempTupleR = new Tuple();	
 	
 	public CrossProductOperator(TupleIterator<Tuple> tl, TupleIterator<Tuple> tr, Expression expression) {
 	
@@ -37,6 +37,7 @@ public class CrossProductOperator implements TupleIterator<Tuple>{
         this.tr = tr;
         this.expression = expression;
         open();
+        this.print();
 			
 	}
 	
@@ -63,8 +64,8 @@ public class CrossProductOperator implements TupleIterator<Tuple>{
 	@Override
 	public Tuple getNext() {
 		
-		HashMap<Column,PrimitiveValue> tempFullTupleMap2 = new HashMap<Column,PrimitiveValue>(); 
-		Tuple tupleCombine = new Tuple(tempFullTupleMap2);		
+		//HashMap<Column,PrimitiveValue> tempFullTupleMap2 = new HashMap<Column,PrimitiveValue>(); 
+		Tuple tupleCombine = new Tuple();		
 	
 		//write in right tuple into tuplelist
 		if(tupleListR.isEmpty()) {
@@ -170,12 +171,18 @@ public class CrossProductOperator implements TupleIterator<Tuple>{
 
 	public Tuple joinTuple(Tuple t1, Tuple t2){
 
-		HashMap<Column,PrimitiveValue> outFullTupleMap = new HashMap<Column,PrimitiveValue>(); 
-		Tuple outTuple = new Tuple(outFullTupleMap);
+		//HashMap<Column,PrimitiveValue> outFullTupleMap = new HashMap<Column,PrimitiveValue>(); 
+		Tuple outTuple = new Tuple();
 		outTuple.fullTupleMap.putAll(t1.fullTupleMap);
 		outTuple.fullTupleMap.putAll(t2.fullTupleMap);
 		
 		return outTuple;		
+	}
+
+	@Override
+	public void print() {
+		System.out.println("cross product");
+		
 	}
 
 	

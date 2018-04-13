@@ -14,11 +14,13 @@ public class SubSelectOperator implements TupleIterator<Tuple>{
 	TupleIterator<Tuple> to;
 	String subSelectAlias;
 	boolean isOpen = true;
+	Tuple tuple;
 	
 	public SubSelectOperator(TupleIterator<Tuple> to,String subSelectAlias) {
 		this.to = to;
 		this.subSelectAlias = subSelectAlias;		
 		open();
+		this.print();
 	}
 	
 
@@ -45,7 +47,7 @@ public class SubSelectOperator implements TupleIterator<Tuple>{
 		/*	HashMap<Column,PrimitiveValue> fullTupleMap = new HashMap<Column,PrimitiveValue>(); 
 			Tuple tuple = new Tuple(fullTupleMap);*/
 			
-			Tuple tuple = to.getNext();
+			 tuple = to.getNext();
 			
 			if(tuple == null) {
 				return null;
@@ -55,8 +57,8 @@ public class SubSelectOperator implements TupleIterator<Tuple>{
 				return tuple;
 			}
 			
-			HashMap<Column,PrimitiveValue> fullTupleMaptemp = new HashMap<Column,PrimitiveValue>(); 
-			Tuple tupletemp = new Tuple(fullTupleMaptemp);
+			//HashMap<Column,PrimitiveValue> fullTupleMaptemp = new HashMap<Column,PrimitiveValue>(); 
+			Tuple tupletemp = new Tuple();
 			
 			//Set<Column> columns = tuple.fullTupleMap.keySet();			
 			for(Column c: tuple.fullTupleMap.keySet()) {
@@ -83,4 +85,12 @@ public class SubSelectOperator implements TupleIterator<Tuple>{
 		return false;
 	}
 
+
+	@Override
+	public void print() {
+		System.out.println("subselect");
+		
+	}
+
+	
 }

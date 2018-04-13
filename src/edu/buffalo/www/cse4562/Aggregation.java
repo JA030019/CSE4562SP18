@@ -62,8 +62,8 @@ public class Aggregation {
 		PrimitiveValue output = null;
 		
 		//get data type
-		HashMap<Column,PrimitiveValue> fullTupleMap = new  HashMap<Column,PrimitiveValue>(); 
-		Tuple tuple = new Tuple(fullTupleMap);
+		//HashMap<Column,PrimitiveValue> fullTupleMap = new  HashMap<Column,PrimitiveValue>(); 
+		Tuple tuple = new Tuple();
 		tuple = tupleList.get(0);		
 		Evaluate tempev = new Evaluate(tuple);
 		PrimitiveValue temp = null;
@@ -122,8 +122,8 @@ public class Aggregation {
 		PrimitiveValue output = null;
 		
 		//get data type
-		HashMap<Column,PrimitiveValue> fullTupleMap = new  HashMap<Column,PrimitiveValue>(); 
-		Tuple tuple = new Tuple(fullTupleMap);
+		//HashMap<Column,PrimitiveValue> fullTupleMap = new  HashMap<Column,PrimitiveValue>(); 
+		Tuple tuple = new Tuple();
 		tuple = tupleList.get(0);		
 		Evaluate tempev = new Evaluate(tuple);
 		PrimitiveValue temp = null;
@@ -182,8 +182,8 @@ public class Aggregation {
 		PrimitiveValue output = null;
 		
 		//get data type
-		HashMap<Column,PrimitiveValue> fullTupleMap = new  HashMap<Column,PrimitiveValue>(); 
-		Tuple tuple = new Tuple(fullTupleMap);
+		//HashMap<Column,PrimitiveValue> fullTupleMap = new  HashMap<Column,PrimitiveValue>(); 
+		Tuple tuple = new Tuple();
 		tuple = tupleList.get(0);		
 		Evaluate tempev = new Evaluate(tuple);
 		PrimitiveValue temp = null;
@@ -238,8 +238,8 @@ public class Aggregation {
 		PrimitiveValue output = null;
 		
 		//get data type
-		HashMap<Column,PrimitiveValue> fullTupleMap = new  HashMap<Column,PrimitiveValue>(); 
-		Tuple tuple = new Tuple(fullTupleMap);
+		//HashMap<Column,PrimitiveValue> fullTupleMap = new  HashMap<Column,PrimitiveValue>(); 
+		Tuple tuple = new Tuple();
 		tuple = tupleList.get(0);		
 		Evaluate tempev = new Evaluate(tuple);
 		PrimitiveValue temp = null;

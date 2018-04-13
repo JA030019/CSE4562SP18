@@ -31,16 +31,16 @@ public class HashJoinOperator implements TupleIterator<Tuple>{
 	
 	HashMap<Integer, ArrayList<Tuple>> hashcodeMap = new HashMap<>();
 	
-	HashMap<Column,PrimitiveValue> tempFullTupleMap1 = new HashMap<Column,PrimitiveValue>(); 
-	Tuple tempTupleL = new Tuple(tempFullTupleMap1);
+	//HashMap<Column,PrimitiveValue> tempFullTupleMap1 = new HashMap<Column,PrimitiveValue>(); 
+	Tuple tempTupleL = new Tuple();
 	//Integer hashcodeL = new Integer(0); 
 	int hashcodeL = 0;
 	
-	HashMap<Column,PrimitiveValue> tempFullTupleMap = new HashMap<Column,PrimitiveValue>(); 
-	Tuple tempTupleR = new Tuple(tempFullTupleMap);	
+	//HashMap<Column,PrimitiveValue> tempFullTupleMap = new HashMap<Column,PrimitiveValue>(); 
+	Tuple tempTupleR = new Tuple();	
 	
-	HashMap<Column,PrimitiveValue> tempFullTupleMap3 = new HashMap<Column,PrimitiveValue>(); 
-	Tuple temp = new Tuple(tempFullTupleMap3);
+	//HashMap<Column,PrimitiveValue> tempFullTupleMap3 = new HashMap<Column,PrimitiveValue>(); 
+	Tuple temp = new Tuple();
 	
 	Column targetColumn = null;
 	public HashJoinOperator(TupleIterator<Tuple> tl, TupleIterator<Tuple> tr, Expression expression) {
@@ -49,6 +49,7 @@ public class HashJoinOperator implements TupleIterator<Tuple>{
         this.tr = tr;
         this.expression = expression;
         open();
+        this.print();
 			
 	}
 	
@@ -76,8 +77,8 @@ public class HashJoinOperator implements TupleIterator<Tuple>{
 	@Override
 	public Tuple getNext() {
 
-		HashMap<Column,PrimitiveValue> tempFullTupleMap2 = new HashMap<Column,PrimitiveValue>(); 
-		Tuple tupleCombine = new Tuple(tempFullTupleMap2);		
+		//HashMap<Column,PrimitiveValue> tempFullTupleMap2 = new HashMap<Column,PrimitiveValue>(); 
+		Tuple tupleCombine = new Tuple();		
 		
 		//ArrayList<Integer> hashList = new ArrayList<>();		
 		
@@ -208,8 +209,8 @@ public class HashJoinOperator implements TupleIterator<Tuple>{
 
     public Tuple joinTuple(Tuple t1, Tuple t2){
 
-		HashMap<Column,PrimitiveValue> outFullTupleMap = new HashMap<Column,PrimitiveValue>(); 
-		Tuple outTuple = new Tuple(outFullTupleMap);
+		//HashMap<Column,PrimitiveValue> outFullTupleMap = new HashMap<Column,PrimitiveValue>(); 
+		Tuple outTuple = new Tuple();
 		outTuple.fullTupleMap.putAll(t1.fullTupleMap);
 		outTuple.fullTupleMap.putAll(t2.fullTupleMap);
 		
@@ -268,5 +269,12 @@ public class HashJoinOperator implements TupleIterator<Tuple>{
     	return temp;
     	
     }
+
+
+	@Override
+	public void print() {
+		System.out.println("hashjoin 1 table");
+		
+	}
 
 }

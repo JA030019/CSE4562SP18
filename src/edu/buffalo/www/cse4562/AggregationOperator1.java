@@ -32,6 +32,7 @@ public class AggregationOperator1 implements TupleIterator<Tuple>{
 		this.hasFunc = op.hasFunc;
 		this.hasGroupby = op.hasGroupby;
 		this.open();
+		this.print();
 	}
 	
 	
@@ -56,11 +57,11 @@ public class AggregationOperator1 implements TupleIterator<Tuple>{
 		
 		countercase++;
 
-		HashMap<Column,PrimitiveValue> fullTupleMap = new  HashMap<Column,PrimitiveValue>(); 
-		Tuple tuple = new Tuple(fullTupleMap);	
+		//HashMap<Column,PrimitiveValue> fullTupleMap = new  HashMap<Column,PrimitiveValue>(); 
+		Tuple tuple = new Tuple();	
 		
-		HashMap<Column,PrimitiveValue> fullTupleMaptemp3 = new HashMap<Column,PrimitiveValue>(); 
-		Tuple outputTuple = new Tuple(fullTupleMaptemp3);
+		//HashMap<Column,PrimitiveValue> fullTupleMaptemp3 = new HashMap<Column,PrimitiveValue>(); 
+		Tuple outputTuple = new Tuple();
 		
 		ArrayList<Aggregation1> l = new ArrayList<>();
 	
@@ -124,6 +125,13 @@ public class AggregationOperator1 implements TupleIterator<Tuple>{
 			return true;
 		}
 		return false;
+	}
+
+
+	@Override
+	public void print() {
+		System.out.println("AggregationOperator no groupby");
+		
 	}
 
 }

@@ -17,12 +17,14 @@ public class OrderByOperator implements TupleIterator<Tuple> {
 	List<OrderByElement> orderByElements; 
 	ArrayList<Tuple> tupleBuffer = new ArrayList<>();
 	int count = 0;
+	Tuple tuple;
 	 	
 	public OrderByOperator(TupleIterator<Tuple> ti, List<OrderByElement> orderByElements) {
 		this.ti = ti;		
 		this.orderByElements = orderByElements;
 		//System.out.println(orderByElements == null);
 		open();
+		this.print();
 	}		
 	
 	@Override
@@ -46,8 +48,8 @@ public class OrderByOperator implements TupleIterator<Tuple> {
 	@Override
 	public Tuple getNext() {			
 		
-		HashMap<Column,PrimitiveValue> tempFullTupleMap = new HashMap<Column,PrimitiveValue>(); 
-		Tuple tempTuple = new Tuple(tempFullTupleMap);		
+		//HashMap<Column,PrimitiveValue> tempFullTupleMap = new HashMap<Column,PrimitiveValue>(); 
+		Tuple tempTuple = new Tuple();		
 		//if there is no orderby in query, return tuple
 		//if(orderByElements.isEmpty()) { 
 		// when there is no order by, plainSelect.getOrderByElements() return null
@@ -163,6 +165,12 @@ public class OrderByOperator implements TupleIterator<Tuple> {
 				
 		this.close();
 		return false;
+	}
+
+	@Override
+	public void print() {
+		System.out.println("orderby");
+		
 	}
 
 }

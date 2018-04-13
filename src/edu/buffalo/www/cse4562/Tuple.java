@@ -22,7 +22,7 @@ public class Tuple {
 	//<Table name,<column name, value>>
 	LinkedHashMap<Column,PrimitiveValue> fullTupleMap;
 	
-	public Tuple(HashMap<Column,PrimitiveValue> fullTupleMap) {
+	public Tuple() {
 		this.fullTupleMap = new LinkedHashMap<>();			
 		
 	}
@@ -149,14 +149,14 @@ public class Tuple {
 
     public void printTuple() throws InvalidPrimitive {
    	
-		  ArrayList<String> outTuple = new ArrayList<>();
-		  		 
+		 // ArrayList<String> outTuple = new ArrayList<>();
+		    StringBuilder outTuple = new StringBuilder();
 		  
-	    	if(fullTupleMap == null) {
+	    	if(fullTupleMap.isEmpty()) {
 	    		return;
 	    	}
 	    	
-	    	if(fullTupleMap.keySet() == null) {
+	    	if(fullTupleMap.keySet().isEmpty()) {
 	    		return;
 	    	}
 	    	
@@ -165,21 +165,14 @@ public class Tuple {
 			for(Column c: columns) {
 			PrimitiveValue value = fullTupleMap.get(c);	
 			if(value != null ) {
-				outTuple.add(value.toString());  
+				outTuple.append(value.toString()).append("|");  
 			}else {
 				return;
 			}
 		  }     
 		    			       	
-		for(int j=0; j < outTuple.size(); j++) {
-	    	
-	    	if(j != outTuple.size()-1) {
-	    		System.out.print(outTuple.get(j) + "|");
-	    	}else {	    					
-			System.out.print(outTuple.get(j));
-			System.out.println();
-	    	  }			 
-	    }
+		  outTuple.deleteCharAt(outTuple.length()-1);
+		  System.out.println(outTuple.toString());
     }
 		
 	public PrimitiveValue getTupleData(Table table, String columnName) {
@@ -220,8 +213,8 @@ public class Tuple {
 		String tableAlias = null;
 		tableAlias = table.getAlias();
 		
-		HashMap<Column,PrimitiveValue> fullTupleMaptemp = new LinkedHashMap<Column,PrimitiveValue>(); 
-		Tuple tupletemp = new Tuple(fullTupleMaptemp);
+		//HashMap<Column,PrimitiveValue> fullTupleMaptemp = new LinkedHashMap<Column,PrimitiveValue>(); 
+		Tuple tupletemp = new Tuple();
 		
 		Set<Column> columns = tuple.fullTupleMap.keySet();			
 		for(Column c: columns) {						

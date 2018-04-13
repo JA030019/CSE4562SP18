@@ -23,12 +23,16 @@ public class SelectOperator implements TupleIterator<Tuple> {
 	Expression expWhere;
 	boolean isOpen = true;
 	Evaluate evaluate; 
+	Tuple tuple;
 	
 	public SelectOperator(TupleIterator<Tuple> ti, Expression expWhere) {
 		this.ti = ti;
 		this.expWhere = expWhere;
 		this.open();
+		this.print();
 	}
+	
+	
 
 	@Override
 	public void open() {
@@ -55,7 +59,7 @@ public class SelectOperator implements TupleIterator<Tuple> {
 			Tuple tuple = new Tuple(fullTupleMap);
 			//Evaluate evaluate = new Evaluate(tuple);
 */			
-			Tuple tuple = ti.getNext();
+			tuple = ti.getNext();
 			
 			//System.out.println("selection from table "+ tuple.fullTupleMap.size() +" "+ tuple.fullTupleMap.isEmpty());
 			//System.out.println("selection from table "+ tuple.fullTupleMap.get();
@@ -94,6 +98,14 @@ public class SelectOperator implements TupleIterator<Tuple> {
 		}				
 		this.close();
 		return false;
+	}
+
+
+
+	@Override
+	public void print() {
+		System.out.println("select" );
+		
 	}
 
 }

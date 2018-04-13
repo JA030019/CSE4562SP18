@@ -50,6 +50,7 @@ public class AggregationOperator implements TupleIterator<Tuple>{
 		this.hasFunc = op.hasFunc;
 		this.hasGroupby = op.hasGroupby;
 		this.open();
+		this.print();
 	}
 
 	@Override
@@ -71,8 +72,8 @@ public class AggregationOperator implements TupleIterator<Tuple>{
 	@Override
 	public Tuple getNext() {
 		
-		HashMap<Column,PrimitiveValue> fullTupleMap = new  HashMap<Column,PrimitiveValue>(); 
-		Tuple tuple = new Tuple(fullTupleMap);	
+		//HashMap<Column,PrimitiveValue> fullTupleMap = new  HashMap<Column,PrimitiveValue>(); 
+		Tuple tuple = new Tuple();	
 		 
 		//case1 there is group by in the query
 		//eg coulumnRefList: R.A, R.B, T.C		
@@ -137,11 +138,11 @@ public class AggregationOperator implements TupleIterator<Tuple>{
 		
 		//projection		
 		//tempTuple for 3 cases to use
-		HashMap<Column,PrimitiveValue> fullTupleMaptemp = new HashMap<Column,PrimitiveValue>(); 
-		Tuple tempTuple = new Tuple(fullTupleMaptemp);
+		//HashMap<Column,PrimitiveValue> fullTupleMaptemp = new HashMap<Column,PrimitiveValue>(); 
+		Tuple tempTuple = new Tuple();
 		
-		HashMap<Column,PrimitiveValue> fullTupleMaptemp3 = new HashMap<Column,PrimitiveValue>(); 
-		Tuple outputTuple = new Tuple(fullTupleMaptemp3);	
+		//HashMap<Column,PrimitiveValue> fullTupleMaptemp3 = new HashMap<Column,PrimitiveValue>(); 
+		Tuple outputTuple = new Tuple();	
 
 		//case 1 has function + no groupby
 		if(hasFunc && !hasGroupby) {
@@ -292,6 +293,12 @@ public class AggregationOperator implements TupleIterator<Tuple>{
 		}
 
 		return false;
+	}
+
+	@Override
+	public void print() {
+		System.out.println("AggregationOperator");
+		
 	}
 	
 	

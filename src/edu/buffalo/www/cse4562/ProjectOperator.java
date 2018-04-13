@@ -25,11 +25,13 @@ public class ProjectOperator implements TupleIterator<Tuple>{
 	List<SelectItem> selectItems = new ArrayList<SelectItem>(); //SELECT A, B, C
 	Evaluate evaluate;
 	boolean isOpen = true;
+	Tuple tuple;
 	
 	public ProjectOperator( TupleIterator<Tuple> ti, List<SelectItem> selectItems) {
 		this.ti = ti;
 		this.selectItems = selectItems;		
 		this.open();
+		this.print();
 	}
 	
 	@Override
@@ -58,7 +60,7 @@ public class ProjectOperator implements TupleIterator<Tuple>{
 
         /*HashMap<Column,PrimitiveValue> fullTupleMap = new  HashMap<Column,PrimitiveValue>(); 
 		Tuple tuple = new Tuple(fullTupleMap);	*/			
-		Tuple tuple = ti.getNext();//get tuple from selectoperator
+		 tuple = ti.getNext();//get tuple from selectoperator
 		
 		//System.out.println("projection from selection "+ tuple.fullTupleMap.size() +" "+ tuple.fullTupleMap.isEmpty());
 		if(tuple == null) {		
@@ -66,8 +68,8 @@ public class ProjectOperator implements TupleIterator<Tuple>{
 			return null;			
 		}			
 		
-		HashMap<Column,PrimitiveValue> fullTupleMaptemp = new HashMap<Column,PrimitiveValue>(); 
-		Tuple tempTuple = new Tuple(fullTupleMaptemp);		
+		//HashMap<Column,PrimitiveValue> fullTupleMaptemp = new HashMap<Column,PrimitiveValue>(); 
+		Tuple tempTuple = new Tuple();		
 		
 		for(SelectItem s: selectItems) {
 			
@@ -152,6 +154,12 @@ public class ProjectOperator implements TupleIterator<Tuple>{
 		
 		close();
 		return false;
+	}
+
+	@Override
+	public void print() {
+		System.out.println("project");
+		
 	}
 			
 

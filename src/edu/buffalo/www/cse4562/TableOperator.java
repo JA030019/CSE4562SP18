@@ -36,7 +36,14 @@ public class TableOperator implements TupleIterator<Tuple>{
 		this.file = new File(filepath);
 		this.ct = Main.tableMap.get(table.getName().toLowerCase());	
 		this.open();
+		this.print();
+		
 	}
+	
+	public void print() {
+		System.out.println(table.getName());
+	}
+	
 
 	@Override
 	public void open() {
@@ -66,8 +73,8 @@ public class TableOperator implements TupleIterator<Tuple>{
 	@Override
 	public Tuple getNext() {
 		
-		HashMap<Column,PrimitiveValue> fullTupleMap = new HashMap<Column,PrimitiveValue>(); 		
-		Tuple tuple = new Tuple(fullTupleMap);
+		//HashMap<Column,PrimitiveValue> fullTupleMap = new HashMap<Column,PrimitiveValue>(); 		
+		Tuple tuple = new Tuple();
 				
 		if(reader == null) {
 			return null;

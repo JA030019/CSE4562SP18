@@ -68,7 +68,7 @@ public class Main {
              System.out.println(prompt);
              System.out.flush();
              long endTime = System.currentTimeMillis(); 
-             System.err.println("Time = " + (endTime -startTime)); 	
+             System.out.println("Time = " + (endTime -startTime)); 	
         }
 	}
 	
@@ -122,7 +122,7 @@ public class Main {
 			   ----------------------optimization-------------------------------------                                                                     
 	                                                                                 */
 			   Optimizer op = new Optimizer(columnRefList, expProList);
-			   
+			   //boolean t = false;
 			   
 			 /*  //test
 			   op.allBinarySplit(expsel);*/
@@ -459,7 +459,13 @@ public class Main {
   
               //To be modified cuz of pushing down selection 
 			  //parser selection(WHERE R.B = 0) SELECT R.A FROM R WHERE R.B = 0;
-			  Expression expWhere = op.selRest;
+			  Expression expWhere; 
+			  if(joins == null){
+				  expWhere = plainSelect.getWhere();
+			  }else {
+				  expWhere = op.selRest;
+			  }
+			  
 			  
 			  //?????????
 			  if (joins != null) {

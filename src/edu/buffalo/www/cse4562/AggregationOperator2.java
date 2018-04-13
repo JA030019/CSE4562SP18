@@ -51,6 +51,7 @@ public class AggregationOperator2 implements TupleIterator<Tuple>{
 		this.hasFunc = op.hasFunc;
 		this.hasGroupby = op.hasGroupby;
 		this.open();
+		this.print();
 	}
 
 	@Override
@@ -88,21 +89,17 @@ public class AggregationOperator2 implements TupleIterator<Tuple>{
 					
 					//StringBuilder code1 = new StringBuilder();
 					//String code = null;
-					
+					//int code = 0;
 					for(Column c : columnRefList) {											
-						try {
-							 //code1.append(evaluate.eval(c)).append("|");
-							//code = (evaluate.eval(c)).toString() + "|";
-							code.add(evaluate.eval(c));
-						} catch (SQLException e) {
-	                        //System.out.println("group by eval can't find");
-							e.printStackTrace();
-						}						
+						//code1.append(evaluate.eval(c)).append("|");
+						//code = (evaluate.eval(c)).toString() + "|";
+						code.add(tuple.fullTupleMap.get(c));
+						//code = code + evaluate.eval(c).hashCode();						
 					}
 					
 					 
 					//String code = code1.toString();
-					//int code = tempValueList.hashCode();
+					//int code = code.hashCode();
 					//case1 new one: create new innertuplelist to store tuple add it to HashMap
 					if(!hashCodeMap.containsKey(code)) {					
 						
@@ -170,8 +167,8 @@ public class AggregationOperator2 implements TupleIterator<Tuple>{
             // System.out.println("Time = " + (endTime -startTime));
 		}
 		
-		HashMap<Column,PrimitiveValue> fullTupleMaptemp3 = new HashMap<Column,PrimitiveValue>(); 
-		Tuple outputTuple = new Tuple(fullTupleMaptemp3);
+		//HashMap<Column,PrimitiveValue> fullTupleMaptemp3 = new HashMap<Column,PrimitiveValue>(); 
+		Tuple outputTuple = new Tuple();
 		
 		//load hashList
 		if(hashList.isEmpty()) {
@@ -226,6 +223,12 @@ public class AggregationOperator2 implements TupleIterator<Tuple>{
 	   }		
 
 		return false;
+	}
+
+	@Override
+	public void print() {
+		System.out.println("AggregationOperator2");
+		
 	}
 	
 	

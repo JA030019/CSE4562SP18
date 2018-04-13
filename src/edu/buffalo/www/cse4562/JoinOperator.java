@@ -22,11 +22,11 @@ public class JoinOperator implements TupleIterator<Tuple>{
 	ArrayList<Tuple> tupleListR = new ArrayList<Tuple>();
 	int count = 0;
     	
-	HashMap<Column,PrimitiveValue> tempFullTupleMap1 = new HashMap<Column,PrimitiveValue>(); 
-	Tuple tempTupleL = new Tuple(tempFullTupleMap1);
+	//HashMap<Column,PrimitiveValue> tempFullTupleMap1 = new HashMap<Column,PrimitiveValue>(); 
+	Tuple tempTupleL = new Tuple();
 
-	HashMap<Column,PrimitiveValue> tempFullTupleMap = new HashMap<Column,PrimitiveValue>(); 
-	Tuple tempTupleR = new Tuple(tempFullTupleMap);	
+	//HashMap<Column,PrimitiveValue> tempFullTupleMap = new HashMap<Column,PrimitiveValue>(); 
+	Tuple tempTupleR = new Tuple();	
 	
 	public JoinOperator(TupleIterator<Tuple> tl, TupleIterator<Tuple> tr, Expression expression) {
 	
@@ -34,6 +34,7 @@ public class JoinOperator implements TupleIterator<Tuple>{
         this.tr = tr;
         this.expression = expression;
         open();
+        this.print();
 			
 	}
 	
@@ -60,8 +61,8 @@ public class JoinOperator implements TupleIterator<Tuple>{
 	@Override
 	public Tuple getNext() {
 		
-		HashMap<Column,PrimitiveValue> tempFullTupleMap2 = new HashMap<Column,PrimitiveValue>(); 
-		Tuple tupleCombine = new Tuple(tempFullTupleMap2);
+		//HashMap<Column,PrimitiveValue> tempFullTupleMap2 = new HashMap<Column,PrimitiveValue>(); 
+		Tuple tupleCombine = new Tuple();
 		
 	
 		//write in right tuple into tuplelist
@@ -208,8 +209,8 @@ public class JoinOperator implements TupleIterator<Tuple>{
    public Tuple joinTuple(Tuple t1, Tuple t2, Expression expression) throws SQLException {
 		
 		//if expression true return tuple else null
-		HashMap<Column,PrimitiveValue> outFullTupleMap = new HashMap<Column,PrimitiveValue>(); 
-		Tuple outTuple = new Tuple(outFullTupleMap);
+		//HashMap<Column,PrimitiveValue> outFullTupleMap = new HashMap<Column,PrimitiveValue>(); 
+		Tuple outTuple = new Tuple();
 
 		outTuple.fullTupleMap.putAll(t1.fullTupleMap);
 		outTuple.fullTupleMap.putAll(t2.fullTupleMap);
@@ -228,5 +229,12 @@ public class JoinOperator implements TupleIterator<Tuple>{
 		return null;
 		
 	}
+
+@Override
+public void print() {
+	System.out.println("join one table read"
+			);
+	
+}
 	
 }

@@ -22,6 +22,7 @@ public class LimitOperator implements TupleIterator<Tuple> {
 		this.ti = ti;		
 		this.limit = limit;
 		open();
+		this.print();
 	}
 		
 	@Override
@@ -97,6 +98,12 @@ public class LimitOperator implements TupleIterator<Tuple> {
 		}			
 		
 		return true;		
+	}
+
+	@Override
+	public void print() {
+		System.out.println("limit");
+		
 	}
 
 }
