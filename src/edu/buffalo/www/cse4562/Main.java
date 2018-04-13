@@ -41,7 +41,7 @@ public class Main {
 
         while((statement = parser.Statement()) != null){     
         	
-        	long startTime=System.currentTimeMillis(); 
+        	long startTime=System.currentTimeMillis(); //long endTime=System.
         	
 		     if(statement instanceof CreateTable) {				        		
 			      CreateTable ct = new CreateTable();
@@ -465,16 +465,14 @@ public class Main {
 			  if(!op.hasFunc && !op.hasGroupby) {
 				  //parser projection(SELECT R.A, R.B, R.C) SELECT R.A, R.B, R.C FROM R WHERE R.B = 0;
 				  ap = new ProjectOperator(so, expProList);
-			  }
-			  
+			  }			  
 			  //case2 no groupby + function			  
 			  else if(op.hasFunc && !op.hasGroupby) {
 				  ap = new AggregationOperator1(so,expHaving, columnRefList, expProList, op);
 			  }
 			  //case3  groupby + no function
 			  //case4 groupby function		  
-			  else{
-				  
+			  else{				  
 				  ap = new AggregationOperator2(so,expHaving, columnRefList, expProList, op); 
 			  } 
   

@@ -10,6 +10,7 @@ import net.sf.jsqlparser.expression.Function;
 import net.sf.jsqlparser.expression.LongValue;
 import net.sf.jsqlparser.expression.PrimitiveValue;
 import net.sf.jsqlparser.expression.PrimitiveValue.InvalidPrimitive;
+import net.sf.jsqlparser.expression.operators.arithmetic.Addition;
 import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.schema.PrimitiveType;
 
@@ -21,8 +22,8 @@ public class Aggregation1 {
 	double tempmin = 0;
 	double tempsum = 0;
 	double tempavg = 0;
-	int countersum = 0;
 	int counter = 0;
+	int countersum = 0;
 	String dataType = null;
 	
 	PrimitiveValue max;
@@ -197,7 +198,6 @@ public class Aggregation1 {
 	}
 	
 	public void sum(Tuple tuple) {
-		
 		countersum ++;
 		
 		//only consider SINGLE expression sum(R.A + R.B*R.C)
@@ -242,6 +242,24 @@ public class Aggregation1 {
 		}else {
 			sum = new DoubleValue(tempsum);
 		}
+		/*if(countersum == 1) {
+			try {
+				sum = evaluate.eval(exp);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}else {
+			try {
+				PrimitiveValue t = evaluate.eval(exp);
+				sum = (PrimitiveValue) evaluate.eval(new Addition(sum,evaluate.eval(exp)));
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}*/
+		 
+		
 		
 	}
 	
@@ -259,6 +277,14 @@ public class Aggregation1 {
 		}else {
 			avg = new DoubleValue(tempavg);
 		}
+		
+		
+		/*try {
+			avg = new DoubleValue(sum.toDouble()/countersum);
+		} catch (InvalidPrimitive e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}*/
 		
 	}
 	

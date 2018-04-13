@@ -3,7 +3,7 @@ package edu.buffalo.www.cse4562;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 
 import net.sf.jsqlparser.expression.BinaryExpression;
 import net.sf.jsqlparser.expression.BooleanValue;
@@ -31,15 +31,15 @@ public class HashJoinOperator implements TupleIterator<Tuple>{
 	
 	HashMap<Integer, ArrayList<Tuple>> hashcodeMap = new HashMap<>();
 	
-	LinkedHashMap<Column,PrimitiveValue> tempFullTupleMap1 = new LinkedHashMap<Column,PrimitiveValue>(); 
+	HashMap<Column,PrimitiveValue> tempFullTupleMap1 = new HashMap<Column,PrimitiveValue>(); 
 	Tuple tempTupleL = new Tuple(tempFullTupleMap1);
 	//Integer hashcodeL = new Integer(0); 
 	int hashcodeL = 0;
 	
-	LinkedHashMap<Column,PrimitiveValue> tempFullTupleMap = new LinkedHashMap<Column,PrimitiveValue>(); 
+	HashMap<Column,PrimitiveValue> tempFullTupleMap = new HashMap<Column,PrimitiveValue>(); 
 	Tuple tempTupleR = new Tuple(tempFullTupleMap);	
 	
-	LinkedHashMap<Column,PrimitiveValue> tempFullTupleMap3 = new LinkedHashMap<Column,PrimitiveValue>(); 
+	HashMap<Column,PrimitiveValue> tempFullTupleMap3 = new HashMap<Column,PrimitiveValue>(); 
 	Tuple temp = new Tuple(tempFullTupleMap3);
 	
 	Column targetColumn = null;
@@ -76,7 +76,7 @@ public class HashJoinOperator implements TupleIterator<Tuple>{
 	@Override
 	public Tuple getNext() {
 
-		LinkedHashMap<Column,PrimitiveValue> tempFullTupleMap2 = new LinkedHashMap<Column,PrimitiveValue>(); 
+		HashMap<Column,PrimitiveValue> tempFullTupleMap2 = new HashMap<Column,PrimitiveValue>(); 
 		Tuple tupleCombine = new Tuple(tempFullTupleMap2);		
 		
 		//ArrayList<Integer> hashList = new ArrayList<>();		
@@ -208,7 +208,7 @@ public class HashJoinOperator implements TupleIterator<Tuple>{
 
     public Tuple joinTuple(Tuple t1, Tuple t2){
 
-		LinkedHashMap<Column,PrimitiveValue> outFullTupleMap = new LinkedHashMap<Column,PrimitiveValue>(); 
+		HashMap<Column,PrimitiveValue> outFullTupleMap = new HashMap<Column,PrimitiveValue>(); 
 		Tuple outTuple = new Tuple(outFullTupleMap);
 		outTuple.fullTupleMap.putAll(t1.fullTupleMap);
 		outTuple.fullTupleMap.putAll(t2.fullTupleMap);

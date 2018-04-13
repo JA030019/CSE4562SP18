@@ -46,19 +46,21 @@ public class OrderByOperator implements TupleIterator<Tuple> {
 	@Override
 	public Tuple getNext() {			
 		
-		LinkedHashMap<Column,PrimitiveValue> tempFullTupleMap = new LinkedHashMap<Column,PrimitiveValue>(); 
+		HashMap<Column,PrimitiveValue> tempFullTupleMap = new HashMap<Column,PrimitiveValue>(); 
 		Tuple tempTuple = new Tuple(tempFullTupleMap);		
 		//if there is no orderby in query, return tuple
 		//if(orderByElements.isEmpty()) { 
 		// when there is no order by, plainSelect.getOrderByElements() return null
 		if(orderByElements == null) {
-			tempTuple =  ti.getNext();//get tuple from projectOperator
+		 tempTuple =  ti.getNext();//get tuple from projectOperator
 			if(tempTuple == null) {
 				this.close();
 				return null;
 			}				
 			return tempTuple;		
 		}
+		
+		//long startTime=System.currentTimeMillis(); //long endTime=System.
 		
 		// if there is order by in query
 		//expression and asc from orderByElement
@@ -97,6 +99,9 @@ public class OrderByOperator implements TupleIterator<Tuple> {
 				
 				Collections.sort(tupleBuffer, new SortByExpression(orderByElements));		
 		}
+		
+		//long endTime = System.currentTimeMillis(); 
+        //System.out.println("Time = " + (endTime -startTime));
 
 	 /*	for(OrderByElement orderByElement : orderByElements) {			
 			expression = orderByElement.getExpression();

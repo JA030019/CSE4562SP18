@@ -1,7 +1,7 @@
 package edu.buffalo.www.cse4562;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.List;
 
 import net.sf.jsqlparser.expression.Expression;
@@ -56,10 +56,10 @@ public class AggregationOperator1 implements TupleIterator<Tuple>{
 		
 		countercase++;
 
-		LinkedHashMap<Column,PrimitiveValue> fullTupleMap = new  LinkedHashMap<Column,PrimitiveValue>(); 
+		HashMap<Column,PrimitiveValue> fullTupleMap = new  HashMap<Column,PrimitiveValue>(); 
 		Tuple tuple = new Tuple(fullTupleMap);	
 		
-		LinkedHashMap<Column,PrimitiveValue> fullTupleMaptemp3 = new LinkedHashMap<Column,PrimitiveValue>(); 
+		HashMap<Column,PrimitiveValue> fullTupleMaptemp3 = new HashMap<Column,PrimitiveValue>(); 
 		Tuple outputTuple = new Tuple(fullTupleMaptemp3);
 		
 		ArrayList<Aggregation1> l = new ArrayList<>();

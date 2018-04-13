@@ -2,7 +2,7 @@ package edu.buffalo.www.cse4562;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 
 import net.sf.jsqlparser.expression.BooleanValue;
 import net.sf.jsqlparser.expression.Expression;
@@ -22,10 +22,10 @@ public class JoinOperator implements TupleIterator<Tuple>{
 	ArrayList<Tuple> tupleListR = new ArrayList<Tuple>();
 	int count = 0;
     	
-	LinkedHashMap<Column,PrimitiveValue> tempFullTupleMap1 = new LinkedHashMap<Column,PrimitiveValue>(); 
+	HashMap<Column,PrimitiveValue> tempFullTupleMap1 = new HashMap<Column,PrimitiveValue>(); 
 	Tuple tempTupleL = new Tuple(tempFullTupleMap1);
 
-	LinkedHashMap<Column,PrimitiveValue> tempFullTupleMap = new LinkedHashMap<Column,PrimitiveValue>(); 
+	HashMap<Column,PrimitiveValue> tempFullTupleMap = new HashMap<Column,PrimitiveValue>(); 
 	Tuple tempTupleR = new Tuple(tempFullTupleMap);	
 	
 	public JoinOperator(TupleIterator<Tuple> tl, TupleIterator<Tuple> tr, Expression expression) {
@@ -60,7 +60,7 @@ public class JoinOperator implements TupleIterator<Tuple>{
 	@Override
 	public Tuple getNext() {
 		
-		LinkedHashMap<Column,PrimitiveValue> tempFullTupleMap2 = new LinkedHashMap<Column,PrimitiveValue>(); 
+		HashMap<Column,PrimitiveValue> tempFullTupleMap2 = new HashMap<Column,PrimitiveValue>(); 
 		Tuple tupleCombine = new Tuple(tempFullTupleMap2);
 		
 	
@@ -125,7 +125,7 @@ public class JoinOperator implements TupleIterator<Tuple>{
 			if(tempTupleL != null) {
 				
 				try {
-					tupleCombine = joinTuple(tempTupleL, tempTupleR, expression);
+					 tupleCombine = joinTuple(tempTupleL, tempTupleR, expression);
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
@@ -208,7 +208,7 @@ public class JoinOperator implements TupleIterator<Tuple>{
    public Tuple joinTuple(Tuple t1, Tuple t2, Expression expression) throws SQLException {
 		
 		//if expression true return tuple else null
-		LinkedHashMap<Column,PrimitiveValue> outFullTupleMap = new LinkedHashMap<Column,PrimitiveValue>(); 
+		HashMap<Column,PrimitiveValue> outFullTupleMap = new HashMap<Column,PrimitiveValue>(); 
 		Tuple outTuple = new Tuple(outFullTupleMap);
 
 		outTuple.fullTupleMap.putAll(t1.fullTupleMap);

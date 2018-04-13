@@ -2,7 +2,7 @@ package edu.buffalo.www.cse4562;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
@@ -56,9 +56,9 @@ public class ProjectOperator implements TupleIterator<Tuple>{
 	@Override
 	public Tuple getNext() {		
 
-        LinkedHashMap<Column,PrimitiveValue> fullTupleMap = new  LinkedHashMap<Column,PrimitiveValue>(); 
-		Tuple tuple = new Tuple(fullTupleMap);				
-		tuple = ti.getNext();//get tuple from selectoperator
+        /*HashMap<Column,PrimitiveValue> fullTupleMap = new  HashMap<Column,PrimitiveValue>(); 
+		Tuple tuple = new Tuple(fullTupleMap);	*/			
+		Tuple tuple = ti.getNext();//get tuple from selectoperator
 		
 		//System.out.println("projection from selection "+ tuple.fullTupleMap.size() +" "+ tuple.fullTupleMap.isEmpty());
 		if(tuple == null) {		
@@ -66,7 +66,7 @@ public class ProjectOperator implements TupleIterator<Tuple>{
 			return null;			
 		}			
 		
-		LinkedHashMap<Column,PrimitiveValue> fullTupleMaptemp = new LinkedHashMap<Column,PrimitiveValue>(); 
+		HashMap<Column,PrimitiveValue> fullTupleMaptemp = new HashMap<Column,PrimitiveValue>(); 
 		Tuple tempTuple = new Tuple(fullTupleMaptemp);		
 		
 		for(SelectItem s: selectItems) {

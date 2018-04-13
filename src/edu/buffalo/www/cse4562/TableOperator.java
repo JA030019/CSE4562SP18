@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.List;
 
 import net.sf.jsqlparser.expression.DateValue;
@@ -66,7 +66,7 @@ public class TableOperator implements TupleIterator<Tuple>{
 	@Override
 	public Tuple getNext() {
 		
-		LinkedHashMap<Column,PrimitiveValue> fullTupleMap = new LinkedHashMap<Column,PrimitiveValue>(); 		
+		HashMap<Column,PrimitiveValue> fullTupleMap = new HashMap<Column,PrimitiveValue>(); 		
 		Tuple tuple = new Tuple(fullTupleMap);
 				
 		if(reader == null) {

@@ -4,7 +4,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
@@ -71,7 +71,7 @@ public class AggregationOperator implements TupleIterator<Tuple>{
 	@Override
 	public Tuple getNext() {
 		
-		LinkedHashMap<Column,PrimitiveValue> fullTupleMap = new  LinkedHashMap<Column,PrimitiveValue>(); 
+		HashMap<Column,PrimitiveValue> fullTupleMap = new  HashMap<Column,PrimitiveValue>(); 
 		Tuple tuple = new Tuple(fullTupleMap);	
 		 
 		//case1 there is group by in the query
@@ -80,7 +80,7 @@ public class AggregationOperator implements TupleIterator<Tuple>{
 		if(columnRefList != null && !columnRefList.isEmpty()) {
 			if(hashCodeMap.isEmpty()) {
 				while(ti.hasNext()) {
-					tuple = ti.getNext();
+				 tuple = ti.getNext();
 					if(tuple != null) {	
 						
 						Evaluate evaluate = new Evaluate(tuple);					
@@ -137,10 +137,10 @@ public class AggregationOperator implements TupleIterator<Tuple>{
 		
 		//projection		
 		//tempTuple for 3 cases to use
-		LinkedHashMap<Column,PrimitiveValue> fullTupleMaptemp = new LinkedHashMap<Column,PrimitiveValue>(); 
+		HashMap<Column,PrimitiveValue> fullTupleMaptemp = new HashMap<Column,PrimitiveValue>(); 
 		Tuple tempTuple = new Tuple(fullTupleMaptemp);
 		
-		LinkedHashMap<Column,PrimitiveValue> fullTupleMaptemp3 = new LinkedHashMap<Column,PrimitiveValue>(); 
+		HashMap<Column,PrimitiveValue> fullTupleMaptemp3 = new HashMap<Column,PrimitiveValue>(); 
 		Tuple outputTuple = new Tuple(fullTupleMaptemp3);	
 
 		//case 1 has function + no groupby

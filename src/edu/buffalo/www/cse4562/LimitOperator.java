@@ -1,6 +1,6 @@
 package edu.buffalo.www.cse4562;
 
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 
 import net.sf.jsqlparser.expression.PrimitiveValue;
 import net.sf.jsqlparser.schema.Column;
@@ -48,12 +48,9 @@ public class LimitOperator implements TupleIterator<Tuple> {
 
 	@Override
 	public Tuple getNext() {
-
-		LinkedHashMap<Column,PrimitiveValue> tempFullTupleMap = new LinkedHashMap<Column,PrimitiveValue>(); 
-		Tuple tempTuple = new Tuple(tempFullTupleMap);
-		
+	
 		// get tuple from orderByOperator
-		tempTuple = ti.getNext(); 
+		Tuple tempTuple = ti.getNext(); 
 		
 		// there is no tuple passed from iterator
 		if(tempTuple == null) {

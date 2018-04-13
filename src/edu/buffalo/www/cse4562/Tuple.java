@@ -22,8 +22,8 @@ public class Tuple {
 	//<Table name,<column name, value>>
 	LinkedHashMap<Column,PrimitiveValue> fullTupleMap;
 	
-	public Tuple(LinkedHashMap<Column,PrimitiveValue> fullTupleMap) {
-		this.fullTupleMap = fullTupleMap;			
+	public Tuple(HashMap<Column,PrimitiveValue> fullTupleMap) {
+		this.fullTupleMap = new LinkedHashMap<>();			
 		
 	}
 		
@@ -220,7 +220,7 @@ public class Tuple {
 		String tableAlias = null;
 		tableAlias = table.getAlias();
 		
-		LinkedHashMap<Column,PrimitiveValue> fullTupleMaptemp = new LinkedHashMap<Column,PrimitiveValue>(); 
+		HashMap<Column,PrimitiveValue> fullTupleMaptemp = new LinkedHashMap<Column,PrimitiveValue>(); 
 		Tuple tupletemp = new Tuple(fullTupleMaptemp);
 		
 		Set<Column> columns = tuple.fullTupleMap.keySet();			

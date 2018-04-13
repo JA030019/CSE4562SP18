@@ -4,7 +4,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
@@ -31,12 +31,12 @@ public class AggregationOperator2 implements TupleIterator<Tuple>{
 	ArrayList<Tuple> tupleList = new ArrayList<Tuple>();// store all tuples of table
 	
 	//key -> hashcode, value -> ArrayList<Tuple>
-	HashMap<Integer, ArrayList<Object>> hashCodeMap = new HashMap<>();
+	HashMap<ArrayList<PrimitiveValue>, ArrayList<Object>> hashCodeMap = new HashMap<>();
 	
 	boolean hasFunc = false;
 	boolean hasGroupby = false;
 	
-	ArrayList<Integer> hashList = new ArrayList<>();// sotre key ---> hash code
+	ArrayList<ArrayList<PrimitiveValue>> hashList = new ArrayList<>();// sotre key ---> hash code
 	int keySize = 0;
 	int mapCounter = 0;	
 	
@@ -72,29 +72,37 @@ public class AggregationOperator2 implements TupleIterator<Tuple>{
 	@Override
 	public Tuple getNext() {
 		
-		LinkedHashMap<Column,PrimitiveValue> fullTupleMap = new  LinkedHashMap<Column,PrimitiveValue>(); 
-		Tuple tuple = new Tuple(fullTupleMap);	
+		/*LinHashMap<Column,PrimitiveValue> fullTupleMap = new  LinkedHashMap<Column,PrimitiveValue>(); 
+		Tuple tuple = new Tuple(fullTupleMap);	*/
 		 
 		//case1 there is group by in the query
 		//eg coulumnRefList: R.A, R.B, T.C		
 		if(hashCodeMap.isEmpty()) {
+		//	long startTime=System.currentTimeMillis(); //long endTime=System.
 			while(ti.hasNext()) {
-				tuple = ti.getNext();
+				
+			Tuple tuple = ti.getNext();
 				if(tuple != null) {
 					Evaluate evaluate = new Evaluate(tuple);					
-					ArrayList<PrimitiveValue> tempValueList = new ArrayList<>();
+					ArrayList<PrimitiveValue> code = new ArrayList<>();
+					
+					//StringBuilder code1 = new StringBuilder();
+					//String code = null;
 					
 					for(Column c : columnRefList) {											
 						try {
-							tempValueList.add(evaluate.eval(c));
+							// code1.append(evaluate.eval(c)).append(" ");
+							//code = (evaluate.eval(c)).toString() + "|";
+							code.add(evaluate.eval(c));
 						} catch (SQLException e) {
-	                        System.out.println("group by eval can't find");
+	                        //System.out.println("group by eval can't find");
 							e.printStackTrace();
 						}						
 					}
 					
-					Integer code = tempValueList.hashCode();
-					
+					 
+					//String code = code1.toString();
+					//int code = tempValueList.hashCode();
 					//case1 new one: create new innertuplelist to store tuple add it to HashMap
 					if(!hashCodeMap.containsKey(code)) {					
 						
@@ -156,15 +164,18 @@ public class AggregationOperator2 implements TupleIterator<Tuple>{
 				   }		
 					
 				}
+				
 			}
+			// long endTime = System.currentTimeMillis(); 
+            // System.out.println("Time = " + (endTime -startTime));
 		}
 		
-		LinkedHashMap<Column,PrimitiveValue> fullTupleMaptemp3 = new LinkedHashMap<Column,PrimitiveValue>(); 
+		HashMap<Column,PrimitiveValue> fullTupleMaptemp3 = new HashMap<Column,PrimitiveValue>(); 
 		Tuple outputTuple = new Tuple(fullTupleMaptemp3);
 		
 		//load hashList
 		if(hashList.isEmpty()) {
-			Set<Integer> hashSet = hashCodeMap.keySet();
+			Set<ArrayList<PrimitiveValue>> hashSet = hashCodeMap.keySet();
 			hashList.addAll(hashSet);
 			keySize = hashList.size();
 		}

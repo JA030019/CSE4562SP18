@@ -2,7 +2,7 @@ package edu.buffalo.www.cse4562;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.List;
 
 import net.sf.jsqlparser.expression.BooleanValue;
@@ -51,11 +51,11 @@ public class SelectOperator implements TupleIterator<Tuple> {
 
 		//if(ti.hasNext()) {
 					
-			LinkedHashMap<Column,PrimitiveValue> fullTupleMap = new LinkedHashMap<Column,PrimitiveValue>(); 
+			/*HashMap<Column,PrimitiveValue> fullTupleMap = new HashMap<Column,PrimitiveValue>(); 
 			Tuple tuple = new Tuple(fullTupleMap);
 			//Evaluate evaluate = new Evaluate(tuple);
-			
-			tuple = ti.getNext();
+*/			
+			Tuple tuple = ti.getNext();
 			
 			//System.out.println("selection from table "+ tuple.fullTupleMap.size() +" "+ tuple.fullTupleMap.isEmpty());
 			//System.out.println("selection from table "+ tuple.fullTupleMap.get();

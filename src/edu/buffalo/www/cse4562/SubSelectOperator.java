@@ -1,6 +1,6 @@
 package edu.buffalo.www.cse4562;
 
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.Set;
 
 import net.sf.jsqlparser.expression.PrimitiveValue;
@@ -42,10 +42,10 @@ public class SubSelectOperator implements TupleIterator<Tuple>{
 		
 		if(to.hasNext()) {
 					
-			LinkedHashMap<Column,PrimitiveValue> fullTupleMap = new LinkedHashMap<Column,PrimitiveValue>(); 
-			Tuple tuple = new Tuple(fullTupleMap);
+		/*	HashMap<Column,PrimitiveValue> fullTupleMap = new HashMap<Column,PrimitiveValue>(); 
+			Tuple tuple = new Tuple(fullTupleMap);*/
 			
-			tuple = to.getNext();
+			Tuple tuple = to.getNext();
 			
 			if(tuple == null) {
 				return null;
@@ -55,7 +55,7 @@ public class SubSelectOperator implements TupleIterator<Tuple>{
 				return tuple;
 			}
 			
-			LinkedHashMap<Column,PrimitiveValue> fullTupleMaptemp = new LinkedHashMap<Column,PrimitiveValue>(); 
+			HashMap<Column,PrimitiveValue> fullTupleMaptemp = new HashMap<Column,PrimitiveValue>(); 
 			Tuple tupletemp = new Tuple(fullTupleMaptemp);
 			
 			//Set<Column> columns = tuple.fullTupleMap.keySet();			
