@@ -113,7 +113,7 @@ public class SortByExpression implements Comparator<Tuple>{
 			 break;
 		case DOUBLE :
 			  try {
-				  help = (int) t1.fullTupleMap.get(c).toDouble() - (int)t2.fullTupleMap.get(c).toDouble();
+				 help = (int) t1.fullTupleMap.get(c).toDouble() - (int)t2.fullTupleMap.get(c).toDouble();
 				  //help = (int)((evaluate1).eval(expression).toDouble()-(evaluate2).eval(expression).toDouble());
 			} catch (SQLException e1) {
 				e1.printStackTrace();
@@ -126,7 +126,7 @@ public class SortByExpression implements Comparator<Tuple>{
 				e.printStackTrace();
 			}break;
 		case STRING :				 
-			 help = t1.fullTupleMap.get(c).toString().compareTo(t2.fullTupleMap.get(c).toString());
+			    help = t1.fullTupleMap.get(c).toString().compareTo(t2.fullTupleMap.get(c).toString());
 			//help = (evaluate1).eval(expression).toString().compareTo((evaluate2).eval(expression).toString());break;
 		/*case TIME :
 		    ;break;*/
@@ -134,6 +134,9 @@ public class SortByExpression implements Comparator<Tuple>{
 		    break;
 		}
 				
+		if(!asc) {
+			help = Math.negateExact(help);
+		}
 		return help;
 	
 		
