@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import net.sf.jsqlparser.expression.DateValue;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.schema.PrimitiveType;
@@ -20,76 +21,26 @@ public class SortByExpression implements Comparator<Tuple>{
 		this.orderByElements = orderByElements;	
 	}	
 
-	@Override
+   @Override
    public int compare(Tuple t1, Tuple t2) {
 
 		int temp = 0;		
 		int count = 0;
 		
-		int sizeOfElements = orderByElements.size();
-		//System.out.println("size of orderbyElements " + sizeOfElements);
+		int sizeOfElements = orderByElements.size();		
 		
 	    while(temp == 0 && count < sizeOfElements) {
 	    	
 			 temp = compareHelp(t1,t2,orderByElements.get(count));
 			 count++;
-			// System.out.println("count: "+count);
+			
 		}
 		return temp;
 
 		
 	}
 	
-	public int compareHelp(Tuple t1, Tuple t2, OrderByElement orderByElement) {
-		
-		/*int help = 0;
-		Evaluate evaluate1 = new Evaluate(t1);
-		Evaluate evaluate2 = new Evaluate(t2);
-		Expression expression = orderByElement.getExpression();
-		boolean asc = orderByElement.isAsc();
-		//System.out.println(" asc "+ asc);
-
-		PrimitiveType dataType = null;
-		try {
-			dataType = (evaluate1).eval(expression).getType();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		
-		switch(dataType){
-		case BOOL :
-			 break;
-		case DATE :
-			 break;
-		case DOUBLE :
-			  try {
-				help = (int)((evaluate1).eval(expression).toDouble()-(evaluate2).eval(expression).toDouble());
-			} catch (SQLException e1) {
-				e1.printStackTrace();
-			}break;
-		case LONG :			   
-			 try {
-				help = (int)((evaluate1).eval(expression).toLong()-((evaluate2).eval(expression).toLong()));
-			   // System.out.println("tuple1: " + (evaluate1).eval(expression).toLong());
-			   // System.out.println("tuple2: " + (evaluate2).eval(expression).toLong());
-			 } catch (SQLException e) {
-				e.printStackTrace();
-			}break;
-		case STRING :				 
-			 try {
-				help = (evaluate1).eval(expression).toString().compareTo((evaluate2).eval(expression).toString());
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}break;
-		case TIME :
-		    ;break;
-		default:
-		    break;
-		}
-			
-		if(!asc) {
-			help = Math.negateExact(help);
-		}*/
+	public int compareHelp(Tuple t1, Tuple t2, OrderByElement orderByElement) {				
 		
 		int help = 0;
 		Evaluate evaluate1 = new Evaluate(t1);
@@ -110,11 +61,28 @@ public class SortByExpression implements Comparator<Tuple>{
 		case BOOL :
 			 break;
 		case DATE :
+			 DateValue d1 = (DateValue) t1.fullTupleMap.get(c);
+			 DateValue d2 = (DateValue) t2.fullTupleMap.get(c);
+			
+			 if(d1.getYear() == d2.getYear()) {
+				 if(d1.getMonth() == d2.getMonth()) {
+					 if(d1.getDate() == d2.getDate()) {
+						 help = 0;
+					 }else {
+						 help = d1.getDate() - d2.getDate();
+					 }
+				 }else {
+					 help = d1.getMonth() - d2.getMonth();
+				 }
+				 
+			 }else {
+				 help = d1.getYear() - d2.getYear();
+			 } 
 			 break;
 		case DOUBLE :
 			  try {
 				 help = (int) t1.fullTupleMap.get(c).toDouble() - (int)t2.fullTupleMap.get(c).toDouble();
-				  //help = (int)((evaluate1).eval(expression).toDouble()-(evaluate2).eval(expression).toDouble());
+				//help = (int)((evaluate1).eval(expression).toDouble()-(evaluate2).eval(expression).toDouble());
 			} catch (SQLException e1) {
 				e1.printStackTrace();
 			}break;
@@ -127,7 +95,7 @@ public class SortByExpression implements Comparator<Tuple>{
 			}break;
 		case STRING :				 
 			    help = t1.fullTupleMap.get(c).toString().compareTo(t2.fullTupleMap.get(c).toString());
-			//help = (evaluate1).eval(expression).toString().compareTo((evaluate2).eval(expression).toString());break;
+			   //help = (evaluate1).eval(expression).toString().compareTo((evaluate2).eval(expression).toString());break;
 		/*case TIME :
 		    ;break;*/
 		default:
@@ -137,9 +105,9 @@ public class SortByExpression implements Comparator<Tuple>{
 		if(!asc) {
 			help = Math.negateExact(help);
 		}
-		return help;
-	
 		
+		return help;
+			
 	}
 	
 }

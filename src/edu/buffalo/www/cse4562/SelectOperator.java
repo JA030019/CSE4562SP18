@@ -101,11 +101,9 @@ public class SelectOperator implements TupleIterator<Tuple> {
 	}
 
 
-
 	@Override
 	public void print() {
-		System.err.println("select" );
-		
+		System.err.println("select" );		
 	}
 
 }

@@ -18,8 +18,7 @@ import net.sf.jsqlparser.schema.PrimitiveType;
 import net.sf.jsqlparser.schema.Table;
 
 public class Tuple {     
-	
-	//<Table name,<column name, value>>
+		
 	LinkedHashMap<Column,PrimitiveValue> fullTupleMap;
 	
 	public Tuple() {
@@ -28,7 +27,7 @@ public class Tuple {
 	}
 		
 	//Overload
-	//set the value of data in the tuple
+	//set value of data in the tuple
 	public void setValue( Table table, String columnName, PrimitiveValue value) {
 		Column c = new Column(table, columnName);
 		fullTupleMap.put(c, value);
@@ -148,22 +147,17 @@ public class Tuple {
 
 
     public void printTuple() throws InvalidPrimitive {
-   	
-		 // ArrayList<String> outTuple = new ArrayList<>();
+   			 
 		    StringBuilder outTuple = new StringBuilder();
 		  
-	    	if(fullTupleMap.isEmpty()) {
+	    	if(fullTupleMap.isEmpty() || fullTupleMap == null) {
 	    		return;
-	    	}
+	    	}	    		    	
 	    	
-	    	if(fullTupleMap.keySet().isEmpty()) {
-	    		return;
-	    	}
-	    	
-			Set<Column> columns = fullTupleMap.keySet();		
+			Set<Column> columnList = fullTupleMap.keySet();		
 	
-			for(Column c: columns) {
-			PrimitiveValue value = fullTupleMap.get(c);	
+			for(Column c: columnList) {
+			    PrimitiveValue value = fullTupleMap.get(c);	
 			if(value != null ) {
 				outTuple.append(value.toString()).append("|");  
 			}else {
@@ -174,55 +168,22 @@ public class Tuple {
 		  outTuple.deleteCharAt(outTuple.length()-1);
 		  System.out.println(outTuple.toString());
     }
-		
-	/*public PrimitiveValue getTupleData(Table table, String columnName) {
-		PrimitiveValue temp = null;
-		Column c = new Column(table, columnName);
-		temp = fullTupleMap.get(c);
-		return temp;
-	} */   
+			
 	
-	public Table getTupleTable() {
-		
-		if(fullTupleMap == null) {
-    		return null;
-    	}
-    	
-    	if(fullTupleMap.keySet() == null) {
-    		return null;
-    	}
-    	
-    	ArrayList<Table> outTable = new ArrayList<>();
-		Set<Column> columns = fullTupleMap.keySet();
-		for(Column c: columns) {
-			Table table = c.getTable();	
-			if(table != null ) {
-				outTable.add(table);  
-			}else {
-				return null;
-			}
-		  }   
-		
-		return outTable.get(0);
-		
-	}   
-	
-	
-	public Tuple setAlias(Tuple tuple, Table table) {
+	public Tuple setTableAlias(Tuple tuple, Table table) {
 		
 		String tableAlias = null;
 		tableAlias = table.getAlias();
+
+		Tuple tempTuple = new Tuple();
 		
-		//HashMap<Column,PrimitiveValue> fullTupleMaptemp = new LinkedHashMap<Column,PrimitiveValue>(); 
-		Tuple tupletemp = new Tuple();
-		
-		Set<Column> columns = tuple.fullTupleMap.keySet();			
-		for(Column c: columns) {						
+		Set<Column> columnList = tuple.fullTupleMap.keySet();			
+		for(Column c: columnList) {						
 			c.getTable().setName(tableAlias);		
-			tupletemp.fullTupleMap.put(c, tuple.fullTupleMap.get(c));
+			tempTuple.fullTupleMap.put(c, tuple.fullTupleMap.get(c));
 		}
 		
-		return tupletemp;
+		return tempTuple;
 		
 	}
 	

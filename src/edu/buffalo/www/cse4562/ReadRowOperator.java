@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import net.sf.jsqlparser.expression.DateValue;
@@ -16,25 +17,28 @@ import net.sf.jsqlparser.schema.Table;
 import net.sf.jsqlparser.statement.create.table.ColumnDefinition;
 import net.sf.jsqlparser.statement.create.table.CreateTable;
 
-public class TableOperator implements TupleIterator<Tuple>{
+public class ReadRowOperator implements TupleIterator<Tuple>{
 			
 	Table table;	    
 	CreateTable ct;
 	File file;	
 	BufferedReader reader = null;
 	String filepath;
+	ArrayList<Integer> rowList;
+	int counter = 0;
 	
-	public TableOperator(Table table) {
+	public ReadRowOperator(Table table, ArrayList<Integer> rowList) {
 		this.table = table;
 		this.filepath= "data/"+ table.getName()+ ".dat"; 
 		this.file = new File(filepath);
 		this.ct = Main.tableMap.get(table.getName().toLowerCase());	
+		this.rowList = rowList;
 		this.open();
 		this.print();		
 	}
 	
 	public void print() {
-		System.err.println("Table " + table.getName());
+		System.err.println("Table read fk row" + table.getName());
 	}
 	
 
@@ -76,77 +80,85 @@ public class TableOperator implements TupleIterator<Tuple>{
 		
 		try {
 			line = reader.readLine();
+			counter ++;
 		} catch (IOException e) {
 			e.printStackTrace();
 			return null;
 		}
 		
 		if(line == null) {
+			//counter = 0;
 			return null;
 		}
-		
-		String[] columns = line.split("\\|");
-				
-		List<ColumnDefinition> columnDefinitions = ct.getColumnDefinitions();
-		
-		for(int i = 0; i< columns.length ;i++) {
-			String dataType = columnDefinitions.get(i).getColDataType().getDataType().toLowerCase();
-			String columnName = columnDefinitions.get(i).getColumnName();
+		if(rowList.contains(counter)) {
 			
-			switch(dataType){
-			case "string" :
-			case "varchar": 
-			case "char":
-			    tuple.setValue(table, columnName, new StringValue(columns[i]));break;
-			case "int":
-				tuple.setValue(table, columnName, new LongValue(Long.parseLong(columns[i])));
-				break;
-			case "integer":
-				tuple.setValue(table, columnName, new LongValue(Long.parseLong(columns[i])));
-				break;
-			case "double":
-				tuple.setValue(table, columnName, new DoubleValue(Double.parseDouble(columns[i])));				 
-				break;
-			case "decimal":				 
-				tuple.setValue(table, columnName, new DoubleValue(Double.parseDouble(columns[i])));break;
-			case "date":
-				tuple.setValue(table,columnName, new DateValue(columns[i]));break;
-			default:
-				tuple.setValue(table, columnName, new NullValue());break;
-			}			      
+			String[] columns = line.split("\\|");
+			
+			List<ColumnDefinition> columnDefinitions = ct.getColumnDefinitions();
+			
+			for(int i = 0; i< columns.length ;i++) {
+				String dataType = columnDefinitions.get(i).getColDataType().getDataType().toLowerCase();
+				String columnName = columnDefinitions.get(i).getColumnName();
+				
+				switch(dataType){
+				case "string" :
+				case "varchar": 
+				case "char":
+				    tuple.setValue(table, columnName, new StringValue(columns[i]));break;
+				case "int":
+					tuple.setValue(table, columnName, new LongValue(Long.parseLong(columns[i])));
+					break;
+				case "integer":
+					tuple.setValue(table, columnName, new LongValue(Long.parseLong(columns[i])));
+					break;
+				case "double":
+					tuple.setValue(table, columnName, new DoubleValue(Double.parseDouble(columns[i])));				 
+					break;
+				case "decimal":				 
+					tuple.setValue(table, columnName, new DoubleValue(Double.parseDouble(columns[i])));break;
+				case "date":
+					tuple.setValue(table,columnName, new DateValue(columns[i]));break;
+				default:
+					tuple.setValue(table, columnName, new NullValue());break;
+				}			      
+			}
+			
+			if(table.getAlias() != null){
+				tuple.setTableAlias(tuple, table);
+			}	     
+			
+			return tuple;
+			
+		}else {
+			return this.getNext();
 		}
-		
-		if(table.getAlias() != null){
-			tuple.setTableAlias(tuple, table);
-		}	     
-		
-		return tuple;
-		
+	
 	}
 
 	@Override
 	public boolean hasNext() {
 		
-		 if (reader == null) { 
+		 if (reader == null || counter == rowList.get(rowList.size())) { 
 			 return false;
 			 }
 		 
 		 try {
-			 if (reader.ready()) {
-			        return true;
-			  } else {
-				  reader.close();
-			        return false;
-			  }  
+				 if (reader.ready()) {
+				        return true;
+				  } else {
+					  reader.close();
+				        return false;
+				 }  
 	         } 
 		 catch (IOException e) {
 				      e.printStackTrace();
 				      return false;
-				   } 			 
+		} 			 
 	}
 
 
 }
 	
+
 
 
