@@ -14,8 +14,10 @@ import net.sf.jsqlparser.expression.LongValue;
 import net.sf.jsqlparser.expression.NullValue;
 import net.sf.jsqlparser.expression.PrimitiveValue;
 import net.sf.jsqlparser.expression.StringValue;
+import net.sf.jsqlparser.expression.operators.relational.EqualsTo;
 import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.schema.PrimitiveType;
+import net.sf.jsqlparser.schema.Table;
 
 public class HashJoinOperator implements TupleIterator<Tuple>{
 
@@ -30,27 +32,48 @@ public class HashJoinOperator implements TupleIterator<Tuple>{
 	int count = 0;// flag the position of tuple in the tupleHashList
 	
 	HashMap<Integer, ArrayList<Tuple>> hashcodeMap = new HashMap<>();
-	
-	//HashMap<Column,PrimitiveValue> tempFullTupleMap1 = new HashMap<Column,PrimitiveValue>(); 
+
 	Tuple tempTupleL = new Tuple();
-	//Integer hashcodeL = new Integer(0); 
-	int hashcodeL = 0;
-	
-	//HashMap<Column,PrimitiveValue> tempFullTupleMap = new HashMap<Column,PrimitiveValue>(); 
-	Tuple tempTupleR = new Tuple();	
-	
-	//HashMap<Column,PrimitiveValue> tempFullTupleMap3 = new HashMap<Column,PrimitiveValue>(); 
+
+	int hashcodeL = 0;	
+
+	Tuple tempTupleR = new Tuple();		
+
 	Tuple temp = new Tuple();
 	
 	Column targetColumn = null;
-	public HashJoinOperator(TupleIterator<Tuple> tl, TupleIterator<Tuple> tr, Expression expression) {
+	
+	// table information from tableinfo
+	ArrayList<String> tnList = new ArrayList<>();	
+	//ArrayList<String> cnList = new ArrayList<>();
+	
+	//TableInfo2 tableInfol;
+	//TableInfo2 tableInfor;
+	
+	Table tabler;
+	String tnr;
+	
+	public HashJoinOperator(TupleIterator<Tuple> tl, TupleIterator<Tuple> tr, Expression expression, Table tabler) {
 	
 		this.tl = tl;
         this.tr = tr;
-        this.expression = expression;
-        open();
+        //this.expression = expression;
+        //this.cnList = getColumnNames(expression);
+        this.tnList = getTableAlias(expression);
+        //this.tableInfol = Main.fullIndexMap.get(tnList.get(0));
+       // this.tableInfor = Main.fullIndexMap.get(tnList.get(1));
+        this.tabler = tabler;
+        this.tnr = tabler.getAlias();
+        
+        if(!tnList.get(1).equals(tnr)) {
+        	this.expression = reverseExpression(expression);        	
+        }else {
+        	this.expression = expression;
+        }
+
+        this.open();
         this.print();
-			
+		
 	}
 	
 	
@@ -67,8 +90,7 @@ public class HashJoinOperator implements TupleIterator<Tuple>{
 	@Override
 	public void close() {
 		 if(isOpen) {
-			tl.close();
-			//tr.close();
+			tl.close();			
 			isOpen = false;
 		}	
 		
@@ -77,11 +99,8 @@ public class HashJoinOperator implements TupleIterator<Tuple>{
 	@Override
 	public Tuple getNext() {
 
-		//HashMap<Column,PrimitiveValue> tempFullTupleMap2 = new HashMap<Column,PrimitiveValue>(); 
-		Tuple tupleCombine = new Tuple();		
-		
-		//ArrayList<Integer> hashList = new ArrayList<>();		
-		
+		Tuple tupleCombine = null;		
+
 		//get columns
 		ArrayList<Column> columnList =  expressionAnalyzer(expression);
 			
@@ -103,7 +122,8 @@ public class HashJoinOperator implements TupleIterator<Tuple>{
 					}
 					
 					//get hashcode and build hashcodeMap
-					int hashCode = hashCodeCalculator(tuple.fullTupleMap.get(targetColumn));
+					//int hashCode = hashCodeCalculator(tuple.fullTupleMap.get(targetColumn));
+					int hashCode = tuple.fullTupleMap.get(targetColumn).hashCode();
 					if(!hashcodeMap.containsKey(hashCode)) {
 						ArrayList<Tuple> atmp = new ArrayList<Tuple>();
 						atmp.add(tuple);
@@ -124,11 +144,11 @@ public class HashJoinOperator implements TupleIterator<Tuple>{
 		if(tempTupleL.fullTupleMap.isEmpty()) {
 			tempTupleL = tl.getNext();
 			if(tempTupleL != null) {
-				//for(Column c: columnList) {
-					//if(tempTupleL.fullTupleMap.containsKey(c)) {
-						 hashcodeL = hashCodeCalculator(tempTupleL.fullTupleMap.get(columnList.get(0)));		
-					//}
-			   // }
+				
+				
+
+				hashcodeL = tempTupleL.fullTupleMap.get(columnList.get(0)).hashCode();		
+
 			}
 		}
 		
@@ -138,11 +158,9 @@ public class HashJoinOperator implements TupleIterator<Tuple>{
             if(tempTupleL == null) {
             	return null;
             }           
-			//for(Column c: columnList) {
-			//	if(tempTupleL.fullTupleMap.containsKey(c)) {
-					 hashcodeL = hashCodeCalculator(tempTupleL.fullTupleMap.get(columnList.get(0)));		
-			//	}
-			//}
+
+		    hashcodeL = tempTupleL.fullTupleMap.get(columnList.get(0)).hashCode();		
+		
 		}
 		
 		if(hashcodeMap.containsKey(hashcodeL)) {
@@ -171,13 +189,9 @@ public class HashJoinOperator implements TupleIterator<Tuple>{
 		            }
 					
 					count = 0;
-					
-					//for(Column c: columnList) {
-					//	if(tempTupleL.fullTupleMap.containsKey(c)) {
-							 hashcodeL = hashCodeCalculator(tempTupleL.fullTupleMap.get(columnList.get(0)));		
-					//	}
-					//}
-					
+
+				    hashcodeL = tempTupleL.fullTupleMap.get(columnList.get(0)).hashCode();		
+
 					return this.getNext();
 				}
 			}
@@ -209,7 +223,6 @@ public class HashJoinOperator implements TupleIterator<Tuple>{
 
     public Tuple joinTuple(Tuple t1, Tuple t2){
 
-		//HashMap<Column,PrimitiveValue> outFullTupleMap = new HashMap<Column,PrimitiveValue>(); 
 		Tuple outTuple = new Tuple();
 		outTuple.fullTupleMap.putAll(t1.fullTupleMap);
 		outTuple.fullTupleMap.putAll(t2.fullTupleMap);
@@ -238,43 +251,73 @@ public class HashJoinOperator implements TupleIterator<Tuple>{
 		}
 		return null;		
     }
-    
-    public int hashCodeCalculator(PrimitiveValue t) {
-		
-    	PrimitiveType dataType = t.getType();
-    	int temp = 0;
-    	switch(dataType){
-		case BOOL:		
-		    temp = t.hashCode();
-		    break;
-		case DATE:
-			temp = t.hashCode();
-			break;
-		case DOUBLE:
-			temp = t.hashCode();
-			break;
-		case LONG:
-			temp = t.hashCode();				 
-			break;
-		case STRING:
-			temp = t.hashCode();
-			break;
-		case TIME:
-			temp = t.hashCode();
-			break;
-		default:			
-			break;
-		}			      
-	
-    	return temp;
-    	
-    }
-
 
 	@Override
 	public void print() {
-		System.err.println("hashjoin 1 table");
+		System.err.println("hashjoin 1 table" + tnList);
 		
 	}
+	
+	
+	/*//modified for checkpoint 4
+	public ArrayList<String> getColumnNames(Expression exp){
+		
+		ArrayList<String> cnList = new ArrayList<>();
+		
+		Expression l = ((BinaryExpression) expression).getLeftExpression();
+		Expression r = ((BinaryExpression) expression).getRightExpression();
+				
+		if(l instanceof Column) {
+			Column columnl = (Column)l;
+			cnList.add(columnl.getColumnName());
+		}
+		
+		if(r instanceof Column) {
+			Column columnr = (Column)r;
+			cnList.add(columnr.getColumnName());
+		}	
+		
+		return cnList;
+		
+	}*/
+	
+	//modified for checkpoint 4
+    public ArrayList<String> getTableAlias(Expression expression){
+		
+		ArrayList<String> tnList = new ArrayList<>();
+		
+		Expression l = ((BinaryExpression) expression).getLeftExpression();
+		Expression r = ((BinaryExpression) expression).getRightExpression();
+				
+		if(l instanceof Column) {
+			Column columnl = (Column)l;
+			tnList.add(columnl.getTable().getName());
+		}
+		
+		if(r instanceof Column) {
+			Column columnr = (Column)r;
+			tnList.add(columnr.getTable().getName());
+		}	
+		
+		return tnList;
+		
+	}
+    
+    public Expression reverseExpression(Expression exp) {
+    	
+    	Expression temp = null;
+	
+    	if(exp instanceof BinaryExpression) {
+			Expression l = ((BinaryExpression) exp).getLeftExpression();
+			Expression r = ((BinaryExpression) exp).getRightExpression();
+			
+			temp = new EqualsTo(r,l);
+    	}	
+					    
+    	
+    	
+		return temp;
+    	
+    }
 
 }

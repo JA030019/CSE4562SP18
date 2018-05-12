@@ -1,5 +1,4 @@
 package edu.buffalo.www.cse4562;
-
 import java.sql.SQLException;
 import java.util.*;
 
@@ -67,21 +66,21 @@ public class Aggregation1 {
 		
 		//to be modified for *, allColumns -->ONLY COUNT(*)
 		if(funcName.equals("*")) {
-		    //return null;
+		    
 		}else if(funcName.equals("MAX")) {
-		    //return max();
+		    
 			this.max(tuple);
 		}else if(funcName.equals("MIN")) {
-			//return min();
+			
 			this.min(tuple);
 		}else if(funcName.equals("COUNT")) {
-			//return count();
+			
 			this.count(tuple);
 		}else if(funcName.equals("SUM")) {
-			//return sum();
+			
 			this.sum(tuple);
 		}else if (funcName.equals("AVG")) {
-			//return avg();
+			
 			this.avg(tuple);
 		}
 		
@@ -243,31 +242,13 @@ public class Aggregation1 {
 		}else {
 			sum = new DoubleValue(tempsum);
 		}
-		/*if(countersum == 1) {
-			try {
-				sum = evaluate.eval(exp);
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}else {
-			try {
-				PrimitiveValue t = evaluate.eval(exp);
-				sum = (PrimitiveValue) evaluate.eval(new Addition(sum,evaluate.eval(exp)));
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}*/
-		 
-		
-		
+
 	}
 	
 	public void avg(Tuple tuple) {		      
 		
 		sum(tuple);
-		//count(tuple);
+
 		
 		tempavg = tempsum/(countersum);
 		
@@ -278,27 +259,11 @@ public class Aggregation1 {
 		}else {
 			avg = new DoubleValue(tempavg);
 		}
-		
-		
-		/*try {
-			avg = new DoubleValue(sum.toDouble()/countersum);
-		} catch (InvalidPrimitive e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-        
-        Evaluate evaluate = new Evaluate(tuple);
-        
-        try {
-			avg = evaluate.eval(new Division(sum,new LongValue(countersum)));
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}*/
-        
-		
+	
 	}
 	
+	
+	//dont work rn
 	public void count(Tuple tuple) {
 		
 		int tempc = 0;
@@ -316,24 +281,12 @@ public class Aggregation1 {
     	PrimitiveType dataType1 = t.getType();
     	String temp1 = null;
     	switch(dataType1){
-		/*case BOOL:		
-		    temp = t.hashCode();
-		    break;
-		case DATE:
-			temp = t.hashCode();
-			break;*/
 		case DOUBLE:
 			temp1 = "DoubleValue";
 			break;
 		case LONG:
 			temp1 = "LongValue";				 
 			break;
-		/*case STRING:
-			temp = t.hashCode();
-			break;
-		case TIME:
-			temp = t.hashCode();
-			break;*/
 		default:			
 			break;
 		}			      

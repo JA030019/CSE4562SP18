@@ -88,12 +88,7 @@ public class AggregationOperator implements TupleIterator<Tuple>{
 						ArrayList<PrimitiveValue> tempValueList = new ArrayList<>();
 						
 						for(Column c : columnRefList) {											
-							try {
-								tempValueList.add(evaluate.eval(c));
-							} catch (SQLException e) {
-		                        System.out.println("group by eval can't find");
-								e.printStackTrace();
-							}						
+							tempValueList.add(evaluate.eval(c));						
 						}
 						
 						Integer code = tempValueList.hashCode();

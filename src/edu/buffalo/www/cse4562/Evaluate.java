@@ -1,5 +1,4 @@
 package edu.buffalo.www.cse4562;
-
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -15,7 +14,6 @@ import net.sf.jsqlparser.schema.Table;
 
 public class Evaluate extends Eval  {
 
-	//HashMap<String, DateValue> dates;
 	Tuple tuple;
 	
 	public Evaluate (Tuple tuple) {		
@@ -23,9 +21,8 @@ public class Evaluate extends Eval  {
 	}	
 
 	@Override
-	public PrimitiveValue eval(Column c) throws SQLException {
-        
-		// return tuple.getTupleData(c.getTable(),c.getColumnName());
+	public PrimitiveValue eval(Column c) {
+
 		 return tuple.fullTupleMap.get(c);
 	}
 	

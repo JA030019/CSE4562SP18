@@ -1,5 +1,4 @@
 package edu.buffalo.www.cse4562;
-
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,10 +13,7 @@ public class CrossProductOperator implements TupleIterator<Tuple>{
 	TupleIterator<Tuple> tl;
 	TupleIterator<Tuple> tr;
 	Expression expression;
-	boolean isOpen = true;
-	boolean isNatural = false;
-	boolean isInner = true;
-	boolean isSimple = false;	
+	boolean isOpen = true;	
 	
 	ArrayList<Tuple> tupleListR = new ArrayList<Tuple>();
 	int countR = 0;
@@ -25,10 +21,8 @@ public class CrossProductOperator implements TupleIterator<Tuple>{
 	ArrayList<Tuple> tupleListL = new ArrayList<Tuple>();
 	int countL = 0;
     	
-	//HashMap<Column,PrimitiveValue> tempFullTupleMap1 = new HashMap<Column,PrimitiveValue>(); 
 	Tuple tempTupleL = new Tuple();
 
-	//HashMap<Column,PrimitiveValue> tempFullTupleMap = new HashMap<Column,PrimitiveValue>(); 
 	Tuple tempTupleR = new Tuple();	
 	
 	public CrossProductOperator(TupleIterator<Tuple> tl, TupleIterator<Tuple> tr, Expression expression) {
@@ -36,7 +30,7 @@ public class CrossProductOperator implements TupleIterator<Tuple>{
 		this.tl = tl;
         this.tr = tr;
         this.expression = expression;
-        open();
+        this.open();
         this.print();
 			
 	}
@@ -54,8 +48,6 @@ public class CrossProductOperator implements TupleIterator<Tuple>{
 	@Override
 	public void close() {
 		 if(isOpen) {
-			//tl.close();
-			//tr.close();
 			isOpen = false;
 		}	
 		
@@ -63,9 +55,8 @@ public class CrossProductOperator implements TupleIterator<Tuple>{
 
 	@Override
 	public Tuple getNext() {
-		
-		//HashMap<Column,PrimitiveValue> tempFullTupleMap2 = new HashMap<Column,PrimitiveValue>(); 
-		Tuple tupleCombine = new Tuple();		
+
+		Tuple tupleCombine = null;		
 	
 		//write in right tuple into tuplelist
 		if(tupleListR.isEmpty()) {
@@ -100,8 +91,7 @@ public class CrossProductOperator implements TupleIterator<Tuple>{
 		    }
 		}
 		
-		//inialize left tuple
-		
+		//inialize left tuple		
 		if(tempTupleL.fullTupleMap.isEmpty()) {
 			tempTupleL = tupleListL.get(0);
 		}
@@ -171,7 +161,6 @@ public class CrossProductOperator implements TupleIterator<Tuple>{
 
 	public Tuple joinTuple(Tuple t1, Tuple t2){
 
-		//HashMap<Column,PrimitiveValue> outFullTupleMap = new HashMap<Column,PrimitiveValue>(); 
 		Tuple outTuple = new Tuple();
 		outTuple.fullTupleMap.putAll(t1.fullTupleMap);
 		outTuple.fullTupleMap.putAll(t2.fullTupleMap);

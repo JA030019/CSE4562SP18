@@ -1,5 +1,4 @@
 package edu.buffalo.www.cse4562;
-
 import java.util.HashMap;
 
 import net.sf.jsqlparser.expression.PrimitiveValue;
@@ -21,7 +20,7 @@ public class LimitOperator implements TupleIterator<Tuple> {
 	public LimitOperator (TupleIterator<Tuple> ti, Limit limit ) {
 		this.ti = ti;		
 		this.limit = limit;
-		open();
+		this.open();
 		this.print();
 	}
 		
@@ -64,22 +63,18 @@ public class LimitOperator implements TupleIterator<Tuple> {
 		}
 		
 		//case2 limit in query
-		offset = limit.getOffset();//if no offset in limit return 0?
-		//System.out.println("offset: " + offset);
+		offset = limit.getOffset();//if no offset in limit return 0?		
 		rowCount =  limit.getRowCount();
-		//System.out.println("rowCount:  " + rowCount);
 		if(count < rowCount ) {	
 			
 			// offset in limit
 			while(countOffset < offset) {
 				  countOffset++;
-				//System.out.println("countOffset: " + countOffset);
 				return this.getNext(); //recursively call getNext() until countOffset = offset
 				                       // then return the tuple and output according to count condition
 			}                             
 		
 			count ++;
-			//System.out.println("count: " + count);
 			return tempTuple;
 		}
 		

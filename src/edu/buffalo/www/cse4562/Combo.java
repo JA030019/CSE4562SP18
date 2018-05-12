@@ -15,4 +15,30 @@ public class Combo {
 		comboList.add(b);
 	}
 	
+	public boolean equals(Object o) {
+		
+		//System.err.println("equals");
+		if(this == o) {
+			return true;
+		}
+		
+		if(o == null || this.getClass() != o.getClass()) {
+			return false;
+		}
+		
+		Combo combo = (Combo) o;
+		
+		return this.a.equals(combo.a) && this.b.equals(combo.b) && this.comboList.equals(combo.comboList);
+		
+	}
+	
+     public int hashCode() {
+		
+		//System.err.println("hashcode");
+		
+		return this.a.hashCode() + this.b.hashCode();
+	}
+	
+	
+	
 }

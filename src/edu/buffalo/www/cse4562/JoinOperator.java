@@ -21,19 +21,17 @@ public class JoinOperator implements TupleIterator<Tuple>{
 	
 	ArrayList<Tuple> tupleListR = new ArrayList<Tuple>();
 	int count = 0;
-    	
-	//HashMap<Column,PrimitiveValue> tempFullTupleMap1 = new HashMap<Column,PrimitiveValue>(); 
-	Tuple tempTupleL = new Tuple();
 
-	//HashMap<Column,PrimitiveValue> tempFullTupleMap = new HashMap<Column,PrimitiveValue>(); 
-	Tuple tempTupleR = new Tuple();	
+	Tuple tempTupleL = new Tuple();;
+
+	Tuple tempTupleR = new Tuple();;	
 	
 	public JoinOperator(TupleIterator<Tuple> tl, TupleIterator<Tuple> tr, Expression expression) {
 	
 		this.tl = tl;
         this.tr = tr;
         this.expression = expression;
-        open();
+        this.open();
         this.print();
 			
 	}
@@ -61,8 +59,7 @@ public class JoinOperator implements TupleIterator<Tuple>{
 	@Override
 	public Tuple getNext() {
 		
-		//HashMap<Column,PrimitiveValue> tempFullTupleMap2 = new HashMap<Column,PrimitiveValue>(); 
-		Tuple tupleCombine = new Tuple();
+		Tuple tupleCombine = null;
 		
 	
 		//write in right tuple into tuplelist
@@ -209,14 +206,11 @@ public class JoinOperator implements TupleIterator<Tuple>{
    public Tuple joinTuple(Tuple t1, Tuple t2, Expression expression) throws SQLException {
 		
 		//if expression true return tuple else null
-		//HashMap<Column,PrimitiveValue> outFullTupleMap = new HashMap<Column,PrimitiveValue>(); 
 		Tuple outTuple = new Tuple();
 
 		outTuple.fullTupleMap.putAll(t1.fullTupleMap);
 		outTuple.fullTupleMap.putAll(t2.fullTupleMap);
-		/*System.out.println("combined tuple");
-		outTuple.printTuple();*/
-		 Evaluate evaluate = new Evaluate(outTuple);
+		Evaluate evaluate = new Evaluate(outTuple);
 		 
 		 if(expression == null){
 			 return outTuple;		 
@@ -230,11 +224,11 @@ public class JoinOperator implements TupleIterator<Tuple>{
 		
 	}
 
-@Override
-public void print() {
-	System.err.println("join one table read"
-			);
-	
-}
+	@Override
+	public void print() {
+		System.err.println("join one table read");
+				
+		
+	}
 	
 }

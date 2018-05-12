@@ -1,5 +1,4 @@
 package edu.buffalo.www.cse4562;
-
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,25 +28,18 @@ public class HashJoinOperator2 implements TupleIterator<Tuple>{
 	
 	ArrayList<Tuple> tupleListL = new ArrayList<Tuple>();// store all tuples of left table
 	int countL = 0;
-	
-	//LinkedHashMap<Column,PrimitiveValue> tempFullTupleMap5 = new LinkedHashMap<Column,PrimitiveValue>(); 
-	//Tuple tempTupleL = new Tuple(tempFullTupleMap5);	
 
 	ArrayList<Tuple> tupleHashList = new ArrayList<Tuple>();
 	int count = 0;// flag the position of tuple in the tupleHashList
 	
 	HashMap<Integer, ArrayList<Tuple>> hashcodeMap = new HashMap<>();
-	
-	//HashMap<Column,PrimitiveValue> tempFullTupleMap1 = new HashMap<Column,PrimitiveValue>(); 
+
 	Tuple tempTupleL = new Tuple();
 	
-	//Integer hashcodeL = new Integer(0); 
 	int hashcodeL = 0;
-	
-	//HashMap<Column,PrimitiveValue> tempFullTupleMap = new HashMap<Column,PrimitiveValue>(); 
+
 	Tuple tempTupleR = new Tuple();	
 	
-	//HashMap<Column,PrimitiveValue> tempFullTupleMap3 = new HashMap<Column,PrimitiveValue>(); 
 	Tuple temp = new Tuple();	
 	
 	Column targetColumn = null;
@@ -74,8 +66,6 @@ public class HashJoinOperator2 implements TupleIterator<Tuple>{
 	@Override
 	public void close() {
 		 if(isOpen) {
-			//tl.close();
-			//tr.close();
 			isOpen = false;
 		}			
 	}
@@ -83,8 +73,7 @@ public class HashJoinOperator2 implements TupleIterator<Tuple>{
 	@Override
 	public Tuple getNext() {
 
-		//HashMap<Column,PrimitiveValue> tempFullTupleMap2 = new HashMap<Column,PrimitiveValue>(); 
-		Tuple tupleCombine = new Tuple();			
+		Tuple tupleCombine = null;			
 		
 		//get columns
 		ArrayList<Column> columnList =  expressionAnalyzer(expression);
@@ -92,7 +81,6 @@ public class HashJoinOperator2 implements TupleIterator<Tuple>{
 		//write in right tuple into tuplelist
 		//calculate hashcode for targeted column and build hashcodemap<hashcode, list<tuple>>
 		if(hashcodeMap.isEmpty()) {
-			//long startTime=System.currentTimeMillis(); //long endTime=System.
 			while(tr.hasNext()) {
 				Tuple tuple = tr.getNext();
 				if(tuple != null) {
@@ -108,7 +96,7 @@ public class HashJoinOperator2 implements TupleIterator<Tuple>{
 					}
 					
 					//get hashcode and build hashcodeMap
-					int hashCode = hashCodeCalculator(tuple.fullTupleMap.get(targetColumn));
+					int hashCode = tuple.fullTupleMap.get(targetColumn).hashCode();
 					if(!hashcodeMap.containsKey(hashCode)) {
 						ArrayList<Tuple> atmp = new ArrayList<Tuple>();
 						atmp.add(tuple);
@@ -121,9 +109,7 @@ public class HashJoinOperator2 implements TupleIterator<Tuple>{
 					}
 				}
 			}
-			
-			 //long endTime = System.currentTimeMillis(); 
-             //System.out.println("Time = " + (endTime -startTime)); 
+
 		}
 
 		//write in left tuple into tuplelist
@@ -142,7 +128,7 @@ public class HashJoinOperator2 implements TupleIterator<Tuple>{
 		if(tempTupleL.fullTupleMap.isEmpty()) {
 			tempTupleL = tupleListL.get(0);
 			if(tempTupleL != null) {				
-				 hashcodeL = hashCodeCalculator(tempTupleL.fullTupleMap.get(columnList.get(0)));							
+				 hashcodeL = tempTupleL.fullTupleMap.get(columnList.get(0)).hashCode();							
 			}
 		}
 		
@@ -161,7 +147,7 @@ public class HashJoinOperator2 implements TupleIterator<Tuple>{
             	return null;
             }           
 
-		     hashcodeL = hashCodeCalculator(tempTupleL.fullTupleMap.get(columnList.get(0)));		
+		     hashcodeL = tempTupleL.fullTupleMap.get(columnList.get(0)).hashCode();		
 		}
 		
 		if(hashcodeMap.containsKey(hashcodeL)) {
@@ -197,7 +183,7 @@ public class HashJoinOperator2 implements TupleIterator<Tuple>{
 					
 					count = 0;
 					
-				    hashcodeL = hashCodeCalculator(tempTupleL.fullTupleMap.get(columnList.get(0)));		
+				    hashcodeL = tempTupleL.fullTupleMap.get(columnList.get(0)).hashCode();		
 					
 					return this.getNext();
 				}
@@ -228,7 +214,6 @@ public class HashJoinOperator2 implements TupleIterator<Tuple>{
 
     public Tuple joinTuple(Tuple t1, Tuple t2){
 
-		//HashMap<Column,PrimitiveValue> outFullTupleMap = new HashMap<Column,PrimitiveValue>(); 
 		Tuple outTuple = new Tuple();
 		outTuple.fullTupleMap.putAll(t1.fullTupleMap);
 		outTuple.fullTupleMap.putAll(t2.fullTupleMap);
@@ -258,36 +243,6 @@ public class HashJoinOperator2 implements TupleIterator<Tuple>{
 		return null;		
     }
     
-    public int hashCodeCalculator(PrimitiveValue t) {
-		
-    	PrimitiveType dataType = t.getType();
-    	int temp = 0;
-    	switch(dataType){
-		case BOOL:		
-		    temp = t.hashCode();
-		    break;
-		case DATE:
-			temp = t.hashCode();
-			break;
-		case DOUBLE:
-			temp = t.hashCode();
-			break;
-		case LONG:
-			temp = t.hashCode();				 
-			break;
-		case STRING:
-			temp = t.hashCode();
-			break;
-		case TIME:
-			temp = t.hashCode();
-			break;
-		default:			
-			break;
-		}			      
-	
-    	return temp;
-    	
-    }
 
 	@Override
 	public void print() {

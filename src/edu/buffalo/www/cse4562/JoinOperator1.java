@@ -25,10 +25,8 @@ public class JoinOperator1 implements TupleIterator<Tuple>{
 	ArrayList<Tuple> tupleListL = new ArrayList<Tuple>();
 	int countL = 0;
     	
-	//HashMap<Column,PrimitiveValue> tempFullTupleMap1 = new HashMap<Column,PrimitiveValue>(); 
 	Tuple tempTupleL = new Tuple();
 
-	//HashMap<Column,PrimitiveValue> tempFullTupleMap = new HashMap<Column,PrimitiveValue>(); 
 	Tuple tempTupleR = new Tuple();	
 	
 	public JoinOperator1(TupleIterator<Tuple> tl, TupleIterator<Tuple> tr, Expression expression) {
@@ -54,8 +52,6 @@ public class JoinOperator1 implements TupleIterator<Tuple>{
 	@Override
 	public void close() {
 		 if(isOpen) {
-			//tl.close();
-			//tr.close();
 			isOpen = false;
 		}	
 		
@@ -64,8 +60,8 @@ public class JoinOperator1 implements TupleIterator<Tuple>{
 	@Override
 	public Tuple getNext() {
 		
-		//HashMap<Column,PrimitiveValue> tempFullTupleMap2 = new HashMap<Column,PrimitiveValue>(); 
-		Tuple tupleCombine = new Tuple();
+		 
+		Tuple tupleCombine = null;
 		
 	
 		//write in right tuple into tuplelist
