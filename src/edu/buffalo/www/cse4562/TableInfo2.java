@@ -1,4 +1,5 @@
 package edu.buffalo.www.cse4562;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -298,7 +299,7 @@ public class TableInfo2 {
 				if(fkColNameList.size() == 1) {					
 	            	
 					//wholefkIndexMap.put(fkColNameList.get(0), fk1);
-					indexToDiskfk(fk1);
+					indexToDiskfk(fk1,fkColNameList.get(0));
 					
 				}
 				
@@ -307,8 +308,8 @@ public class TableInfo2 {
 	            	
 	            	/*wholefkIndexMap.put(fkColNameList.get(0), fk1);
 	            	wholefkIndexMap.put(fkColNameList.get(1), fk2);	*/ 
-	            	indexToDiskfk(fk2);
-	            	indexToDiskfk(fk1);
+	            	indexToDiskfk(fk2,fkColNameList.get(0));
+	            	indexToDiskfk(fk1,fkColNameList.get(1));
 				}
 							
 				//case3.3 triple foregin keys
@@ -318,9 +319,9 @@ public class TableInfo2 {
 	            	wholefkIndexMap.put(fkColNameList.get(1), fk2);
 	            	wholefkIndexMap.put(fkColNameList.get(2), fk3);*/
 	            	
-	            	indexToDiskfk(fk1);
-	            	indexToDiskfk(fk2);
-	            	indexToDiskfk(fk3);
+	            	indexToDiskfk(fk1,fkColNameList.get(0));
+	            	indexToDiskfk(fk2,fkColNameList.get(1));
+	            	indexToDiskfk(fk3,fkColNameList.get(2));
 	            	
 				}
 			}
@@ -348,10 +349,11 @@ public class TableInfo2 {
 	}
 	
 	//write index of foreign key on disk
-	public void indexToDiskfk(HashMap map) throws Exception {
+	public void indexToDiskfk(HashMap map, String colName) throws Exception {
 		
-		for(String str : fkColNameList) {
-			String filepath = "indexes/"+ tableName + " "+ str + ".dat";
+		//for(String str : fkColNameList) {
+		    
+			String filepath = "indexes/"+ tableName + " "+ colName + ".dat";
 			
 			File f = new File(filepath);
 			FileOutputStream fos = new FileOutputStream(f);
@@ -359,7 +361,7 @@ public class TableInfo2 {
 	        
 		    oos.writeObject(map);
 		    oos.close();
-		}
+		//}
 		
 	}
 	
