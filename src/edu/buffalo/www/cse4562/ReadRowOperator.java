@@ -70,6 +70,11 @@ public class ReadRowOperator implements TupleIterator<Tuple>{
 	@Override
 	public Tuple getNext() {
 	
+		
+		
+		while(true) {
+			
+		
 		Tuple tuple = new Tuple();
 				
 		if(reader == null) {
@@ -129,9 +134,11 @@ public class ReadRowOperator implements TupleIterator<Tuple>{
 			
 			return tuple;
 			
-		}else {
-			return this.getNext();
+		 }
 		}
+		/*else {
+			//return this.getNext();
+		}*/
 	
 	}
 

@@ -53,16 +53,10 @@ public class SelectOperator implements TupleIterator<Tuple> {
 	@Override
 	public Tuple getNext(){ 
 
-		//if(ti.hasNext()) {
-					
-			/*HashMap<Column,PrimitiveValue> fullTupleMap = new HashMap<Column,PrimitiveValue>(); 
-			Tuple tuple = new Tuple(fullTupleMap);
-			//Evaluate evaluate = new Evaluate(tuple);
-*/			
+		    while(true) {
+
 			tuple = ti.getNext();
 			
-			//System.out.println("selection from table "+ tuple.fullTupleMap.size() +" "+ tuple.fullTupleMap.isEmpty());
-			//System.out.println("selection from table "+ tuple.fullTupleMap.get();
 			this.evaluate = new Evaluate(tuple);
 			
 			if(tuple == null) {
@@ -80,14 +74,15 @@ public class SelectOperator implements TupleIterator<Tuple> {
 		    	else if (((BooleanValue) (evaluate).eval(expWhere)).getValue()) {
 		    		
 					   return tuple;
-				}else {
-					return this.getNext();
 				}
+		    	/*else {
+					return this.getNext();
+				}*/
 			} catch (Exception e) {
 				e.printStackTrace();
 			}			
-				
-		return null;
+		 }		
+		//return null;
 	}
 
 	@Override
