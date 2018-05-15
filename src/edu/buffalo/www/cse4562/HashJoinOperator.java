@@ -1,22 +1,11 @@
 package edu.buffalo.www.cse4562;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashMap;
-
 import net.sf.jsqlparser.expression.BinaryExpression;
-import net.sf.jsqlparser.expression.BooleanValue;
-import net.sf.jsqlparser.expression.DateValue;
-import net.sf.jsqlparser.expression.DoubleValue;
 import net.sf.jsqlparser.expression.Expression;
-import net.sf.jsqlparser.expression.LongValue;
-import net.sf.jsqlparser.expression.NullValue;
-import net.sf.jsqlparser.expression.PrimitiveValue;
-import net.sf.jsqlparser.expression.StringValue;
 import net.sf.jsqlparser.expression.operators.relational.EqualsTo;
 import net.sf.jsqlparser.schema.Column;
-import net.sf.jsqlparser.schema.PrimitiveType;
 import net.sf.jsqlparser.schema.Table;
 
 public class HashJoinOperator implements TupleIterator<Tuple>{
@@ -45,10 +34,6 @@ public class HashJoinOperator implements TupleIterator<Tuple>{
 	
 	// table information from tableinfo
 	ArrayList<String> tnList = new ArrayList<>();	
-	//ArrayList<String> cnList = new ArrayList<>();
-	
-	//TableInfo2 tableInfol;
-	//TableInfo2 tableInfor;
 	
 	Table tabler;
 	String tnr;
@@ -57,13 +42,7 @@ public class HashJoinOperator implements TupleIterator<Tuple>{
 	
 		this.tl = tl;
         this.tr = tr;
-        //this.expression = expression;
-        //this.cnList = getColumnNames(expression);
-        
         this.tnList = getTableAlias(expression);
-       
-        //this.tableInfol = Main.fullIndexMap.get(tnList.get(0));
-       // this.tableInfor = Main.fullIndexMap.get(tnList.get(1));
         this.tabler = tabler;
         this.tnr = tabler.getAlias();
         
@@ -146,8 +125,6 @@ public class HashJoinOperator implements TupleIterator<Tuple>{
 		if(tempTupleL.fullTupleMap.isEmpty()) {
 			tempTupleL = tl.getNext();
 			if(tempTupleL != null) {
-				
-				
 
 				hashcodeL = tempTupleL.fullTupleMap.get(columnList.get(0)).hashCode();		
 
@@ -256,32 +233,8 @@ public class HashJoinOperator implements TupleIterator<Tuple>{
 
 	@Override
 	public void print() {
-		System.err.println("hashjoin 1 table" + tnList);
-		
+		System.err.println("hashjoin 1 table" + tnList);		
 	}
-	
-	
-	/*//modified for checkpoint 4
-	public ArrayList<String> getColumnNames(Expression exp){
-		
-		ArrayList<String> cnList = new ArrayList<>();
-		
-		Expression l = ((BinaryExpression) expression).getLeftExpression();
-		Expression r = ((BinaryExpression) expression).getRightExpression();
-				
-		if(l instanceof Column) {
-			Column columnl = (Column)l;
-			cnList.add(columnl.getColumnName());
-		}
-		
-		if(r instanceof Column) {
-			Column columnr = (Column)r;
-			cnList.add(columnr.getColumnName());
-		}	
-		
-		return cnList;
-		
-	}*/
 	
 	//modified for checkpoint 4
     public ArrayList<String> getTableAlias(Expression expression){
@@ -326,8 +279,7 @@ public class HashJoinOperator implements TupleIterator<Tuple>{
 			}else {
 				Column columnl = (Column)l;
 			    tnList.add(columnl.getTable().getName());
-			}
-			
+			}			
 			
 		}
 		
@@ -367,10 +319,8 @@ public class HashJoinOperator implements TupleIterator<Tuple>{
 				Column columnr = (Column)r;
 			    tnList.add(columnr.getTable().getName());
 			}
-		}			
-		
-		return tnList;
-		
+		}					
+		return tnList;		
 	}
     
 

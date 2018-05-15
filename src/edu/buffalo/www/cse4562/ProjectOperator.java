@@ -31,7 +31,7 @@ public class ProjectOperator implements TupleIterator<Tuple>{
 		this.ti = ti;
 		this.selectItems = selectItems;		
 		this.open();
-		this.print();
+		//this.print();
 	}
 	
 	@Override

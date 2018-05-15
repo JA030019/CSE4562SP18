@@ -34,7 +34,7 @@ public class ReadRowOperator implements TupleIterator<Tuple>{
 		this.ct = Main.tableMap.get(table.getName().toLowerCase());	
 		this.rowList = rowList;
 		this.open();
-		this.print();		
+		//this.print();		
 	}
 	
 	public void print() {

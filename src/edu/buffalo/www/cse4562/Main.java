@@ -44,7 +44,7 @@ public class Main {
 
         while((statement = parser.Statement()) != null){     
         	
-        	long startTime=System.currentTimeMillis(); //long endTime=System.
+        	long startTime = System.currentTimeMillis(); //long endTime=System.
         	
 		     if(statement instanceof CreateTable) {				        		
 			      CreateTable ct = new CreateTable();
@@ -56,8 +56,7 @@ public class Main {
 			      TableInfo2 tableinfo = new TableInfo2(tableName,ct);
 			      tableinfo.Parserkey();
 			      tableinfo.indexBuilder();
-			      //tableinfo.indexToDisk(tableinfo.indexBuilder());
-    
+			      //tableinfo.indexToDisk(tableinfo.indexBuilder());   
 			      fullIndexMap.put(tableName, tableinfo);
       
 			 }else if(statement instanceof Select) {

@@ -287,7 +287,7 @@ public class TableInfo2 {
 			
 			// wirte primary key on disk
 			if(!pkIndexMap.isEmpty()) {
-				indexToDiskpk(pkIndexMap);
+				//indexToDiskpk(pkIndexMap);
 			}
 			
 			
@@ -335,7 +335,7 @@ public class TableInfo2 {
 		
 	}
     
-	//write index of primary key on disk
+/*	//write index of primary key on disk
 	public void indexToDiskpk(HashMap map) throws Exception {
 		
 		String filepath = "indexes/" + tableName + " " + pkColNameList.get(0) + ".dat";
@@ -346,7 +346,7 @@ public class TableInfo2 {
         
 	    oos.writeObject(map);
 	    oos.close();
-	}
+	}*/
 	
 	//write index of foreign key on disk
 	public void indexToDiskfk(HashMap map, String colName) throws Exception {

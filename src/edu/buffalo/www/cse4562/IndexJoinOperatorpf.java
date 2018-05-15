@@ -172,18 +172,17 @@ public class IndexJoinOperatorpf implements TupleIterator<Tuple>{
 					ReadRowOperator ri = new ReadRowOperator(tabler,rowList);
 					
 					//Checkpoint4 always projection pushdown					
-					ProjectOperator pi = new ProjectOperator(ri,op.optProMap.get(tabler.getName()));
-					//System.out.println(pi==null);
+					ProjectOperator pi = new ProjectOperator(ri,op.optProMap.get(tabler.getName()));					
 					
 					//selection push down to be modified
 					if(!op.selectelements.containsKey(tabler.getName())) {
 						trr = pi;
-						//System.out.println(trr==null);
+						
 					}else {
 						SelectOperator si = new SelectOperator(pi,op.selectelements.get(tabler.getName()));
 					
 					    trr = si;
-					    //System.out.println(trr==null);
+					  
 					}
 					
 					
