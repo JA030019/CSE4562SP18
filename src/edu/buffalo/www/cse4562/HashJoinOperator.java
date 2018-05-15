@@ -59,7 +59,9 @@ public class HashJoinOperator implements TupleIterator<Tuple>{
         this.tr = tr;
         //this.expression = expression;
         //this.cnList = getColumnNames(expression);
+        
         this.tnList = getTableAlias(expression);
+       
         //this.tableInfol = Main.fullIndexMap.get(tnList.get(0));
        // this.tableInfor = Main.fullIndexMap.get(tnList.get(1));
         this.tabler = tabler;
@@ -290,18 +292,88 @@ public class HashJoinOperator implements TupleIterator<Tuple>{
 		Expression r = ((BinaryExpression) expression).getRightExpression();
 				
 		if(l instanceof Column) {
-			Column columnl = (Column)l;
-			tnList.add(columnl.getTable().getName());
+			
+			//use tricky way to fix bugs of no alias
+			if(((Column) l).getTable().getName() == null) {
+				String tableName = null;
+
+    			String na = ((Column) l).getColumnName().split("_")[0];
+    			if(na.equals("P")) {
+    				tableName = "PART";    				 
+    				tnList.add(tableName);
+    			}else if(na.equals("S")) {
+    				tableName = "SUPPLIER";
+    				tnList.add(tableName);
+    			}else if(na.equals("PS")) {
+    				tableName = "PARTSUPP";
+    				tnList.add(tableName);
+    			}else if(na.equals("C")) {
+    				tableName = "CUSTOMER";
+    				tnList.add(tableName);
+    			}else if(na.equals("O")) {
+    				tableName = "ORDERS";
+    				tnList.add(tableName);
+    			}else if(na.equals("L")) {
+    				tableName = "LINEITEM";
+    				tnList.add(tableName);
+    			}else if(na.equals("N")) {
+    				tableName = "NATION";
+    				tnList.add(tableName);
+    			}else if(na.equals("R")) {
+    				tableName = "REGION";
+    				tnList.add(tableName);
+    			}
+			}else {
+				Column columnl = (Column)l;
+			    tnList.add(columnl.getTable().getName());
+			}
+			
+			
 		}
 		
 		if(r instanceof Column) {
-			Column columnr = (Column)r;
-			tnList.add(columnr.getTable().getName());
-		}	
+			
+			//use tricky way to fix bugs of no alias
+			if(((Column) r).getTable().getName() == null) {
+				String tableName = null;
+
+    			String na = ((Column) r).getColumnName().split("_")[0];
+    			if(na.equals("P")) {
+    				tableName = "PART";    				 
+    				tnList.add(tableName);
+    			}else if(na.equals("S")) {
+    				tableName = "SUPPLIER";
+    				tnList.add(tableName);
+    			}else if(na.equals("PS")) {
+    				tableName = "PARTSUPP";
+    				tnList.add(tableName);
+    			}else if(na.equals("C")) {
+    				tableName = "CUSTOMER";
+    				tnList.add(tableName);
+    			}else if(na.equals("O")) {
+    				tableName = "ORDERS";
+    				tnList.add(tableName);
+    			}else if(na.equals("L")) {
+    				tableName = "LINEITEM";
+    				tnList.add(tableName);
+    			}else if(na.equals("N")) {
+    				tableName = "NATION";
+    				tnList.add(tableName);
+    			}else if(na.equals("R")) {
+    				tableName = "REGION";
+    				tnList.add(tableName);
+    			}
+			}else {
+				Column columnr = (Column)r;
+			    tnList.add(columnr.getTable().getName());
+			}
+		}			
 		
 		return tnList;
 		
 	}
+    
+
     
     public Expression reverseExpression(Expression exp) {
     	

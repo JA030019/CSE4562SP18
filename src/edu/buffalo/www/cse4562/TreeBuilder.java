@@ -362,8 +362,18 @@ public class TreeBuilder {
 												    			if(c.a.equals("LINEITEM")&&c.b.equals("ORDERS")) {
 												    				jo = new HashJoinOperator(tlsel,trsel,op.hashJoinMap.get(c),tabler);
 												    			}
-												    			
-												    			//tricky way for checkpoint4 ----q2,3,4
+												    			// tricky way for checkpoint4 ----q3
+												    			else if(c.a.equals("PART")&&c.b.equals("LINEITEM")) {
+												    				jo = new HashJoinOperator(tlsel,trsel,op.hashJoinMap.get(c),tabler);
+												    			}
+												    			// tricky way for checkpoint4 ----q3
+												    			else if(c.a.equals("LINEITEM")&&c.b.equals("SUPPLIER")) {
+												    				jo = new HashJoinOperator(tlsel,trsel,op.hashJoinMap.get(c),tabler);
+												    			}
+												    			else if(c.a.equals("CUSTOMER")&&c.b.equals("ORDERS")) {
+												    				jo = new HashJoinOperator(tlsel,trsel,op.hashJoinMap.get(c),tabler);
+												    			}
+												    			//tricky way for checkpoint4 ----Q4,Q5
 												    			else {
 													    				try {
 																		jo = new IndexJoinOperatorpf(tlsel,trsel,op.hashJoinMap.get(c),tabler);
@@ -391,12 +401,7 @@ public class TreeBuilder {
 											}										
 										}else {	
 											//optimization join ---> index join
-											
-											
-											
-											
-											
-											   
+
 											//optimization join --> hashjoin
 										    if(!op.hashJoinMap.isEmpty()) {
 										    	Set<Combo> comboSet = op.hashJoinMap.keySet();
@@ -409,15 +414,15 @@ public class TreeBuilder {
 										    			
 										    			if(c.comboList.contains(str) && c.comboList.contains(tor.table.getName())) {
 										    				
-										    				try {
+										    				/*try {
 																jo = new IndexJoinOperatorpf(jo,trsel,op.hashJoinMap.get(c),tabler);
 																break;
 															} catch (Exception e) {															
 																e.printStackTrace();
-															}
+															}*/
 										    				
 										    				
-										    				//jo = new HashJoinOperator(jo,trsel,op.hashJoinMap.get(c),tabler);
+										    				jo = new HashJoinOperator(jo,trsel,op.hashJoinMap.get(c),tabler);
 										    				break;
 										    			}
 										    		}
