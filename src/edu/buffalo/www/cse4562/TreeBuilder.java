@@ -336,13 +336,7 @@ public class TreeBuilder {
 										if(count == 1){									
 											if(sub == null) {	
 												    //optimization join ---> index join
-												    
-												
-												
-												
-												
-												
-												
+
 												    //optimization join --> hash join
 												    if(!op.hashJoinMap.isEmpty()) {
 												    	Set<Combo> comboSet = op.hashJoinMap.keySet();
@@ -370,9 +364,9 @@ public class TreeBuilder {
 												    			else if(c.a.equals("LINEITEM")&&c.b.equals("SUPPLIER")) {
 												    				jo = new HashJoinOperator(tlsel,trsel,op.hashJoinMap.get(c),tabler);
 												    			}
-												    			else if(c.a.equals("CUSTOMER")&&c.b.equals("ORDERS")) {
+												    			/*else if(c.a.equals("CUSTOMER")&&c.b.equals("ORDERS")) {
 												    				jo = new HashJoinOperator(tlsel,trsel,op.hashJoinMap.get(c),tabler);
-												    			}
+												    			}*/
 												    			//tricky way for checkpoint4 ----Q4,Q5
 												    			else {
 													    				try {
@@ -414,15 +408,15 @@ public class TreeBuilder {
 										    			
 										    			if(c.comboList.contains(str) && c.comboList.contains(tor.table.getName())) {
 										    				
-										    				/*try {
+										    				try {
 																jo = new IndexJoinOperatorpf(jo,trsel,op.hashJoinMap.get(c),tabler);
 																break;
 															} catch (Exception e) {															
 																e.printStackTrace();
-															}*/
+															}
 										    				
 										    				
-										    				jo = new HashJoinOperator(jo,trsel,op.hashJoinMap.get(c),tabler);
+										    				//jo = new HashJoinOperator(jo,trsel,op.hashJoinMap.get(c),tabler);
 										    				break;
 										    			}
 										    		}
