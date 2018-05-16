@@ -409,15 +409,16 @@ public class TreeBuilder {
 										    			
 										    			if(c.comboList.contains(str) && c.comboList.contains(tor.table.getName())) {
 										    				
-										    				try {
+										    				/*try {
 																jo = new IndexJoinOperatorpf(jo,trsel,op.hashJoinMap.get(c),tabler);
 																break;
 															} catch (Exception e) {															
 																e.printStackTrace();
-															}
+															}*/
 										    				
 										    				
 										    				//jo = new HashJoinOperator(jo,trsel,op.hashJoinMap.get(c),tabler);
+										    				jo = new HashJoinOperator(trsel,jo,op.hashJoinMap.get(c),tabler);
 										    				break;
 										    			}
 										    		}
