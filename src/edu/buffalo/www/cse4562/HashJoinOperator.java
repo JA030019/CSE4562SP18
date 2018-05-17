@@ -37,6 +37,7 @@ public class HashJoinOperator implements TupleIterator<Tuple>{
 	
 	Table tabler;
 	String tnr;
+	ArrayList<Column> columnList = new ArrayList<Column>();
 	
 	public HashJoinOperator(TupleIterator<Tuple> tl, TupleIterator<Tuple> tr, Expression expression, Table tabler) {
 	
@@ -51,7 +52,7 @@ public class HashJoinOperator implements TupleIterator<Tuple>{
         }else {
         	this.expression = expression;
         }
-
+        this.columnList = expressionAnalyzer(this.expression);
         this.open();
         this.print();
 		
@@ -80,11 +81,10 @@ public class HashJoinOperator implements TupleIterator<Tuple>{
 	@Override
 	public Tuple getNext() {
 
+		while(true) {
+		
 		Tuple tupleCombine = null;		
 
-		//get columns
-		ArrayList<Column> columnList =  expressionAnalyzer(expression);
-			
 		//write in right tuple into tuplelist
 		//calculate hashcode for targeted column and build hashcodemap<hashcode, list<tuple>>
 		if(tupleListR.isEmpty()) {
@@ -171,11 +171,13 @@ public class HashJoinOperator implements TupleIterator<Tuple>{
 
 				    hashcodeL = tempTupleL.fullTupleMap.get(columnList.get(0)).hashCode();		
 
-					return this.getNext();
+					//return this.getNext();
 				}
 			}
 		}
-		return null;
+		
+		}
+		//return null;
 	}
 
 	@Override
