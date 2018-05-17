@@ -510,7 +510,7 @@ public class TreeBuilder {
 				  
 				  //case4 groupby function		  
 				  else{				  
-					  ap = new AggregationOperator_groupby(so,expHaving, columnRefList, expProList, op); 
+					  ap = new AggregationOperator_groupbytr(so,expHaving, columnRefList, expProList, op); 
 				  } 
 	  
 				  /*

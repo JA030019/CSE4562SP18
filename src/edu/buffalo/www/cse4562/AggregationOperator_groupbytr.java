@@ -4,7 +4,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
@@ -19,7 +18,7 @@ import net.sf.jsqlparser.statement.select.AllTableColumns;
 import net.sf.jsqlparser.statement.select.SelectExpressionItem;
 import net.sf.jsqlparser.statement.select.SelectItem;
 
-public class AggregationOperator_groupby implements TupleIterator<Tuple>{
+public class AggregationOperator_groupbytr implements TupleIterator<Tuple>{
     
 	TupleIterator<Tuple> ti;
 	Expression expHaving;
@@ -43,7 +42,7 @@ public class AggregationOperator_groupby implements TupleIterator<Tuple>{
 	ArrayList<Object> objectList = new ArrayList<>();
 
 	
-	public AggregationOperator_groupby(TupleIterator<Tuple> ti, Expression expHaving, List<Column> columnRefList, List<SelectItem> selectItems, Optimizer op) {
+	public AggregationOperator_groupbytr(TupleIterator<Tuple> ti, Expression expHaving, List<Column> columnRefList, List<SelectItem> selectItems, Optimizer op) {
 		this.ti = ti;
 		this.expHaving = expHaving;
 		this.columnRefList = columnRefList;
@@ -85,9 +84,7 @@ public class AggregationOperator_groupby implements TupleIterator<Tuple>{
 					for(Column c : columnRefList) {											
 						code.add(tuple.fullTupleMap.get(c));				
 					}
-					
-					 
-					
+
 					//int code = code.hashCode();
 					//case1 new one: create new innertuplelist to store tuple and add it to HashMap
 					if(!hashCodeMap.containsKey(code)) {											
@@ -106,7 +103,7 @@ public class AggregationOperator_groupby implements TupleIterator<Tuple>{
 									Function function = (Function) expression;
 									String functionName = function.getName();
 								
-									Aggregation1 aggregation = new Aggregation1(function,functionName,alias);
+									Aggregation2 aggregation = new Aggregation2(function,functionName,alias);
 									aggregation.getAggregation(tuple);					
 									tempList.add(aggregation);					
 								}
@@ -114,7 +111,7 @@ public class AggregationOperator_groupby implements TupleIterator<Tuple>{
 								else if(expression instanceof Column){
 										Column column = (Column) expression;
 										ColMix colmix = null;										
-										colmix = new ColMix(alias,tuple.fullTupleMap.get(column),column);
+										colmix = new ColMix(tuple.fullTupleMap.get(column),column);
 										tempList.add(colmix);
 								} 
 									
@@ -129,8 +126,8 @@ public class AggregationOperator_groupby implements TupleIterator<Tuple>{
 				   else {
 					    ArrayList<Object> t = hashCodeMap.get(code);
 					    for(int i = 0; i < t.size(); i ++) {
-					    	if(t.get(i) instanceof Aggregation1) {
-					    		Aggregation1 a = ((Aggregation1) t.get(i));
+					    	if(t.get(i) instanceof Aggregation2) {
+					    		Aggregation2 a = ((Aggregation2) t.get(i));
 					    		a.getAggregation(tuple);
 					    		t.set(i, a);
 					    	}
@@ -166,22 +163,23 @@ public class AggregationOperator_groupby implements TupleIterator<Tuple>{
 		for(Object o : objectList) {
 			 j ++;
 			if(o instanceof ColMix) {
-				if(((ColMix) o).alias == null) {
+				/*if(((ColMix) o).alias == null) {
 					outputTuple.setValue(((ColMix) o).column.getTable(),((ColMix) o).column.getColumnName(),((ColMix) o).data);
 				}else {
-					outputTuple.setValue(((ColMix) o).column.getTable(),((ColMix) o).alias,((ColMix) o).data);
-				}
-				
+					//outputTuple.setValue(((ColMix) o).column.getTable(),((ColMix) o).alias,((ColMix) o).data);
+					//outputTuple.setValue(((ColMix) o).column.getTable(),((ColMix) o).alias,((ColMix) o).data);
+				}*/
+				outputTuple.setValue(((ColMix) o).column.getTable(),((ColMix) o).column.getColumnName(),((ColMix) o).data);
 			}
 			
-			else if(o instanceof Aggregation1) {
-				if(((Aggregation1) o).alias == null) {
+			else if(o instanceof Aggregation2) {
+				/*if(((Aggregation1) o).alias == null) {
 					String fakeAlias = ((Aggregation1) o).funcName + j;
 					outputTuple.setValue(fakeAlias,((Aggregation1) o).getAggregationValue(((Aggregation1) o).funcName));
 				}else {
 					outputTuple.setValue(((Aggregation1) o).alias,((Aggregation1) o).getAggregationValue(((Aggregation1) o).funcName));
-				}
-				
+				}*/
+				outputTuple.setValue(((Aggregation2) o).alias,((Aggregation2) o).getAggregationValue(((Aggregation2) o).funcName));
 			}
 		}
 
