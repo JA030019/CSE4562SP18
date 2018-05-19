@@ -93,7 +93,6 @@ public class JoinOperator1 implements TupleIterator<Tuple>{
 				if(temp != null) {
 				    tupleListL.add(temp);
 				}
-			
 		    }
 		}
 		
@@ -259,7 +258,6 @@ public class JoinOperator1 implements TupleIterator<Tuple>{
 	@Override
 	public void print() {
 		System.err.println("join two table read");
-		
 	}
 	
 }

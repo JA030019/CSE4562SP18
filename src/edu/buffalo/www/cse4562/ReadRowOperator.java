@@ -136,9 +136,6 @@ public class ReadRowOperator implements TupleIterator<Tuple>{
 			
 		 }
 		}
-		/*else {
-			//return this.getNext();
-		}*/
 	
 	}
 
