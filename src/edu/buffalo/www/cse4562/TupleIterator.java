@@ -6,6 +6,6 @@ public interface TupleIterator<Tuple> {
 	public void close();
 	public Tuple getNext();
     boolean hasNext();	
-    public void print();
-		
+    public void print();	
+   
 }

@@ -84,7 +84,6 @@ public class AggregationOperator_nongroupby implements TupleIterator<Tuple>{
 				}
 											
 			}
-				
 		}
 		
 		while(ti.hasNext()) {	
@@ -127,7 +126,6 @@ public class AggregationOperator_nongroupby implements TupleIterator<Tuple>{
 
 	@Override
 	public void print() {
-		System.err.println("AggregationOperator no groupby");
 		
 	}
 

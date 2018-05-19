@@ -337,9 +337,7 @@ public class HashJoinOperator implements TupleIterator<Tuple>{
 			
 			temp = new EqualsTo(r,l);
     	}	
-					    
-    	
-    	
+	
 		return temp;
     	
     }

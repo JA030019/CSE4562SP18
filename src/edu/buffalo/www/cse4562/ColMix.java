@@ -9,14 +9,8 @@ public class ColMix {
 	PrimitiveValue data;
 	Column column;
 	
-	/*public ColMix(String alias,PrimitiveValue data, Column column) {
-		this.alias = alias;
-		this.data = data;
-		this.column = column;
-	}*/
 	
 	public ColMix(PrimitiveValue data, Column column) {
-		//this.alias = alias;
 		this.data = data;
 		this.column = column;
 	}

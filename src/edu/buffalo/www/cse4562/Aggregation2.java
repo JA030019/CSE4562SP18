@@ -19,19 +19,16 @@ public class Aggregation2 {
 
 	Function func;
 	String funcName;
-	//double tempmax = 0;
-	//double tempmin = 0;
+	
 	double tempsum = 0;
 	double tempavg = 0;
-	//int counter = 0;
+	
 	int countersum = 0;
 	String dataType = null;
 	
-	//PrimitiveValue max;
-	//PrimitiveValue min;
+	
 	PrimitiveValue sum;
 	PrimitiveValue avg;
-	//LongValue count;
 	
 	String alias = null;
 	
@@ -87,116 +84,6 @@ public class Aggregation2 {
 		
 	}
 	
-	/*public void max(Tuple tuple) {
-        
-		counter ++;
-		
-		//only consider SINGLE expression Max(R.A + R.B*R.C)
-		Expression exp = func.getParameters().getExpressions().get(0);
-
-		//get data type
-		Evaluate evaluate = new Evaluate(tuple);
-		
-		//get data type & new a variable
-		if(dataType == null) {
-			PrimitiveValue temp1 = null;
-			if(exp != null) {
-				
-				try {
-				temp1 = evaluate.eval(exp);
-			    } 
-				catch (SQLException e) {			
-				e.printStackTrace();
-			    }
-				
-			}else {
-				System.out.println("expression null");
-			}
-			
-			dataType = getDataType(temp1);
-		}
-		
-		//update max value
-		double dtemp = 0;
-		try {
-			dtemp = evaluate.eval(exp).toDouble();
-		} catch (Exception e) {			
-			e.printStackTrace();
-		} 
-		
-		if(counter == 1) {
-			tempmax = dtemp;
-		}else {
-			if(tempmax < dtemp) {
-				tempmax = dtemp;
-			}
-		}
-		
-		
-		if(dataType.equals("LongValue")) {
-			
-			max = new LongValue((long)tempmax);
-			
-		}else {
-			max = new DoubleValue(tempmax);
-		}
-	
-	}
-	
-	public void min(Tuple tuple) {
-		
-        counter ++;
-		
-		//only consider SINGLE expression Min(R.A + R.B*R.C)
-		Expression exp = func.getParameters().getExpressions().get(0);
-
-		//get data type
-		Evaluate evaluate = new Evaluate(tuple);
-		
-		//get data type & new a variable
-		if(dataType == null) {
-			PrimitiveValue temp1 = null;
-			if(exp != null) {
-				
-				try {
-				temp1 = evaluate.eval(exp);
-			    } 
-				catch (SQLException e) {			
-				e.printStackTrace();
-			    }
-				
-			}else {
-				System.out.println("expression null");
-			}
-			
-			dataType = getDataType(temp1);
-		}
-		
-		//update min value
-		double dtemp = 0;
-		try {
-			dtemp = evaluate.eval(exp).toDouble();
-		} catch (Exception e) {			
-			e.printStackTrace();
-		} 
-		
-		if(counter == 1) {
-			tempmin = dtemp;
-		}else {
-			if(tempmin > dtemp) {
-				tempmin = dtemp;
-			}
-		}
-		
-        if(dataType.equals("LongValue")) {
-			
-			min = new LongValue((long)tempmin);
-			
-		}else {
-			min = new DoubleValue(tempmin);
-		}
-		
-	}*/
 	
 	public void sum(Tuple tuple) {
 		countersum ++;
@@ -264,21 +151,9 @@ public class Aggregation2 {
 	}
 	
 	
-/*	//dont work rn
-	public void count(Tuple tuple) {
-		
-		int tempc = 0;
-
-		tempc ++;
-	
-		count = new LongValue(tempc);
-		
-		
-	}*/
-	
 	//consider all columns in one expression have the same data type
     public String getDataType(PrimitiveValue t){
-				
+    	
     	PrimitiveType dataType1 = t.getType();
     	String temp1 = null;
     	switch(dataType1){
@@ -291,7 +166,6 @@ public class Aggregation2 {
 		default:			
 			break;
 		}			      
-	
     	return temp1;
 
 	}

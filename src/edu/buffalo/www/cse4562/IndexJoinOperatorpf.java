@@ -506,12 +506,6 @@ public class IndexJoinOperatorpf implements TupleIterator<Tuple>{
 	    
 	    if(keytype.equals("foreignkey")) {
 	    	fkMap = (HashMap<PrimitiveValue, ArrayList<Integer>>) objectInputStream.readObject();
-	    	/*Set<PrimitiveValue> templist = fkMap.keySet();
-	        System.err.println("Foreginkey");
-	        for(PrimitiveValue p1 : templist) {
-	    	
-	    	    System.err.println(p1 +" " + fkMap.get(p1));
-	        }*/
 	    }
 	   
 	    

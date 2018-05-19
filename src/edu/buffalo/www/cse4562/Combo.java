@@ -34,8 +34,6 @@ public class Combo {
 	
      public int hashCode() {
 		
-		//System.err.println("hashcode");
-		
 		return this.a.hashCode() + this.b.hashCode();
 	}
 	
