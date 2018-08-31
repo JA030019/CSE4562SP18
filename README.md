@@ -13,5 +13,5 @@ checkpoint 2  finished on 2018.03.20
 checkpoint 3  finished on 2018.4.13
 <br>main task: Group By, Hash join, Aggregate Function, Time requirement
 
-checkpoint 4
-<br>main task:
+checkpoint 4 finished on 2018.5.05
+<br>main task: Be fast
