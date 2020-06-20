@@ -5,7 +5,7 @@ import net.sf.jsqlparser.schema.Column;
 
 public class ColMix {
 
-	//String alias --;
+	//String alias;
 	PrimitiveValue data;
 	Column column;
 	
